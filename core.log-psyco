@@ -1,0 +1,21 @@
+05:02:51.40  Logging started, 01/10/12                  %%%%%%%%%%%%%%%%%%%%
+05:02:51.66  unsupported generator at __iter__                           % %
+05:02:54.60  unsupported ** argument in call to info                     % %
+05:02:54.60  unsupported ** argument in call to info                     % %
+05:03:02.08  unsupported ** argument in call to info                     % %
+05:03:02.10  unsupported ** argument in call to debug                    % %
+05:03:02.10  unsupported ** argument in call to wrap                     % %
+05:03:02.10  unsupported ** argument in call to debug                    % %
+05:03:02.10  unsupported ** argument in call to wrap                     % %
+05:03:05.35  unsupported ** argument in call to debug                    % %
+05:03:05.35  unsupported ** argument in call to wrap                     % %
+05:03:05.73  unsupported ** argument in call to debug                    % %
+05:03:05.73  unsupported ** argument in call to wrap                     % %
+05:03:40.20  unsupported ** argument in call to info                     % %
+05:03:40.23  unsupported ** argument in call to debug                    % %
+05:03:40.23  unsupported ** argument in call to wrap                     % %
+05:03:47.71  unsupported ** argument in call to info                     % %
+05:03:47.71  unsupported ** argument in call to info                     % %
+05:03:48.92  unsupported ** argument in call to info                     % %
+05:03:48.92  memory usage: 2547+ kb                                        %
+05:03:48.92  program exit, 01/10/12                     %%%%%%%%%%%%%%%%%%%%

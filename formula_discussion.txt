@@ -1,0 +1,62 @@
+To hit: 
+bab+weaponbonus              bdb+armorbonus
+___________________  vs  _________________ 
+             2                                       2             
+bab = base attack bonus = (level*combat mod)+dex
+bdb = base defense bonus = (level*combat mod)+dex
+weapon/armor bonus = bonuses based on weapons/armor
+combat mod is gained through perks/feats in increments of .1 per perk/feat with a base of 1.0
+crit needs to be based on int for sure lol why int?
+cuz with a higher int, you'd know where the weak spots are
+but the problem is, if you are using a character that relies o nmelee then int is useless
+its just kind of an extra stat to take away from the focus of your char
+MAYBE we can add it in
+but have it based on dex
+soemthing like this
+base_crit = (dex//2)+(int//4)*0.1 or something of the sort
+final crit = int( base_crit + weapon_crit_mod)+1 rounded up so its at least 1%
+what if we add in a dex calc to the to hit again
+but a smaller ammount
+but only to  the to hit?
+like
+bab+(dex//2) that way we can just use bab for the defense
+OR
+hang on
+we can add in a parrying system that uses the bab+(dex//2)
+i'm thinking active defense should be seperate from passive
+like shield blocking should be a straight % based on dex/str/shield
+yeah, we can do something like that
+we can have a combat and a class mod
+like so
+this way we can have, essentially profficiences for weapons and such
+sounds good, but not as good as sex with midgets lol
+# base stats should be something similar to this  so that they scale on level
+base_power = (str+(level*(class_mod*combat_mod)))//2
+base_attack_bonus = dex+(level*(class_mod*combat_mod))
+if not target.fighter.torso:## no armor
+                damage = self.power + wep.calc_damage(damage_type = wep.damage_type) - target.fighter.defense
+            else:## otherwise get armor defense types
+                bdt = target.fighter.torso.item.equipment.best_defense_type
+                wdt = target.fighter.torso.item.equipment.worst_defense_type
+                damage = self.power + wep.calc_damage(damage_type= wep.damage_type,best_type= bdt,worst_type= wdt) - target.fighter.defense
+## this is the damage calculation
+def calc_damage(self,best_type= None,worst_type= None,damage_type= None,damage= None):
+        ## get final damage/damage reduction,before player stats, crits, chance to hit
+        if self.type == "melee":
+            damage = libtcod.random_get_int(0,self.min_power,self.max_power)
+            if self.damage_type == best_type:
+                return damage // 2 # rounded down
+            elif self.damage_type == worst_type:
+                return damage*2
+            else:
+                return damage
+
+
+
+
+
+
+
+
+Large enemies (Trolls) can throw smaller enemies (Goblins,rats)
+Thrown monster takes a little damage, and is stunned for 2 turns, and the player has a % chance to be stunned for 1

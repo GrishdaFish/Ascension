@@ -1,0 +1,43 @@
+BEFORE INITIAL RELEASE
+
+Finialize (mostly) data structures.
+Implement timing system - Done, need to have different actions take different ammounts of time
+Keep track of dungeon levels
+add experience and level up system - roughly done
+create saving and loading system - mostly done need to save turn scheduling
+
+create classes and races (player generation)
+More monsters, items and spells
+
+Create spell effects
+Ranged combat
+Scrolling map in gEngine
+Re-do save system
+
+
+
+AFTER INITIAL RELEASE (First update) [excluding bugs] {Not a complete list}
+tweak map generation to have different styles of flooring and room coloring.
+doors
+traps
+Monster gore and blood.
+NPCs
+Static rooms/levels
+Cave Generator
+Add Town (non menu)
+Add in plenty of options
+Improve UI and Mouse Support
+Merchant "shopping cart"
+
+
+
+LARGE OVERARCHING GOALS (Not a complete list)
+Static World Generation
+Quests, large and small (possible storyline)
+Crafting
+Starting settlements
+Survival aspects(?)
+Terrain manipulation, dungeon/world wide
+Random world events (meteorites, hurricanes, tornadoes, earthquakes, volcanoes, etc...)
+Raidboss style fights
+Biomes and more random dungeon elements

@@ -1,0 +1,130 @@
+//Monster content file. All variables are manditory at the moment
+//More properties will be added later
+/*
+Will add object_type "special" for other special types.
+These types will make stronger monsters with special stat additions,
+abilities, weaknesses and strenghts.
+
+
+Special types that are planned:
+
+champion
+undead
+mage
+archer
+rogue
+swarm_leader
+swarm_minion
+
+
+UPDATE-> Monsters now have a size stat, sizes are:
+tiny
+small
+normal
+large
+huge
+giant
+
+*/
+
+object_type "monster" {
+    string name="rat"//Name of the monster
+    char cell='r'//How its displayed in game
+    int hp=5//base hp
+    int defense=0//base defense
+    int power=1//base power
+    string type="melee"//format will change in a minute
+    float threat_level=0.5//How strong the monster is
+    int starting_depth=1//earliest level it can be found
+    int deepest_depth=2//deepest level it can be found
+    int speed=10//speed in ticks, lower is faster
+    int xp_reward=25//how much xp you get for killing the monster
+    int strength=2
+    int dexterity=12
+    int intelligence=1
+    int experience=50
+    bool can_equip_gear=false//if it can use weapons and armor
+    string size="tiny"//size of the monster
+    color col="94,75,47"//rgb format
+    
+}
+
+object_type "monster" {
+    string name="goblin"
+    char cell='g'
+    int hp=5
+    int defense=0
+    int power=2
+    string type="melee"
+    float threat_level=1.0
+    int starting_depth=1
+    int deepest_depth=4
+    int speed=15
+    int strength=5
+    int dexterity=10
+    int intelligence=3
+    int xp_reward=50
+    bool can_equip_gear=true
+    string size="small"
+    color col="197,136,124"
+}
+
+object_type "monster" {
+    string name="orc"
+    char cell='o'
+    int hp=10
+    int defense=0
+    int power=3
+    string type="melee"
+    float threat_level=2.0
+    int starting_depth=1
+    int deepest_depth=4
+    int speed=15
+    int strength=7
+    int dexterity=7
+    int intelligence=2
+    int xp_reward=75
+    bool can_equip_gear=true
+    string size="normal"
+    color col = "0,191,0"//"63,127,63"
+}
+
+object_type "monster" {
+    string name="hobgoblin"
+    char cell='h'
+    int hp=12
+    int defense=1
+    int power=3
+    string type="melee"
+    float threat_level=3.0
+    int starting_depth=1
+    int deepest_depth=4
+    int speed=5
+    int strength=7
+    int dexterity=7
+    int intelligence=5
+    int xp_reward=100
+    bool can_equip_gear=true
+    string size="normal"
+    color col="255,255,114"
+}
+
+object_type "monster" {
+    string name="troll"
+    char cell='T'
+    int hp=16
+    int defense=1
+    int power=4
+    string type="melee"
+    float threat_level=4.0
+    int starting_depth=1
+    int deepest_depth=4
+    int speed=25
+    int strength=15
+    int dexterity=5
+    int intelligence=1
+    int xp_reward=150
+    bool can_equip_gear=true
+    string size="large"
+    color col="0,127,0"
+}

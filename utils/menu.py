@@ -1,0 +1,882 @@
+import sys,os,time
+sys.path.append(sys.path[0])
+import libtcodpy as libtcod
+sys.path.append(os.path.join(sys.path[0],'object'))
+from object import *
+from item import *
+from spells import *
+
+
+class Menus:
+##============================================================================
+    def __init__(self,game,screen_height,screen_width,width,header,options,
+        con=None,bg=None,cl_options=None):
+##============================================================================
+        self.is_dragging = False
+        self.in_drag_zone = False
+        self.mouse_highlight = False
+        self.game = game
+        self.cl_options = cl_options
+        self.img = None
+        if bg:
+            self.img = game.gEngine.image_load(bg)
+            
+        self.screen_height = screen_height
+        self.screen_width = screen_width
+        
+        self.header = header
+        #if len(self.header) == 0:
+        #    self.header = '======='
+        self.header_o = self.header
+        
+        self.options = options
+        
+        height = len(options)
+        width+=5
+        height+=2
+        #self.header_pos = (width//2)-len(header)
+        
+        self.window = game.gEngine.console_new(width, height)
+        
+        
+        self.game.gEngine.console_set_alignment(self.window,2)
+            
+        self.width = width
+        self.height = height
+        self.w_pos = screen_width/2 - width/2
+        self.h_pos = screen_height/2 - height/2
+        
+        self.is_visible = False
+        self.can_drag = True
+        
+        self.last_input = 0
+        libtcod.mouse_get_status()#this is to pick up stray mouse input that 
+        #shouldnt be picked up.
+##============================================================================
+    def menu(self):
+##============================================================================
+        if self.is_visible:
+            
+            y = 0
+            letter_index = ord('a')
+            r,g,b = libtcod.white
+                
+            if self.img:
+                self.game.gEngine.image_blit_2x(self.img, 0, 0, 0)
+                
+            self.game.gEngine.console_set_default_foreground(self.window, r,g,b)
+            self.game.gEngine.console_blit(self.window, 0, 0,self.width,
+                self.height,0,self.w_pos,self.h_pos,1.0, 1.0)
+                
+            self.game.gEngine.console_print_frame(self.window,0, 0, 
+                self.width, self.height, False)
+            
+            if self.can_drag:    
+                self.game.gEngine.console_print(self.window,self.width/2,0,self.header)
+                
+            self.game.gEngine.console_print(self.window, 0, 0, chr(254))
+            self.game.gEngine.console_print(self.window, self.width-1, 0, chr(158))            
+            
+            for i in range(len(self.options)):
+                text = '(' + chr(letter_index) + ') ' + self.options[i]
+                self.game.gEngine.console_print(self.window, self.width/2, y+1, text)
+                y+=1
+                letter_index += 1
+            
+            self.game.gEngine.console_flush()
+            m_input = self.mouse_input()
+            k_input = self.key_input()
+            if m_input != -1:
+                if m_input == 'close':                    
+                    return None
+                else:
+                    return m_input
+                    
+            if k_input != -1:
+                if k_input == 'close':
+                    return None
+                else:
+                    return k_input
+                    
+            return -1    
+    
+##============================================================================
+    def destroy_menu(self):
+##============================================================================
+        if self.img:
+            self.game.gEngine.image_delete(self.img)
+        self.game.gEngine.console_remove_console(self.window)
+        
+##============================================================================
+    def mouse_input(self):
+##============================================================================
+        ##Menu Mouse Input
+        mouse = libtcod.mouse_get_status()
+        mx = mouse.cx -self.w_pos
+        my = mouse.cy -self.h_pos
+        
+        ##for dragging
+        if mx >= 2 and mx <= self.width-2 and my == 0:                                   
+            self.in_drag_zone = True
+            if not self.is_dragging:
+                self.header = color_text(self.header_o,libtcod.red)              
+        else:
+            if not self.is_dragging:
+                self.header = color_text(self.header_o,libtcod.white)
+                self.in_drag_zone = False
+
+        if mouse.lbutton and not self.is_dragging and self.in_drag_zone:
+            self.is_dragging = True            
+            self.header = color_text(self.header_o,libtcod.green)
+            self.dragx = mx
+            self.dragy = my
+            
+        elif not mouse.lbutton and self.is_dragging:
+            self.is_dragging = False
+           
+        elif self.is_dragging and self.can_drag:
+            self.w_pos = mouse.cx - self.dragx
+            self.h_pos = mouse.cy - self.dragy
+            
+        ##For Close button
+        if mouse.cx == self.w_pos + self.width-1 and mouse.cy == self.h_pos and not self.is_dragging:
+            t = color_text('X',libtcod.red)
+            self.game.gEngine.console_print(self.window, self.width-1, 0,t)
+            if mouse.lbutton_pressed:
+                libtcod.mouse_get_status()
+                return 'close'
+                
+        ##For Menu Options        
+        letter_index = ord('a')
+        if mouse.cx >= self.w_pos and mouse.cx <= self.w_pos+self.width and not self.is_dragging:
+            for i in range(len(self.options)):
+                if my == i+1:
+                    if self.cl_options is not None:
+                        t = '(' + chr(letter_index+i) + ') ' + self.cl_options[i].capitalize()
+                    else:
+                        t = '(' + chr(letter_index+i) + ') ' + self.options[i].capitalize()
+                    text = color_text(t,color_f=libtcod.red)
+                    self.game.gEngine.console_print(self.window, self.width/2, i+1, text)
+                    self.mouse_highlight = True
+                    mouse_choice = i
+                    break
+                else:
+                    self.mouse_highlight = False
+                    
+        ##bug here, after selecting a choice, the next menu gets "clicked" as well.
+        ##FIXED. Just called mouse_get_status() on __init__ and before a return
+        ##to pick up unwanted input
+        if mouse.lbutton_pressed and self.mouse_highlight and not self.is_dragging:
+            if not mouse.lbutton:
+                libtcod.mouse_get_status()
+                return mouse_choice
+        return -1
+        
+##============================================================================
+    def key_input(self):
+##============================================================================
+        ##Menu Keyboard Input
+        key = libtcod.console_check_for_keypress()  
+        
+        index = key.c - ord('a')
+        
+        if key.vk == libtcod.KEY_ENTER and key.lalt:
+            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+            
+        if key.vk == libtcod.KEY_ESCAPE:
+            libtcod.console_check_for_keypress() 
+            return 'close'
+            
+        if key:
+            if index >= 0 and index < len(self.options):
+                libtcod.console_check_for_keypress() 
+                return index
+            
+        #if key.vk == libtcod.KEY_DOWN:
+        #    current_pick = (current_pick +1) % len(self.options)
+               
+        #if key.vk == libtcod.KEY_UP:
+        #    current_pick = (current_pick -1) % len(self.options)
+               
+        #if key.vk == libtcod.KEY_ENTER:
+        #    return current_pick
+        
+        return -1
+        
+class Button:
+##============================================================================
+    def __init__(self,parent,label,x_pos,y_pos,type=True):
+##============================================================================
+        self.width = 4 + len(label)
+        self.height = 5
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.parent = parent
+        self.window = parent.game.gEngine.console_new(self.width,self.height)
+        self.label = label
+        self.label_o = label
+        r,g,b = libtcod.white
+        self.parent.game.gEngine.console_set_default_foreground(self.window, r,g,b)
+        self.parent.game.gEngine.console_set_alignment(self.window,2)
+        self.type = type
+##============================================================================
+    def display(self):
+##============================================================================
+        self.parent.game.gEngine.console_blit(self.window, 0, 0,self.width,
+            self.height,self.parent.window,self.x_pos,self.y_pos,1.0, 1.0)
+
+        self.parent.game.gEngine.console_print_frame(self.window,0, 0, 
+            self.width, self.height, False)
+            
+        self.parent.game.gEngine.console_print(self.window, self.width/2, 
+            self.height/2, self.label)    
+        self.parent.game.gEngine.console_flush()    
+        m = self.mouse_input()
+        k = self.key_input()
+        return m,k
+        
+##============================================================================
+    def destroy_button(self):
+##============================================================================
+        self.parent.game.gEngine.console_remove_console(self.window)
+        
+##============================================================================
+    def mouse_input(self):
+##============================================================================
+        mouse = libtcod.mouse_get_status()
+        mx = mouse.cx -(self.x_pos + self.parent.x_pos)
+        my = mouse.cy -(self.y_pos + self.parent.y_pos)
+        
+        if mx >= 0 and mx <= self.width and my >= 0 and my <= self.height:
+            self.label = color_text(self.label_o,libtcod.red)
+            if mouse.lbutton:
+                self.label = color_text(self.label_o,libtcod.green)
+                if mouse.lbutton_pressed:
+                    if self.type == True:
+                        return 1
+                    else:
+                        return 0
+            if mouse.lbutton_pressed:
+                if self.type == True:
+                    return 1
+                else:
+                    return 0
+        else:
+            self.label = color_text(self.label_o,libtcod.white)
+            
+        return -1
+    
+    def key_input(self):
+        key = libtcod.console_check_for_keypress()  
+        
+        if key.vk == libtcod.KEY_ENTER or key.vk == libtcod.KEY_SPACE:
+            libtcod.console_check_for_keypress() 
+            return 1
+        if key.vk == libtcod.KEY_ESCAPE:
+            libtcod.console_check_for_keypress() 
+            return 0
+        return -1
+        
+class DialogBox:
+##============================================================================
+    def __init__(self,game,width,height,x_pos,y_pos,body_text,type='dialog',
+        option_labels=None,con=None):
+##============================================================================
+        self.game = game
+        self.width = width
+        self.con = 0#con
+        #if con is None:
+        #    self.con = 0
+        self.height = height
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.buttons = []
+        self.body_text = body_text
+        self.window = game.gEngine.console_new(self.width,self.height)
+        self.body_height = game.gEngine.console_get_height_rect(self.window, 1, 1, 
+            self.width, self.height, body_text)
+        
+        if self.body_height > self.height-2:            
+            self.game.gEngine.console_remove_console(self.window)
+            self.height = self.body_height+2           
+            self.window = game.gEngine.console_new(self.width,self.height)            
+        
+        if type == None or type == 'dialog':
+            self.run = self.dialog_box
+            self.option_labels = option_labels
+            if option_labels == None:
+                self.option_labels = ['Ok']
+            self.buttons.append(Button(self,self.option_labels[0],
+                self.width//2-5,self.height/2-1,True))
+            
+        elif type == 'option':
+            self.run = self.option_box
+            self.option_labels = option_labels
+            if option_labels == None:
+                self.option_labels = ['Yes','No']
+            self.buttons.append(Button(self,self.option_labels[0],
+                self.width//6-5,self.height/2-1,True))
+            self.buttons.append(Button(self,self.option_labels[1],
+                self.width//3-5,self.height/2-1,False))
+        self.last_input=0
+        libtcod.mouse_get_status()
+        
+##============================================================================
+    def display_box(self):
+##============================================================================
+        input = -1
+        while input == -1:
+            input = self.run()
+        libtcod.mouse_get_status()
+        libtcod.console_check_for_keypress() 
+        return input
+
+##============================================================================
+    def dialog_box(self):
+##============================================================================
+        input = [-1,-1]
+        
+        self.game.gEngine.console_blit(self.window, 0, 0,self.width,
+            self.height,self.con,self.x_pos,self.y_pos,1.0, 1.0)        
+            
+        self.game.gEngine.console_print_frame(self.window,0, 0, 
+            self.width, self.height, False)
+        
+        self.game.gEngine.console_print(self.window, 1, 
+            1, self.body_text)            
+        
+        self.game.gEngine.console_flush()
+        input = self.buttons[0].display()
+        for i in input:
+            if i != -1:
+                return 1
+        return -1
+        
+##============================================================================
+    def option_box(self):
+##============================================================================
+        input = [-1,-1]
+        
+        self.game.gEngine.console_blit(self.window, 0, 0,self.width,
+            self.height,self.con,self.x_pos,self.y_pos,1.0, 1.0)        
+            
+        self.game.gEngine.console_print_frame(self.window,0, 0, 
+            self.width, self.height, False)
+        
+        self.game.gEngine.console_print(self.window, 1, 
+            1, self.body_text)
+            
+        
+        self.game.gEngine.console_flush()
+        
+        input = self.buttons[0].display()
+        for i in input:
+            if i != -1:
+                return i
+        
+        self.game.gEngine.console_flush()
+        
+        input = self.buttons[1].display()
+        for i in input:
+            if i != -1:
+                return i
+                
+        return -1
+
+##============================================================================
+    def destroy_box(self):
+##============================================================================
+        ##UNCOMMENT LATER AFTER THE ENGINE IS FIXED
+        #for item in self.buttons:
+        #    item.destroy_button()
+        if len(self.buttons) == 1:
+            self.game.gEngine.console_remove_console(self.buttons[0].window)
+        if len(self.buttons) == 2:
+            self.game.gEngine.console_remove_console(self.buttons[1].window)
+            self.game.gEngine.console_remove_console(self.buttons[0].window)
+        self.game.gEngine.console_remove_console(self.window)
+
+##============================================================================
+    def mouse_input(self):
+##============================================================================
+        mouse = libtcod.mouse_get_status()
+        mx = mouse.cx -self.x_pos
+        my = mouse.cy -self.y_pos
+        
+##============================================================================
+    def key_input(self):
+        pass
+
+##============================================================================
+def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None,under=None):
+##============================================================================
+    ##for menus that dont need to have positions tracked
+    if len(options) > 26:
+        if game:
+            game.logger.error('Cannot have a menu with more than 26 options.')
+        raise ValueError('Cannot have a menu with more than 26 options.')
+        
+    if header == '':
+        header = '======='
+    if bg:
+        img = game.gEngine.image_load(bg)
+        game.gEngine.image_blit_2x(img, 0, 0, 0)
+        
+    height = len(options)
+    width+=5
+    height+=2
+    header_pos = (width//2)-len(header)
+    
+    window = game.gEngine.console_new(width, height)
+    
+    current_pick = 0
+    y = 0
+    letter_index = ord('a')
+    w_pos = SCREEN_WIDTH/2 - width/2
+    h_pos = SCREEN_HEIGHT/2 - height/2    
+    
+    r,g,b = libtcod.white
+    game.gEngine.console_set_default_foreground(window, r,g,b)    
+    original_header = header
+    is_dragging = False
+    in_drag_zone = False
+    mouse_highlight = False
+    mouse = None
+    key = None
+    first_run = True
+    libtcod.console_check_for_keypress() 
+    while not libtcod.console_is_window_closed():
+        game.gEngine.console_flush()    
+        game.gEngine.console_blit(window, 0, 0,width,height,0,w_pos,h_pos,1.0, 1.0)
+        
+        game.gEngine.console_clear(window)
+        
+        game.gEngine.console_print_frame(window,0, 0, width, height, False)
+        
+        game.gEngine.console_print(window,header_pos,0,header)
+        game.gEngine.console_print(window, 0, 0, chr(254))
+        game.gEngine.console_print(window, width-1, 0, chr(158))        
+        
+        for i in range(len(options)):
+            text = '(' + chr(letter_index) + ') ' + options[i]
+            game.gEngine.console_print(window, 1, y+1, text)
+            y+=1
+            letter_index += 1
+        y = 0
+        letter_index = ord('a')
+        
+        ##Menu Mouse Input
+        mouse = libtcod.mouse_get_status()
+        mx = mouse.cx -w_pos
+        my = mouse.cy -h_pos
+        
+        ##for dragging
+        if mouse.cx >= w_pos+header_pos and mouse.cx <= w_pos+header_pos+len(original_header)-1 and mouse.cy == h_pos:                        
+            in_drag_zone = True
+            if not is_dragging:
+                header = color_text(original_header,libtcod.red)
+        else:                
+            header = color_text(original_header,libtcod.white)
+            in_drag_zone = False
+
+        if mouse.lbutton and not is_dragging and in_drag_zone:
+            is_dragging = True            
+            header = color_text(original_header,libtcod.green)
+            dragx = mx
+            dragy = my
+            
+        elif not mouse.lbutton and is_dragging:
+            is_dragging = False
+            
+        elif is_dragging:
+            w_pos = mouse.cx - dragx
+            h_pos = mouse.cy - dragy
+            
+        ##For Close button
+        if mouse.cx == w_pos+width-1 and mouse.cy == h_pos:
+            t = color_text('X',libtcod.red)
+            game.gEngine.console_print(window, width-1, 0,t)
+            if mouse.lbutton_pressed:
+                if bg:
+                    game.gEngine.image_delete(img)
+                libtcod.mouse_get_status()
+                return None
+                
+        ##For Menu Options
+        if mouse.cx >= w_pos and mouse.cx <= w_pos+width:
+            for i in range(len(options)):
+                if my == i+1:
+                    t = '(' + chr(letter_index+i) + ') ' + options[i].capitalize()
+                    text = color_text(t,color_f=libtcod.red)
+                    game.gEngine.console_print(window, 1, i+1, text)
+                    mouse_highlight = True
+                    mouse_choice = i
+                    break
+                else:
+                    mouse_highlight = False
+                    
+        ##bug here, after selecting a choice, the next menu gets "clicked" as well.
+        ##if set to lbutton, only the last option in a list seems to work
+        if mouse.lbutton and mouse_highlight:
+            if bg:
+                game.gEngine.image_delete(img)
+            libtcod.mouse_get_status()
+            return mouse_choice
+      
+        ##Menu Keyboard Input
+        key = libtcod.console_check_for_keypress()  
+        
+        index = key.c - ord('a')
+        
+        if key.vk == libtcod.KEY_ENTER and key.lalt:
+            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+            
+        if key.vk == libtcod.KEY_ESCAPE:
+            game.gEngine.console_remove_console(window)
+            if bg:
+                game.gEngine.image_delete(img)
+            libtcod.console_check_for_keypress() 
+            return None
+            
+        if key:
+            if index >= 0 and index < len(options):
+                game.gEngine.console_remove_console(window)
+                if bg:
+                    game.gEngine.image_delete(img)
+                libtcod.console_check_for_keypress() 
+                return index
+            
+        if key.vk == libtcod.KEY_DOWN:
+            current_pick = (current_pick +1) % len(options)
+               
+        if key.vk == libtcod.KEY_UP:
+            current_pick = (current_pick -1) % len(options)
+               
+        if key.vk == libtcod.KEY_ENTER:
+            game.gEngine.console_remove_console(window)
+            if bg:
+                game.gEngine.image_delete(img)
+            libtcod.console_check_for_keypress() 
+            return current_pick
+            
+        first_run = False
+        
+##============================================================================
+def msgbox(text, width=50,con=None,SCREEN_HEIGHT=50,SCREEN_WIDTH=80):
+##============================================================================
+    menu(con,text, [], width,SCREEN_HEIGHT,SCREEN_WIDTH)  #use menu() as a sort of "message box"
+
+#to help reduce overall lines of code for coloring weapon names and such
+##============================================================================
+def color_text(text,color_f=None,color_b=None,game=None):
+##============================================================================
+    #changed to not use color codes, as the items were all colored the same
+    #this gives the intended effect
+    #txt = text.capitalize()
+    txt =text
+    if color_f:
+        rf,gf,bf = color_f
+        #make sure none of the rgb vlaues are 0
+        if rf == 0:rf=1
+        if gf == 0:gf=1
+        if bf == 0:bf=1
+    if color_b:
+        rb,gb,bb = color_b
+        #make sure none of the rgb vlaues are 0
+        if rb == 0:rb=1
+        if gb == 0:gb=1
+        if bb == 0:bb=1
+    ##if text is colored and we just need background changed (highlighting)
+    ##Cant just change the background color here. not working for some stupid reason
+    if not color_f and color_b:
+        return '%c%c%c%c%s%c'%(libtcod.COLCTRL_BACK_RGB,rb,gb,bb,txt,libtcod.COLCTRL_STOP)
+    if color_f and not color_b:
+        return '%c%c%c%c%s%c'%(libtcod.COLCTRL_FORE_RGB,rf,gf,bf,txt,libtcod.COLCTRL_STOP)
+    if color_f and color_b:
+        return "%c%c%c%c%c%c%c%c%s%c"%(libtcod.COLCTRL_FORE_RGB,rf,gf,bf,
+            libtcod.COLCTRL_BACK_RGB,rb,gb,bb,txt,libtcod.COLCTRL_STOP)
+    
+    
+    
+##============================================================================
+def equipment_menu(equipment,screen_height,screen_width,game):
+##============================================================================
+    slots=['torso','head','left hand','right hand','legs','left foot',
+        'right foot','left arm','right arm','right shoulder','left shoulder','back']
+    
+    options=[]
+    wielded = equipment[0]
+    equip = equipment[1]
+    acc = equipment[2]
+    equip_option=[]
+    
+    if wielded[0]:
+        item = 'Right hand: '+color_text(wielded[0].name,wielded[0].color)        
+    else:
+        item = 'Right hand: Empty'
+    options.append(item)
+    equip_option.append(wielded[0])
+    if wielded[1]:
+        item = 'Left hand: '+color_text(wielded[1].name,wielded[1].color)         
+    else:
+        item = 'Left hand: Empty'        
+    options.append(item)
+    equip_option.append(wielded[1])
+    
+    for i in range(len(slots)):
+        if not equip[i]:
+            s =slots[i]
+            item = s.capitalize() + ': Empty'
+        else:
+            s=slots[i].capitalize()
+            item = s+ ': '+color_text(equip[i].name,equip[i].color)  
+        equip_option.append(equip[i])
+        options.append(item)
+    width = 6    
+    letter_index = ord('a')
+    for item in options:
+        if len(item) > width:
+            width = len(item)
+    
+    width+=6
+    height = 22
+    window = game.gEngine.console_new(width,height)
+    r,g,b = libtcod.white
+    game.gEngine.console_set_default_foreground(window,r,g,b)    
+    game.gEngine.console_print_frame(window,0, 0, width, height, True)#,'Equipment')
+    #game.gEngine.console_hline(window,1,4,width-2)
+    game.gEngine.console_print(window, width//2, 4,'Armor')
+    
+    for i in range(len(options)):
+        if i < 2:
+            text = '(' + chr(letter_index) + ') ' + options[i]
+            game.gEngine.console_print(window,1,i+1,text)            
+        else:
+            text = '(' + chr(letter_index) + ') ' + options[i]
+            game.gEngine.console_print(window,1,i+4,text)
+        letter_index += 1
+        
+    x = screen_width/2 - width/2
+    y = screen_height/2 - height/2
+    
+    game.gEngine.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
+ 
+    #present the root console to the player and wait for a key-press
+    game.gEngine.console_flush()
+    
+    key = libtcod.console_wait_for_keypress(True)
+    index = key.c - ord('a')
+    if index >= 0 and index < len(options): 
+        if index < 2:##For Weapons
+            if equip_option[index]:##If something is equipped on the slot, remove it
+                msg = 'Take off '+color_text(equip_option[index].name,equip_option[index].color)+' ?'                
+                if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
+                    equip_option[index].item.equipment.un_equip(game.player,equip_option[index])
+                    wielded[index]=None
+                    
+            else:##otherwise pop into the inventory, to select an item to equip
+                msg='Please select a weapon to equip.'
+                opt=[]
+                for item in game.player.fighter.inventory:##grab only weapons
+                    if item.item.equipment:
+                        if item.item.equipment.type=='melee':
+                            #item = color_text(item.name,item.color)
+                            opt.append(item)
+                chosen=inventory_menu(0,msg,opt,50,screen_height,screen_width,game=game)
+                if chosen:##if one was selected, confirm to equip it
+                    msg = 'Put on '+color_text(chosen.owner.name,chosen.owner.color)+' ?'
+                    if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
+                        chosen.use(game.player.fighter.inventory,game.player,game)
+                
+        else:##Armor, same procedure as weapons
+            if equip_option[index]:
+                msg = 'Take off '+color_text(equip_option[index].name,equip_option[index].color)+' ?'               
+                if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
+                    equip_option[index].item.equipment.un_equip(game.player,equip_option[index])
+                    equip[index-2]=None
+                    
+            else:
+                msg='Please select a piece of armor to equip.'
+                opt=[]
+                for item in game.player.fighter.inventory:
+                    if item.item.equipment:
+                        if item.item.equipment.type=='armor':
+                            #item = color_text(item.name,item.color)
+                            opt.append(item)
+                chosen=inventory_menu(0,msg,opt,50,screen_height,screen_width,game=game)
+                if chosen:
+                    msg = 'Put on '+color_text(chosen.owner.name,chosen.owner.color)+' ?'
+                    if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
+                        chosen.use(game.player.fighter.inventory,game.player,game)
+                        
+        game.gEngine.console_remove_console(window)
+        return
+    game.gEngine.console_remove_console(window)
+    return
+    
+##============================================================================
+def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
+    SCREEN_WIDTH,is_name=False,game=None):
+##============================================================================
+    #show a menu with each item of the inventory as an option
+    if len(inventory) == 0:
+        options = ['Inventory is empty.']
+    elif not is_name:
+        options = [color_text(item.name,item.color) for item in inventory]
+    else:
+        options = inventory
+    index = menu(con,header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
+    #if an item was chosen, return it
+    if index is None or len(inventory) == 0: return None
+    if not is_name:return inventory[index].item
+    else:return index
+    
+    
+##============================================================================
+def town_menu(con,header,game,width,screen_height,screen_width):
+##============================================================================
+    options =  ['The Helm and Buckler',
+        "Johan's Weaporium",
+        "Fizzilip's Magiteria",
+        'Quests',
+        'Finished',]
+    path = os.path.join(sys.path[0],'content')
+    path = path.replace('library.zip','')
+    backgrounds=[os.path.join(path,'img','bg-arm.png'),
+                os.path.join(path,'img','bg-wep.png'),
+                os.path.join(path,'img','bg-magic.png'),]
+    container=[]
+    menus = []
+    weapon,armor,consum,quest=[],[],[],[]
+    
+    for i in range(10):##Need to init objects and message in object creation
+        item = game.build_objects.build_equipment(game,0,0,'melee')
+        weapon.append(item)
+        item = game.build_objects.build_equipment(game,0,0,'armor')
+        armor.append(item)
+    for i in range(5):
+        consume = game.build_objects.build_potion(game,0,0)
+        consum.append(consume)
+        consume = game.build_objects.build_scroll(game,0,0)
+        consum.append(consume)
+        
+    container.append(armor)    
+    container.append(weapon)
+    container.append(consum)
+    container.append(quest)
+    
+    bg = os.path.join(path,'img','bg-town.png')
+    t_menu = Menus(game,screen_height,screen_width,width,header,options,bg=bg) 
+    
+    while 1:
+        t_menu.is_visible=True
+        libtcod.mouse_get_status()
+        index = t_menu.menu()    
+        if index == len(options)-1 or index is None:
+            t_menu.destroy_menu()
+            break
+            
+        if index != (len(options)-1) and index is not None and index != -1:
+            game.gEngine.console_clear(0)
+            t_menu.is_visible = False
+            if index < (len(backgrounds)):
+                item=shop(con,options[index],game,width,
+                    screen_height,screen_width,container[index],backgrounds[index]) 
+            else:
+                item=shop(con,options[index],game,width,
+                    screen_height,screen_width,container[index]) 
+            if item is not None:
+                container[index].pop(item)
+            t_menu.last_input = 0
+##============================================================================
+def shop(con,header,game,width,screen_height,screen_width,container,bg=None):
+##============================================================================
+    options=[]
+    cl_options = []
+    if bg:
+        img = libtcod.image_load(bg)
+        libtcod.image_blit_2x(img, 0, 0, 0)
+        
+    for obj in container:
+        obj_text = obj.name
+        ob_value = obj.item.value
+        opt = '[%s] - Price: (%s) gold'%(obj_text,ob_value)
+        cl_options.append(opt)
+        
+        obj_text = color_text(obj.name,obj.color)
+        ob_value = color_text(str(obj.item.value),libtcod.gold)
+        opt = '[%s] - Price: (%s) gold'%(obj_text,ob_value)
+        options.append(opt)
+        
+    header = header + ' (' + str(game.player.fighter.money) + ' gold left)'
+    shop = Menus(game,screen_height,screen_width,width,header,options,bg=bg,cl_options=cl_options) 
+    shop.is_visible=True
+    
+    while 1:
+        shop.is_visible=True
+        libtcod.mouse_get_status()#to prevent extra mouse clicks
+        item = shop.menu()
+        if item is not None and item is not -1:
+            if game.player.fighter.money >= container[item].item.value:
+                obj_text = color_text(container[item].name,container[item].color)
+                ob_value = color_text(str(container[item].item.value),libtcod.gold)
+                message = 'Purchase [%s] for (%s) gold?'%(obj_text,ob_value)
+                w = len('Purchase ['+container[item].name+'] for ('+str(container[item].item.value)+') gold?')+2
+                d_box = DialogBox(game,w,10,20,20,message,type='option',con=shop.window)
+                shop.is_visible = False
+                confirm = d_box.display_box()
+                if confirm == 1:
+                    game.player.fighter.money-=container[item].item.value
+                    game.player.fighter.inventory.append(container[item])
+                    d_box.destroy_box()
+                    shop.destroy_menu()
+                    return item
+                else:
+                    d_box.destroy_box()
+            else:
+                message = 'Not enough gold!'                
+                d_box = DialogBox(game,len(message)+2,10,20,20,message,con=shop.window)
+                confirm = d_box.display_box()
+                d_box.destroy_box()
+        if item is None:
+            shop.destroy_menu()
+            return None
+##============================================================================
+def confirm_screen(con,message,screen_height,screen_width,
+        confirm_key_message='Press [y] or [Enter] to confirm.',confirm_keys=[ord('y'),libtcod.KEY_ENTER],height=4,game=None):
+##============================================================================
+    if len(message) > len(confirm_key_message):width = len(message)+2
+    else:width = len(confirm_key_message)+2
+    height = height
+    window = game.gEngine.console_new(width,height)
+    
+    r,g,b = libtcod.white
+    game.gEngine.console_set_default_foreground(window,r,g,b)    
+    game.gEngine.console_print_frame(window,0, 0, width, height,True)
+    game.gEngine.console_set_alignment(window,libtcod.CENTER)
+    game.gEngine.console_print(window, width/2, 1,message)
+    
+    
+    game.gEngine.console_print(window, width/2, height-1,confirm_key_message)
+    
+    x = screen_width/2 - width/2
+    y = screen_height/2 - height/4
+    game.gEngine.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 1.0)
+    game.gEngine.console_flush()
+    
+    key = libtcod.console_wait_for_keypress(True)
+    if key.c in confirm_keys or key.vk in confirm_keys:
+        game.gEngine.console_remove_console(window)
+        return True
+    else:
+        game.gEngine.console_remove_console(window)
+        return False
+    
+    
+    
+    
+    
+    
+    
+    
+    

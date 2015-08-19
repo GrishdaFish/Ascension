@@ -1,0 +1,107 @@
+
+/*
+
+
+UPDATE-> Added description line for materials
+Not implemented ingame, for future use
+*/
+
+
+
+object_type "material" {
+    string name="leather"
+    int modifier=0      //modifier to power/defense and threat level
+    int weight=0        
+    float price_mod=1.0     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=1.0   //lower = more rare
+    bool can_be_weapon=false
+    bool can_be_armor=true
+    color col="94,75,47"
+    string description=""
+}
+
+object_type "material" {
+    string name="wooden"
+    int modifier=0      //modifier to power/defense
+    int weight=0        
+    float price_mod=1.0     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=1.0   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=false
+    color col="94,75,47"
+    string description=""
+}
+
+object_type "material" {
+    string name="copper"
+    int modifier=1      //modifier to power/defense
+    int weight=1        
+    float price_mod=1.5     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=0.5   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=true
+    color col="197,136,124"
+    string description=""
+}
+
+object_type "material" {
+    string name="bronze"
+    int modifier=2      //modifier to power/defense
+    int weight=2        
+    float price_mod=1.7     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=0.25   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=true
+    color col="191,151,96"
+    string description=""
+}
+
+object_type "material" {
+    string name="iron"
+    int modifier=3      //modifier to power/defense
+    int weight=3        
+    float price_mod=2.0     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=0.125   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=true
+    color col="127,127,127"
+    string description=""
+}
+
+object_type "material" {
+    string name="black iron"
+    int modifier=4      //modifier to power/defense
+    int weight=4        
+    float price_mod=2.5     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=0.0625   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=true
+    color col="95,95,95"
+    string description=""
+}
+
+object_type "material" {
+    string name="steel"
+    int modifier=5      //modifier to power/defense
+    int weight=5        
+    float price_mod=3.0     //modifier to price of the item
+    int hardness=0      
+    int edge=0
+    float rarity=0.03125   //lower = more rare
+    bool can_be_weapon=true
+    bool can_be_armor=true
+    color col="159,159,159"
+    string description=""
+}

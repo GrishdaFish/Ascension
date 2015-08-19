@@ -1,0 +1,30 @@
+--swords
+
+dagger				-p-2/5-3%-1h-dw1-def1
+shortsword			-s-3/7-3%-1h-dw1-def0
+longsword			-s-4/9-3%-1h-dw0-def0
+great sword			-s-5/11-3%-2h-dw0-def0
+
+--axes
+
+handaxe				-s-1/7-5%-1h-dw1-def1
+battle axe			-s-1/10-5%-1h-dw1-def0
+war axe				-s-1/13-5%-1h-dw0-def0
+great axe			-s-1/16-5%-2h-dw0-def0
+
+--hammers
+
+light hammer		-b-3/4-1%-1h-dw1-def1
+heavy hammer		-b-4/5-1%-1h-dw1-def0
+war hammer			-b-5/6-1%-1h-dw0-def0
+war maul			-b-6/7-1%-2h-dw0-def0
+
+--maces
+
+light mace			-b-5/7-2%-1h-dw1-def0
+heavy mace			-b-7/9-2%-1h-dw0-def0
+great mace			-b-9/11-2%-2h-dw0-def0
+
+--other
+quarterstaff		-b-4/7-1%-2h-dw0-def4
+scythe				-s-1/10-8%-2h-dw0-def0

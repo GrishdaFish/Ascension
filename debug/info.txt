@@ -1,0 +1,27 @@
+[2015-08-18 21:06:05,561] - main.INFO - [core.<module>():12] - Initializing Logger.
+[2015-08-18 21:06:05,561] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-18 21:06:05,561] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\actors\monsters.txt ...
+[2015-08-18 21:06:05,562] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-18 21:06:05,562] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\equipment.txt ...
+[2015-08-18 21:06:05,562] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-18 21:06:05,562] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\consumables.txt ...
+[2015-08-18 21:06:05,563] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-18 21:06:05,563] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\materials.txt ...
+[2015-08-18 21:06:05,563] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-18 21:06:05,565] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\options.txt ...
+[2015-08-18 21:06:05,565] - main.INFO - [game.__init__():69] - Init Game and Game Screen.
+[2015-08-18 21:06:05,569] - main.ERROR - [game.__init__():80] - Module use of python25.dll conflicts with this version of Python.
+Traceback (most recent call last):
+  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 75, in __init__
+    import cEngine as gEngine#Try importing the pyd
+  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 25, in <module>
+    _cEngine = swig_import_helper()
+  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 21, in swig_import_helper
+    _mod = imp.load_module('_cEngine', fp, pathname, description)
+ImportError: Module use of python25.dll conflicts with this version of Python.
+[2015-08-18 21:06:07,030] - main.INFO - [game.new_game():151] - Starting new game.
+[2015-08-18 21:06:07,030] - main.INFO - [map.make_map():234] - Creating map.
+[2015-08-18 21:06:08,006] - main.INFO - [game.initialize_fov():197] - Initializing FoV.
+[2015-08-18 21:08:45,334] - main.INFO - [game.play_game():255] - Exiting and saving game..
+[2015-08-18 21:08:46,798] - main.INFO - [game.main_menu():302] - Quitting game
+[2015-08-18 21:08:46,832] - main.INFO - [game.main_menu():302] - Quitting game

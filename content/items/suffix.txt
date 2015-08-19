@@ -1,0 +1,39 @@
+/*
+Spell Effect types: will add more later, case sensitive
+none
+explosion
+beam
+nova
+
+Additional Effects:
+none
+burn
+
+
+Spells:
+heal
+fireball
+lightning
+confusion
+
+
+
+*/
+
+
+object_type "suffix" {    
+    string name ="fire"
+    string effect_type="none"           //effect like fireball
+    string additional_effect="none"     //additional effects
+    string spell_effect="none"          //effect for effect type
+    string add_spell_effect="none"      //effect for additional_effects
+    string element="fire"               //type of damage/defense
+    int min_effect=0                    //power of effect_type
+    int max_effect=0
+    int add_min_eff=0                   //power of additional_effect
+    int add_max_eff=0
+    int power=1                         //bonus to power of weapon
+    int defense=1                       //bonus to defense of armor
+    color eff_col="0,0,0"
+    color add_eff_col="0,0,0"
+}

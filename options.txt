@@ -1,0 +1,45 @@
+/*
+self.key_north=None
+self.key_east=None
+self.key_south=None
+self.key_west=None
+self.key_inventory=None
+self.key_pickup=None
+self.key_equip=None
+self.key_help=None
+self.key_drop=None
+
+
+*/
+
+option_struct "game_options" {
+    string key_set="Arrows"
+    
+}
+
+//Movement keys support chars and vk keys (KEY_UP, KP_08, etc..)
+option_struct "key_set" {
+    string set_name="Wasd"
+    string key_north="w"
+    string key_east="d"
+    string key_south="s"
+    string key_west="a"
+    string key_inventory="i"
+    string key_pickup="g"
+    string key_equip="e"
+    string key_help="?"
+    string key_drop="f"
+}
+
+option_struct "key_set" {
+    string set_name="Arrows"
+    string key_north="KEY_UP"
+    string key_east="KEY_RIGHT"
+    string key_south="KEY_DOWN"
+    string key_west="KEY_LEFT"
+    string key_inventory="i"
+    string key_pickup="g"
+    string key_equip="e"
+    string key_help="?"
+    string key_drop="d"
+}

@@ -1,0 +1,1 @@
+characters have location based damage, can aim high, middle or low when attacking, add knockdown when dealt a forceful blow or when legs are damaged, 

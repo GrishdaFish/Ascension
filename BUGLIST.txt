@@ -1,0 +1,5 @@
+Items bought from the store and dropped in the dungeon crashes the game.
+	in drop
+		self.owner.objects.append(self.owner)
+AttributeError: 'NoneType' object has no attribute append
+Quickly fixed, need to init variables at item creation
