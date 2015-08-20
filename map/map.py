@@ -10,11 +10,30 @@ from spells import *
 from item import *
 from misc import *
 
+MAX_DEPTH = 25
 #Variables for tile bitmasking
-tile_bitshift=4
-tile_bit_offset=31
+tile_bitshift = 4
+tile_bit_offset = 31
 
 ground_tiles = [',', '.', "'", '`']
+
+
+class Level:
+    def __init__(self, map, objects, depth, fov_map, draw_map, spawn_nodes):
+        self.map = map
+        self.objects = objects
+        self.depth = depth
+        self.fov_map = fov_map
+        self.draw_map = draw_map
+        self.spawn_nodes = spawn_nodes
+
+    def update_level(self, map, objects, fov_map, draw_map):
+        self.map = map
+        self.objects = objects
+        self.fov_map = fov_map
+        self.draw_map = draw_map
+
+
 class Tile:
     #a tile of the map and its properties
     def __init__(self, blocked=True, block_sight=None):
@@ -63,7 +82,8 @@ class Rect:
         #returns true if this rectangle intersects with another one
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and
                 self.y1 <= other.y2 and self.y2 >= other.y1)
-                
+
+
 class SpawnNode:
     def __init__(self,tile,x,y,game):
         self.tile = tile
@@ -134,6 +154,7 @@ class SpawnNode:
                         max = threat
                     r = libtcod.random_get_float(0,0.5,max)
                     threat-=r
+                    #game.message.message("Monster Spawned")
                     game.objects.append(game.build_objects.create_monster(game,self.x,self.y,threat_level=int(r)))
                     
             else:
@@ -148,13 +169,15 @@ class SpawnNode:
                         max = unexplored_threat
                     r = libtcod.random_get_float(0,0.5,max)
                     unexplored_threat-=r
+                    #game.message.message("Monster Spawned")
                     game.objects.append(game.build_objects.create_monster(game,self.x,self.y,threat_level=int(r)))
                     
                 
             for object in game.objects:
                 object.message = game.message
                 object.objects = game.objects    
-                
+
+
 class Map:
     def __init__(self,mh,mw,rmin,rmax,r,rm,ri,logger):
         self.MAP_HEIGHT = mh
@@ -165,7 +188,7 @@ class Map:
         self.MAX_ROOM_MONSTERS = rm
         self.MAX_ROOM_ITEMS = ri
         self.logger=logger
-        
+        self.depth = 0
         
     def create_room(self,room,game):
         #go through the tiles in the rectangle and make them passable
@@ -216,7 +239,10 @@ class Map:
                 if map[x][y].spawn_node:
                     self.create_spawn_node(x,y,game)
         self.map=map
-    
+
+    def load_map(self,map):
+        pass
+
     def create_spawn_node(self,x,y,game):
         ##spawn nodes will have a turn in the ticker,
         ##undiscovered node will have a higher speed.
@@ -230,19 +256,18 @@ class Map:
         node_obj.node.ticker.schedule_turn(0,node_obj)
         self.spawn_nodes.append(node_obj)
         
-    def make_map(self,game):
+    def make_map(self, game, depth):
         self.logger.log.info('Creating map.')
         game.objects = [game.player]
         self.spawn_nodes = []
-        game.gEngine.map_init_level(self.MAP_WIDTH,self.MAP_HEIGHT)
+        game.gEngine.map_init_level(self.MAP_WIDTH, self.MAP_HEIGHT)
         #fill map with "blocked" tiles
-        map = [[ Tile(True)
-            for y in range(self.MAP_HEIGHT) ]
-                for x in range(self.MAP_WIDTH) ]
+        map = [[Tile(True)
+            for y in range(self.MAP_HEIGHT)]
+                for x in range(self.MAP_WIDTH)]
         self.map = map
         rooms = []
         num_rooms = 0
-     
         for r in range(self.MAX_ROOMS):
             #random width and height
             w = libtcod.random_get_int(0, self.ROOM_MIN_SIZE, self.ROOM_MAX_SIZE)
@@ -307,29 +332,33 @@ class Map:
         up.send_to_back(game.objects)
         
         ##Down stairs get randomly placed.
-        down_placed=False
-        while down_placed == False:
-            x = libtcod.random_get_int(0, 0, self.MAP_WIDTH - w - 1)
-            y = libtcod.random_get_int(0, 0, self.MAP_HEIGHT - h - 1)     
-            #only place it if the tile is not blocked
-            if not self.is_blocked(x, y,game.objects):
-                m = Misc(type='down')
-                down = Object(game.con,x,y,'>','set of stairs going down',libtcod.white,blocks=False,misc=m)
-                game.objects.append(down)
-                down.send_to_back(game.objects)
-                down_placed = True
+        if depth < MAX_DEPTH:
+            down_placed=False
+            while down_placed == False:
+                x = libtcod.random_get_int(0, 0, self.MAP_WIDTH - w - 1)
+                y = libtcod.random_get_int(0, 0, self.MAP_HEIGHT - h - 1)
+                #only place it if the tile is not blocked
+                if not self.is_blocked(x, y,game.objects):
+                    m = Misc(type='down')
+                    down = Object(game.con,x,y,'>','set of stairs going down',libtcod.white,blocks=False,misc=m)
+                    game.objects.append(down)
+                    down.send_to_back(game.objects)
+                    down_placed = True
        
         for object in game.objects:
             object.message = game.message
             object.objects = game.objects
-            
+
+        game.gEngine.map_clear()
         for y in range(self.MAP_HEIGHT):
             for x in range(self.MAP_WIDTH):
                 c = self.map[x][y]
                 game.gEngine.map_add_tile(x,y,c.tile,c.blocked,c.block_sight,c.explored,c.spawn_node)
     
-            
-        
+        fov_map = game.gEngine.get_fov_map()
+        mmap = game.gEngine.get_map()
+        return Level(self.map, game.objects, depth, fov_map, mmap, self.spawn_nodes)
+
     def place_objects(self,room,game):
      
         #choose random number of items

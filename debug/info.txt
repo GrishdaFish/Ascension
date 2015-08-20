@@ -1,27 +1,55 @@
-[2015-08-18 21:06:05,561] - main.INFO - [core.<module>():12] - Initializing Logger.
-[2015-08-18 21:06:05,561] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-18 21:06:05,561] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\actors\monsters.txt ...
-[2015-08-18 21:06:05,562] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-18 21:06:05,562] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\equipment.txt ...
-[2015-08-18 21:06:05,562] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-18 21:06:05,562] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\consumables.txt ...
-[2015-08-18 21:06:05,563] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-18 21:06:05,563] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\materials.txt ...
-[2015-08-18 21:06:05,563] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-18 21:06:05,565] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\options.txt ...
-[2015-08-18 21:06:05,565] - main.INFO - [game.__init__():69] - Init Game and Game Screen.
-[2015-08-18 21:06:05,569] - main.ERROR - [game.__init__():80] - Module use of python25.dll conflicts with this version of Python.
+[2015-08-20 03:46:00,927] - main.INFO - [core.<module>():12] - Initializing Logger.
+[2015-08-20 03:46:00,927] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-20 03:46:00,927] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\actors\monsters.txt ...
+[2015-08-20 03:46:00,928] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-20 03:46:00,928] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\equipment.txt ...
+[2015-08-20 03:46:00,930] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-20 03:46:00,930] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\consumables.txt ...
+[2015-08-20 03:46:00,930] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-20 03:46:00,930] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\materials.txt ...
+[2015-08-20 03:46:00,931] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-20 03:46:00,933] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\options.txt ...
+[2015-08-20 03:46:00,933] - main.INFO - [game.__init__():72] - Init Game and Game Screen.
+[2015-08-20 03:46:00,937] - main.ERROR - [game.__init__():83] - Module use of python25.dll conflicts with this version of Python.
 Traceback (most recent call last):
-  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 75, in __init__
+  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 78, in __init__
     import cEngine as gEngine#Try importing the pyd
   File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 25, in <module>
     _cEngine = swig_import_helper()
   File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 21, in swig_import_helper
     _mod = imp.load_module('_cEngine', fp, pathname, description)
 ImportError: Module use of python25.dll conflicts with this version of Python.
-[2015-08-18 21:06:07,030] - main.INFO - [game.new_game():151] - Starting new game.
-[2015-08-18 21:06:07,030] - main.INFO - [map.make_map():234] - Creating map.
-[2015-08-18 21:06:08,006] - main.INFO - [game.initialize_fov():197] - Initializing FoV.
-[2015-08-18 21:08:45,334] - main.INFO - [game.play_game():255] - Exiting and saving game..
-[2015-08-18 21:08:46,798] - main.INFO - [game.main_menu():302] - Quitting game
-[2015-08-18 21:08:46,832] - main.INFO - [game.main_menu():302] - Quitting game
+[2015-08-20 03:46:02,170] - main.INFO - [game.new_game():154] - Starting new game.
+[2015-08-20 03:46:02,170] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,184] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,197] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,210] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,226] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,240] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,257] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,273] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,286] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,302] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,318] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,331] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,344] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,372] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,388] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,403] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,415] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,430] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,444] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,457] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,496] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,510] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,525] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:02,538] - main.INFO - [map.make_map():260] - Creating map.
+[2015-08-20 03:46:03,565] - main.INFO - [game.load_level():181] - Loading level 1
+[2015-08-20 03:46:03,565] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
+[2015-08-20 03:46:25,540] - main.INFO - [game.load_level():181] - Loading level 2
+[2015-08-20 03:46:25,540] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
+[2015-08-20 03:46:28,296] - main.INFO - [game.load_level():181] - Loading level 1
+[2015-08-20 03:46:28,296] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
+[2015-08-20 03:46:41,292] - main.INFO - [game.play_game():300] - Exiting and saving game..
+[2015-08-20 03:46:42,721] - main.INFO - [game.main_menu():347] - Quitting game
+[2015-08-20 03:46:42,756] - main.INFO - [game.main_menu():347] - Quitting game

@@ -47,6 +47,8 @@ class Console:
             'spawn_equipment'   :self.spawn_equipment,
             'spawn_consumable'  :self.spawn_consumable,
             'python'            :self.python,
+            'teleport_down'     :self.teleport_down,
+            'teleport_up'       :self.teleport_up,
             
         }
 
@@ -145,6 +147,7 @@ class Console:
                 
         if command in self.commands:
             com = self.commands[command]
+            ex = None
             try:
                 if param is None and additional_params is None:
                     com()
@@ -153,7 +156,7 @@ class Console:
                     com(param)
                     return
                 else:
-                    com(param,additional_params)
+                    com(param, additional_params)
                     return
             except ex:
                 self.game.message.error_message(ex)
@@ -274,7 +277,22 @@ class Console:
                         self.message_list.append('>>>'+line)                
             else:
                 self.message_list.append('Not enough parameters passed!')
-        
     
         
-        
+    def teleport_down(self):
+        if self.debug_level == 'debug':
+            for tile in self.game.objects:
+                if tile.misc:
+                    if tile.misc.type == 'down':
+                        self.game.player.x = tile.x
+                        self.game.player.y = tile.y
+                        return
+
+    def teleport_up(self):
+        if self.debug_level == 'debug':
+            for tile in self.game.objects:
+                if tile.misc:
+                    if tile.misc.type == 'up':
+                        self.game.player.x = tile.x
+                        self.game.player.y = tile.y
+                        return

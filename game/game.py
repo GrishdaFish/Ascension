@@ -28,7 +28,8 @@ PANEL_HEIGHT = 7
 #size of the map
 MAP_WIDTH = SCREEN_WIDTH
 MAP_HEIGHT = SCREEN_HEIGHT - PANEL_HEIGHT
- 
+MAX_DEPTH = 25
+
 #sizes and coordinates relevant for the GUI
 BAR_WIDTH = 20
 
@@ -61,10 +62,12 @@ color_tile_ground = libtcod.Color(190,190,190)
 
 
 
+
 class Game:
 ##============================================================================
     def __init__(self,content,logger,key_set):
 ##============================================================================
+        self.objects = []
         self.logger=logger
         self.logger.log.info('Init Game and Game Screen.')
         self.debug_level = 'debug'##prints errors verbosly to the game screen        
@@ -104,7 +107,7 @@ class Game:
             
         self.keys=key_set
         self.setup_keys()
-        
+        self.current_dungeon = [] # an array that holds all off the dungeon levels, bitmasked
         self.console = console.Console(self,SCREEN_WIDTH-2,SCREEN_HEIGHT/2,self.debug_level)
         libtcod.console_set_keyboard_repeat(50,50)
         libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
@@ -160,16 +163,58 @@ class Game:
         
         self.particles = []
         self.objects = []
-        self.Map.make_map(self)
+        for i in xrange(1, MAX_DEPTH):
+            self.current_dungeon.append(self.Map.make_map(self, i))
         
         self.gEngine.console_clear(0)
         town_menu(0, 'Welcome to Town', self, INVENTORY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH)
-        self.initialize_fov()
+        #self.initialize_fov()
      
         self.game_state = 'playing'
         self.inventory = []
-     
+
+        self.depth = 1
+        self.load_level(self.depth, 'down')
         self.message.message('Welcome to Ascension!', 1)
+
+    def load_level(self, level, direction):
+        self.logger.log.info('Loading level %i' % level)
+        self.ticker.schedule.clear()
+        self.ticker.schedule_turn(self.player.fighter.speed, self.player)
+        self.gEngine.map_init_level(self.Map.MAP_WIDTH, self.Map.MAP_HEIGHT)
+
+        level_to_load = None
+        for item in self.current_dungeon:
+            if item.depth == level:
+                level_to_load = item
+
+        self.objects = level_to_load.objects
+        self.Map.map = level_to_load.map
+        self.gEngine.set_fov_map(level_to_load.fov_map)
+        self.gEngine.set_map(level_to_load.draw_map)
+
+        for node in level_to_load.spawn_nodes:
+            self.ticker.schedule_turn(0, node)
+
+        for item in self.objects:
+            if item.misc:
+                if item.misc.type == 'down' and direction == 'up': # if the player goes up, we put him at down stairs
+                    self.player.x = item.x
+                    self.player.y = item.y
+                    #break
+                elif item.misc.type == 'up' and direction == 'down': # if the player goes down, we put him at the up stairs
+                    self.player.x = item.x
+                    self.player.y = item.y
+                    #break
+            if item.fighter:
+                self.ticker.schedule_turn(item.fighter.speed, item)
+        #level_to_load = self.current_dungeon[level-1]
+        self.gEngine.console_clear(0)
+        self.gEngine.console_clear(self.con)
+        self.initialize_fov()
+
+        self.ticker.get_next_tick()
+        self.game_state = 'playing'
 
 ##============================================================================
     def new_level(self):
@@ -178,8 +223,7 @@ class Game:
         self.ticker.schedule.clear()
         self.ticker.schedule_turn(self.player.fighter.speed, self.player)
 
-
-        self.Map.make_map(self)
+        #self.Map.make_map(self)
 
         self.gEngine.console_clear(0)
         self.gEngine.console_clear(self.con)
@@ -187,7 +231,8 @@ class Game:
         
         self.ticker.get_next_tick()
         self.game_state = 'playing'
-        
+
+
         self.message.message('Next Level', 1)
     
 ##============================================================================
@@ -368,12 +413,13 @@ class Game:
         for particle in self.particles:
             particle.draw(self.fov_map,self.gEngine,True)
         #blit the contents of "con" to the root console
-        self.gEngine.console_blit(self.con, 0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, 0,1.0,1.0)
+        self.gEngine.console_print(self.con, 1, 1, "Depth: %i" % self.depth)
+        self.gEngine.console_blit(self.con, 0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, 0, 1.0, 1.0)
      
-     
+
         #prepare to render the GUI panel
         r,g,b = libtcod.black
-        self.gEngine.console_set_default_background(self.panel,r,g,b)
+        self.gEngine.console_set_default_background(self.panel, r, g, b)
         self.gEngine.console_clear(self.panel)
      
         #print the game messages
@@ -387,8 +433,9 @@ class Game:
         r,g,b = libtcod.light_gray
         self.gEngine.console_set_default_foreground(self.panel,r,g,b)
         self.gEngine.console_set_alignment(self.panel,libtcod.LEFT)
-        self.gEngine.console_print(self.panel,1,5,"(%dfps)" % (libtcod.sys_get_fps())) 
-        self.gEngine.console_print(self.panel, 1, 0,self.get_names_under_mouse())
+
+        self.gEngine.console_print(self.panel, 1, 5, "(%dfps)" % (libtcod.sys_get_fps()))
+        self.gEngine.console_print(self.panel, 1, 0, self.get_names_under_mouse())
         
         #print a message with the names of objects under the player
         self.get_names_under_player()
@@ -491,14 +538,25 @@ class Game:
                     for object in self.objects:
                         if object.x == self.player.x and object.y == self.player.y and object.misc:
                             if object.misc.type == 'up':
-                                self.new_level()
-                                return 'turn-used'
+                                if self.Map.depth == 1:
+                                    #go to town
+                                    return 'turn-used'
+                                else:
+                                    self.depth -= 1
+                                    self.load_level(self.depth, 'up')
+
+                                    return 'turn-used'
                                 
                 if key.c is ord('>'):
                     for object in self.objects:
                         if object.x == self.player.x and object.y == self.player.y and object.misc:
                             if object.misc.type == 'down':
-                                self.new_level()
+                                #save previous level
+                                self.logger.log.debug(self.depth)
+                                #self.current_dungeon.append(Level(self.Map.map, self.objects, self.Map.depth))
+                                self.depth += 1
+                                self.load_level(self.depth, 'down')
+                                #self.new_level()
                                 return 'turn-used'
                                 
                 if key.c is ord(self.keys.key_equip):
