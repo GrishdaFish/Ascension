@@ -407,6 +407,7 @@ class DialogBox:
     def key_input(self):
         pass
 
+
 ##============================================================================
 def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None,under=None):
 ##============================================================================
@@ -560,11 +561,13 @@ def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None
             return current_pick
             
         first_run = False
-        
+
+
 ##============================================================================
 def msgbox(text, width=50,con=None,SCREEN_HEIGHT=50,SCREEN_WIDTH=80):
 ##============================================================================
     menu(con,text, [], width,SCREEN_HEIGHT,SCREEN_WIDTH)  #use menu() as a sort of "message box"
+
 
 #to help reduce overall lines of code for coloring weapon names and such
 ##============================================================================
@@ -596,8 +599,7 @@ def color_text(text,color_f=None,color_b=None,game=None):
         return "%c%c%c%c%c%c%c%c%s%c"%(libtcod.COLCTRL_FORE_RGB,rf,gf,bf,
             libtcod.COLCTRL_BACK_RGB,rb,gb,bb,txt,libtcod.COLCTRL_STOP)
     
-    
-    
+
 ##============================================================================
 def equipment_menu(equipment,screen_height,screen_width,game):
 ##============================================================================
@@ -713,7 +715,8 @@ def equipment_menu(equipment,screen_height,screen_width,game):
         return
     game.gEngine.console_remove_console(window)
     return
-    
+
+
 ##============================================================================
 def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
     SCREEN_WIDTH,is_name=False,game=None):
@@ -727,13 +730,30 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
         options = inventory
     index = menu(con,header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
     #if an item was chosen, return it
-    if index is None or len(inventory) == 0: return None
-    if not is_name:return inventory[index].item
-    else:return index
-    
-    
+    if index is None or len(inventory) == 0:
+        return None
+    if not is_name:
+        return inventory[index]#.item
+    else:
+        return index
+
+
+def options_menu(con, header, options, screen_width, screen_height, bg=None):
+
+    key_sets = []
+    current_set = ''
+    for option in options:
+        if option.set_name:
+            key_sets.append(option)
+        if option.key_set:
+            current_set = option.key_set
+
+def help_menu():
+    pass
+
+
 ##============================================================================
-def town_menu(con,header,game,width,screen_height,screen_width):
+def town_menu(con, header, game, width, screen_height, screen_width):
 ##============================================================================
     options =  ['The Helm and Buckler',
         "Johan's Weaporium",
@@ -788,8 +808,10 @@ def town_menu(con,header,game,width,screen_height,screen_width):
             if item is not None:
                 container[index].pop(item)
             t_menu.last_input = 0
+
+
 ##============================================================================
-def shop(con,header,game,width,screen_height,screen_width,container,bg=None):
+def shop(con, header, game, width, screen_height, screen_width, container, bg=None):
 ##============================================================================
     options=[]
     cl_options = []
@@ -826,10 +848,12 @@ def shop(con,header,game,width,screen_height,screen_width,container,bg=None):
                 shop.is_visible = False
                 confirm = d_box.display_box()
                 if confirm == 1:
+                    game.logger.log.debug(container[item].objects)
                     game.player.fighter.money-=container[item].item.value
                     game.player.fighter.inventory.append(container[item])
                     d_box.destroy_box()
                     shop.destroy_menu()
+                    #game.logger.log.debug(container[item])
                     return item
                 else:
                     d_box.destroy_box()
@@ -841,6 +865,8 @@ def shop(con,header,game,width,screen_height,screen_width,container,bg=None):
         if item is None:
             shop.destroy_menu()
             return None
+
+
 ##============================================================================
 def confirm_screen(con,message,screen_height,screen_width,
         confirm_key_message='Press [y] or [Enter] to confirm.',confirm_keys=[ord('y'),libtcod.KEY_ENTER],height=4,game=None):

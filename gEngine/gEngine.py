@@ -16,6 +16,7 @@ class Tile:
         self.block_sight=block_sight
         self.explored=explored
         self.spawn_node=spawn_node
+
         
 class gEngine:
     def __init__(self,w,h,name,fs,fps):
@@ -38,8 +39,9 @@ class gEngine:
         return len(self.mConsole)
         
     def console_remove_console(self,con):
-        c = self.mConsole.pop(con-1)
-        libtcod.console_delete(c)
+        if con > 1:  # so we dont try to delete root, or index oob error
+            c = self.mConsole.pop(con-1)
+            libtcod.console_delete(c)
         
     def console_get_height_rect(self,con,x,y,width,height,fmt):
         if con == 0:

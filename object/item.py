@@ -18,6 +18,8 @@ class Item:
 
     def pick_up(self,inventory):
         #add to the player's inventory and remove from the map
+        self.owner.x = None
+        self.owner.y = None
         if not self.owner.misc:
             if len(inventory) >= 26:
                 msg = menu.color_text('Your inventory is full, cannot pick up ',libtcod.yellow)
@@ -32,7 +34,7 @@ class Item:
                 msg+= menu.color_text('!',libtcod.yellow)
                 self.owner.message.message(msg,0)#'You picked up a ' + self.owner.name + '!',3)
      
-    def drop(self,inventory,owner,mes=True):
+    def drop(self,inventory, owner, mes=True):
         #add to the map and remove from the owners inventory. 
         #also, place it at the owners coordinates
         self.owner.objects.append(self.owner)

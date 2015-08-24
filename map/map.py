@@ -19,7 +19,7 @@ ground_tiles = [',', '.', "'", '`']
 
 
 class Level:
-    def __init__(self, map, objects, depth, fov_map, draw_map, spawn_nodes):
+    def __init__(self, map=None, objects=None, depth=None, fov_map=None, draw_map=None, spawn_nodes=None):
         self.map = map
         self.objects = objects
         self.depth = depth
@@ -220,35 +220,49 @@ class Map:
             self.map[x][y].block_sight = False
             self.map[x][y].tile = ground_tiles[libtcod.random_get_int(0,0,(len(ground_tiles)-1))]
             
-    def return_bitmask_map(self):
+    def return_bitmask_map(self, map=None, width=None, height=None):
         #returns a 1d array with the bitmasks of each tile
-        bit_map_arr=[]
-        for x in range(self.MAP_WIDTH):
-            for y in range(self.MAP_HEIGHT):
-                bit_map_arr.append(self.map[x][y].return_bitmask()) 
+        if not width:
+            width = self.MAP_WIDTH
+        if not height:
+            height = self.MAP_HEIGHT
+        if not map:
+            map = self.map
+
+        bit_map_arr = []
+        for x in range(width):
+            for y in range(height):
+                bit_map_arr.append(map[x][y].return_bitmask())
+        self.logger.log.debug("%d, %d" % (x, y))
         return bit_map_arr
-        
+
     def build_bitmask_map(self,bitmask_map,game):
         #build a map from a bitmask array
         #tiles[y*10+x]
-        map = [[ Tile() for y in range(self.MAP_HEIGHT) ]for x in range(self.MAP_WIDTH) ]
+        map = [[Tile() for y in range(self.MAP_HEIGHT)]for x in range(self.MAP_WIDTH)]
         self.spawn_nodes = []
         for x in range(self.MAP_WIDTH):
             for y in range(self.MAP_HEIGHT):
                 map[x][y].build_from_bitmask(bitmask_map[x*self.MAP_HEIGHT+y])
                 if map[x][y].spawn_node:
-                    self.create_spawn_node(x,y,game)
-        self.map=map
+                    self.create_spawn_node(x, y, game, map)
+        self.map = map
+        return self.map
+
+    def return_spawn_nodes(self):
+        return self.spawn_nodes
 
     def load_map(self,map):
         pass
 
-    def create_spawn_node(self,x,y,game):
+    def create_spawn_node(self,x,y,game, map=None):
         ##spawn nodes will have a turn in the ticker,
         ##undiscovered node will have a higher speed.
         ##Nodes in FoV will do nothing
-        self.map[x][y].spawn_node = True
-        node = SpawnNode(self.map[x][y],x,y,game)
+        if not map:
+            map = self.map
+        map[x][y].spawn_node = True
+        node = SpawnNode(map[x][y],x,y,game)
         node_obj = Object()
         node_obj.node = node
         node_obj.use = node.spawn_mobs
@@ -357,7 +371,15 @@ class Map:
     
         fov_map = game.gEngine.get_fov_map()
         mmap = game.gEngine.get_map()
+        #self.logger.log.debug(len(self.map))
         return Level(self.map, game.objects, depth, fov_map, mmap, self.spawn_nodes)
+
+    def set_draw_map(self, map, game):
+        for y in range(self.MAP_HEIGHT):
+            for x in range(self.MAP_WIDTH):
+                c = map[x][y]
+                game.gEngine.map_add_tile(x,y,c.tile,c.blocked,c.block_sight,c.explored,c.spawn_node)
+        game.gEngine.map_init_level(self.MAP_WIDTH, self.MAP_HEIGHT)
 
     def place_objects(self,room,game):
      

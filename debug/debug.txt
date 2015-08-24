@@ -1,83 +1,96 @@
-[2015-08-20 03:46:00,927] - main.INFO - [core.<module>():12] - Initializing Logger.
-[2015-08-20 03:46:00,927] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-20 03:46:00,927] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\actors\monsters.txt ...
-[2015-08-20 03:46:00,928] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-20 03:46:00,928] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\equipment.txt ...
-[2015-08-20 03:46:00,930] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-20 03:46:00,930] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\consumables.txt ...
-[2015-08-20 03:46:00,930] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-20 03:46:00,930] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\materials.txt ...
-[2015-08-20 03:46:00,931] - main.INFO - [content_parser.__init__():13] - Creating content parser.
-[2015-08-20 03:46:00,933] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\options.txt ...
-[2015-08-20 03:46:00,933] - main.INFO - [game.__init__():72] - Init Game and Game Screen.
-[2015-08-20 03:46:00,937] - main.DEBUG - [game.__init__():82] - gEngine pyd/so import failed, using python prototype
-[2015-08-20 03:46:00,937] - main.ERROR - [game.__init__():83] - Module use of python25.dll conflicts with this version of Python.
+[2015-08-23 22:04:04,601] - main.INFO - [core.<module>():12] - Initializing Logger.
+[2015-08-23 22:04:04,601] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-23 22:04:04,601] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\actors\monsters.txt ...
+[2015-08-23 22:04:04,602] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-23 22:04:04,602] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\equipment.txt ...
+[2015-08-23 22:04:04,604] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-23 22:04:04,604] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\consumables.txt ...
+[2015-08-23 22:04:04,605] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-23 22:04:04,605] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\content\items\materials.txt ...
+[2015-08-23 22:04:04,605] - main.INFO - [content_parser.__init__():13] - Creating content parser.
+[2015-08-23 22:04:04,605] - main.INFO - [content_parser.run():16] - Parsing C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\options.txt ...
+[2015-08-23 22:04:04,605] - main.INFO - [game.__init__():73] - Init Game and Game Screen.
+[2015-08-23 22:04:04,608] - main.DEBUG - [game.__init__():83] - gEngine pyd/so import failed, using python prototype
+[2015-08-23 22:04:04,608] - main.ERROR - [game.__init__():84] - Module use of python25.dll conflicts with this version of Python.
 Traceback (most recent call last):
-  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 78, in __init__
+  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 79, in __init__
     import cEngine as gEngine#Try importing the pyd
   File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 25, in <module>
     _cEngine = swig_import_helper()
   File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 21, in swig_import_helper
     _mod = imp.load_module('_cEngine', fp, pathname, description)
 ImportError: Module use of python25.dll conflicts with this version of Python.
-[2015-08-20 03:46:00,940] - main.DEBUG - [game.__init__():87] - Importing Psyco.
-[2015-08-20 03:46:00,943] - main.DEBUG - [game.__init__():94] - Importing Psyco failed.
-[2015-08-20 03:46:02,170] - main.INFO - [game.new_game():154] - Starting new game.
-[2015-08-20 03:46:02,170] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,184] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,197] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,210] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,226] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,240] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,257] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,273] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,286] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,302] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,318] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,331] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,344] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,372] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,388] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,403] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,415] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,430] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,444] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,457] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,496] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,510] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,525] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:02,538] - main.INFO - [map.make_map():260] - Creating map.
-[2015-08-20 03:46:03,565] - main.INFO - [game.load_level():181] - Loading level 1
-[2015-08-20 03:46:03,565] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
-[2015-08-20 03:46:03,579] - main.DEBUG - [utils.message():120] - Welcome to Ascension!
-[2015-08-20 03:46:03,585] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿÿset of stairs going upÿÿÿ, here.
-[2015-08-20 03:46:03,586] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:03,586] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:03,586] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:03,586] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:09,595] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿscroll of confusionÿÿÿ, here.
-[2015-08-20 03:46:25,540] - main.DEBUG - [game.handle_keys():555] - 1
-[2015-08-20 03:46:25,540] - main.INFO - [game.load_level():181] - Loading level 2
-[2015-08-20 03:46:25,540] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
-[2015-08-20 03:46:25,578] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:25,578] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:25,578] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:27,282] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿÿset of stairs going upÿÿÿ, here.
-[2015-08-20 03:46:28,296] - main.INFO - [game.load_level():181] - Loading level 1
-[2015-08-20 03:46:28,296] - main.INFO - [game.initialize_fov():242] - Initializing FoV.
-[2015-08-20 03:46:29,720] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿÿset of stairs going downÿÿÿ, here.
-[2015-08-20 03:46:33,335] - main.DEBUG - [utils.message():120] - Player attacks orc for 5 hit points.
-[2015-08-20 03:46:33,486] - main.DEBUG - [utils.message():120] - Player attacks orc for 5 hit points.
-[2015-08-20 03:46:33,520] - main.DEBUG - [utils.message():120] - Orc attacks player for 2 hit points.
-[2015-08-20 03:46:33,657] - main.DEBUG - [utils.message():120] - Player misses orc.
-[2015-08-20 03:46:33,690] - main.DEBUG - [utils.message():120] - Orc misses player.
-[2015-08-20 03:46:33,996] - main.DEBUG - [utils.message():120] - Player attacks orc for 5 hit points.
-[2015-08-20 03:46:33,996] - main.DEBUG - [utils.message():120] - Orc is dead!
-[2015-08-20 03:46:34,029] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:34,029] - main.DEBUG - [utils.message():120] - Monster Spawned
-[2015-08-20 03:46:34,187] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of orcÿÿÿ, here.
-[2015-08-20 03:46:36,226] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿrrpotion of light healingÿÿÿ, here.
-[2015-08-20 03:46:37,971] - main.DEBUG - [utils.message():120] - ÿÿYou picked up a ÿrrpotion of light healingÿÿ!
-[2015-08-20 03:46:41,292] - main.INFO - [game.play_game():300] - Exiting and saving game..
-[2015-08-20 03:46:42,721] - main.INFO - [game.main_menu():347] - Quitting game
-[2015-08-20 03:46:42,756] - main.INFO - [game.main_menu():347] - Quitting game
+[2015-08-23 22:04:04,612] - main.DEBUG - [game.__init__():88] - Importing Psyco.
+[2015-08-23 22:04:04,615] - main.DEBUG - [game.__init__():95] - Importing Psyco failed.
+[2015-08-23 22:04:06,203] - main.DEBUG - [game.load_game():153] - Loading game
+[2015-08-23 22:04:06,204] - main.DEBUG - [save_system.load_player():238] - ['player****22****8****95****95', 'copper shortsword****0****0$---scroll of fireball****0****0$---@###copper chest armor****0****0$---@$$$$']
+[2015-08-23 22:04:06,204] - main.DEBUG - [utils.message():120] - copper chest armor equipped.
+[2015-08-23 22:04:06,842] - main.INFO - [game.load_level():204] - Loading level 1
+[2015-08-23 22:04:06,849] - main.INFO - [game.initialize_fov():267] - Initializing FoV.
+[2015-08-23 22:04:06,871] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿÿset of stairs going upÿÿÿ, here.
+[2015-08-23 22:04:32,869] - main.DEBUG - [utils.message():120] - copper shortsword equipped.
+[2015-08-23 22:04:34,671] - main.DEBUG - [utils.message():120] - copper chest armor equipped.
+[2015-08-23 22:09:56,157] - main.DEBUG - [utils.message():120] - Orc misses player.
+[2015-08-23 22:09:56,311] - main.DEBUG - [utils.message():120] - Player misses orc.
+[2015-08-23 22:09:56,365] - main.DEBUG - [utils.message():120] - Orc misses player.
+[2015-08-23 22:09:56,522] - main.DEBUG - [utils.message():120] - Player attacks orc for 12 hit points.
+[2015-08-23 22:09:56,792] - main.DEBUG - [utils.message():120] - Player misses orc.
+[2015-08-23 22:09:56,826] - main.DEBUG - [utils.message():120] - Orc misses player.
+[2015-08-23 22:09:57,065] - main.DEBUG - [utils.message():120] - Player attacks orc for 9 hit points.
+[2015-08-23 22:09:57,065] - main.DEBUG - [utils.message():120] - Orc is dead!
+[2015-08-23 22:09:58,280] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿscroll of confusionÿÿÿ, here.
+[2015-08-23 22:09:58,378] - main.DEBUG - [utils.message():120] - ÿÿYou picked up a ÿÿscroll of confusionÿÿ!
+[2015-08-23 22:09:59,198] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿÿscroll of lightningÿÿÿ, here.
+[2015-08-23 22:09:59,381] - main.DEBUG - [utils.message():120] - ÿÿYou picked up a ÿÿscroll of lightningÿÿ!
+[2015-08-23 22:10:02,283] - main.DEBUG - [utils.message():120] - Goblin misses player.
+[2015-08-23 22:10:02,743] - main.DEBUG - [utils.message():120] - Player attacks goblin for 9 hit points.
+[2015-08-23 22:10:02,743] - main.DEBUG - [utils.message():120] - Goblin is dead!
+[2015-08-23 22:10:02,918] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of goblinÿÿÿ, here.
+[2015-08-23 22:10:06,953] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:07,138] - main.DEBUG - [utils.message():120] - Player attacks hobgoblin for 8 hit points.
+[2015-08-23 22:10:07,174] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:07,190] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player for 7 hit points.
+[2015-08-23 22:10:07,344] - main.DEBUG - [utils.message():120] - Player attacks hobgoblin for 8 hit points.
+[2015-08-23 22:10:07,344] - main.DEBUG - [utils.message():120] - Hobgoblin is dead!
+[2015-08-23 22:10:07,519] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of hobgoblinÿÿÿ, here.
+[2015-08-23 22:10:08,246] - main.DEBUG - [utils.message():120] - Player misses troll.
+[2015-08-23 22:10:08,519] - main.DEBUG - [utils.message():120] - Player attacks troll for 11 hit points.
+[2015-08-23 22:10:08,552] - main.DEBUG - [utils.message():120] - Troll attacks player for 8 hit points.
+[2015-08-23 22:10:08,723] - main.DEBUG - [utils.message():120] - Player attacks troll for 8 hit points.
+[2015-08-23 22:10:08,994] - main.DEBUG - [utils.message():120] - Player attacks troll for 10 hit points.
+[2015-08-23 22:10:08,994] - main.DEBUG - [utils.message():120] - Troll is dead!
+[2015-08-23 22:10:09,322] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of trollÿÿÿ, here.
+[2015-08-23 22:10:13,529] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:13,546] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:13,598] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:13,615] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:13,953] - main.DEBUG - [utils.message():120] - Player misses hobgoblin.
+[2015-08-23 22:10:13,987] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:14,005] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:14,124] - main.DEBUG - [utils.message():120] - Player misses hobgoblin.
+[2015-08-23 22:10:14,157] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:14,328] - main.DEBUG - [utils.message():120] - Player attacks hobgoblin for 11 hit points.
+[2015-08-23 22:10:14,378] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:14,599] - main.DEBUG - [utils.message():120] - Player misses hobgoblin.
+[2015-08-23 22:10:14,634] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:14,650] - main.DEBUG - [utils.message():120] - Hobgoblin misses player.
+[2015-08-23 22:10:14,835] - main.DEBUG - [utils.message():120] - Player misses hobgoblin.
+[2015-08-23 22:10:14,868] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:14,885] - main.DEBUG - [utils.message():120] - Hobgoblin attacks player but it has no effect!
+[2015-08-23 22:10:15,108] - main.DEBUG - [utils.message():120] - Player attacks hobgoblin for 11 hit points.
+[2015-08-23 22:10:15,108] - main.DEBUG - [utils.message():120] - Hobgoblin is dead!
+[2015-08-23 22:10:15,453] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of hobgoblinÿÿÿ, here.
+[2015-08-23 22:10:16,081] - main.DEBUG - [utils.message():120] - Player misses troll.
+[2015-08-23 22:10:16,115] - main.DEBUG - [utils.message():120] - Troll attacks player for 8 hit points.
+[2015-08-23 22:10:16,233] - main.DEBUG - [utils.message():120] - Player attacks troll for 11 hit points.
+[2015-08-23 22:10:16,387] - main.DEBUG - [utils.message():120] - Player misses troll.
+[2015-08-23 22:10:16,676] - main.DEBUG - [utils.message():120] - Player attacks troll for 11 hit points.
+[2015-08-23 22:10:16,710] - main.DEBUG - [utils.message():120] - Troll misses player.
+[2015-08-23 22:10:16,898] - main.DEBUG - [utils.message():120] - Player misses troll.
+[2015-08-23 22:10:17,187] - main.DEBUG - [utils.message():120] - Player misses troll.
+[2015-08-23 22:10:17,237] - main.DEBUG - [utils.message():120] - Troll attacks player for 7 hit points.
+[2015-08-23 22:10:17,476] - main.DEBUG - [utils.message():120] - Player attacks troll for 10 hit points.
+[2015-08-23 22:10:17,476] - main.DEBUG - [utils.message():120] - Troll is dead!
+[2015-08-23 22:10:17,617] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of trollÿÿÿ, here.
+[2015-08-23 22:10:17,956] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿpotion of healingÿÿÿ, here.
+[2015-08-23 22:10:18,276] - main.DEBUG - [utils.message():120] - ÿÿYou picked up a ÿpotion of healingÿÿ!

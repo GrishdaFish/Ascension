@@ -2,9 +2,13 @@ BEFORE INITIAL RELEASE
 
 Finialize (mostly) data structures.
 Implement timing system - Done, need to have different actions take different ammounts of time
-Keep track of dungeon levels
+Keep track of dungeon levels - done
 add experience and level up system - roughly done
 create saving and loading system - mostly done need to save turn scheduling
+
+options menu
+help menu
+character stats menu or merge with equipment menu
 
 create classes and races (player generation)
 More monsters, items and spells
@@ -41,3 +45,4 @@ Terrain manipulation, dungeon/world wide
 Random world events (meteorites, hurricanes, tornadoes, earthquakes, volcanoes, etc...)
 Raidboss style fights
 Biomes and more random dungeon elements
+Item pictures for inventory

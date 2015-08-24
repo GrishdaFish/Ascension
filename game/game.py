@@ -67,6 +67,7 @@ class Game:
 ##============================================================================
     def __init__(self,content,logger,key_set):
 ##============================================================================
+        self.version = '0.0.1a'
         self.objects = []
         self.logger=logger
         self.logger.log.info('Init Game and Game Screen.')
@@ -93,23 +94,27 @@ class Game:
         except ImportError:
             self.logger.log.debug("Importing Psyco failed.")
             pass
+
         #libtcod.console_set_keyboard_repeat(250,250)
-        self.gEngine = gEngine.gEngine(SCREEN_WIDTH,SCREEN_HEIGHT,'Ascension 0.0.1a',False,LIMIT_FPS)
+        self.gEngine = gEngine.gEngine(SCREEN_WIDTH, SCREEN_HEIGHT, 'Ascension 0.0.1a', False, LIMIT_FPS)
         self.con = self.gEngine.console_new(MAP_WIDTH, MAP_HEIGHT)
         self.panel = self.gEngine.console_new(SCREEN_WIDTH, PANEL_HEIGHT)
         
-        self.message = Message(self.panel,MSG_HEIGHT,MSG_WIDTH,MSG_X,self.logger,self.debug_level)
+        self.message = Message(self.panel, MSG_HEIGHT, MSG_WIDTH, MSG_X, self.logger, self.debug_level)
         self.build_objects = GameObjects(content)        
         self.ticker = Ticker()
         
-        self.Map = map.Map(MAP_HEIGHT,MAP_WIDTH,ROOM_MIN_SIZE,ROOM_MAX_SIZE,
-            MAX_ROOMS,MAX_ROOM_MONSTERS,MAX_ROOM_ITEMS,self.logger)
+        self.Map = map.Map(MAP_HEIGHT, MAP_WIDTH, ROOM_MIN_SIZE, ROOM_MAX_SIZE,
+            MAX_ROOMS, MAX_ROOM_MONSTERS, MAX_ROOM_ITEMS, self.logger)
             
-        self.keys=key_set
+        self.keys = key_set
         self.setup_keys()
-        self.current_dungeon = [] # an array that holds all off the dungeon levels, bitmasked
-        self.console = console.Console(self,SCREEN_WIDTH-2,SCREEN_HEIGHT/2,self.debug_level)
-        libtcod.console_set_keyboard_repeat(50,50)
+        self.current_dungeon = []  # an array that holds all off the dungeon levels
+        self.console = console.Console(self, SCREEN_WIDTH-2, SCREEN_HEIGHT/2, self.debug_level)
+        self.depth = None
+        self.game_state = None
+
+        libtcod.console_set_keyboard_repeat(50, 50)
         libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================
@@ -132,21 +137,39 @@ class Game:
 ##============================================================================
     def save_game(self):
 ##============================================================================
+        ex = None
+        for level in self.current_dungeon:
+            if level.depth == self.depth:
+                level.update_level(self.Map.map, self.objects, self.gEngine.get_fov_map(), self.gEngine.get_map())
         try:
             self.logger.log.info('Saving game.')
             save_system.save(self)
         except Exception, ex:
-            self.message.error_message(ex)
+            self.message.error_message(ex, self)
 
 ##============================================================================
     def load_game(self):
 ##============================================================================
-        save_system.load(self)
-        self.player_hp_bar = StatusBar(self.player.fighter,BAR_WIDTH,libtcod.light_red,libtcod.darker_red,self.panel,type='hp')
-        self.player_xp_bar = StatusBar(self.player.fighter,BAR_WIDTH,libtcod.light_grey,libtcod.dark_grey,self.panel,type='xp')
+        self.logger.log.debug('Loading game')
+        fighter_component = Fighter(hp=90, defense=2, power=5, death_function=self.player_death, money=800, speed=10)
+        self.player = Object(self.con, 0, 0, '@', 'player', libtcod.white, blocks=True, fighter=fighter_component)
 
-        self.game_state = 'playing'
-        self.initialize_fov()
+        #self.ticker.clear_ticker()
+        #self.ticker.schedule_turn(self.player.fighter.speed, self.player)
+
+        self.particles = []
+        self.objects = []
+
+        save_system.load(self)
+        self.player.message = self.message
+        self.player_hp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_red, libtcod.darker_red, self.panel,type='hp', gEngine=self.gEngine)
+        self.player_xp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_grey, libtcod.dark_grey, self.panel,type='xp', gEngine=self.gEngine)
+
+        self.load_level(self.depth)
+
+        for object in self.objects:
+            object.message = self.message
+            object.objects = self.objects
 
 ##============================================================================
     def new_game(self):
@@ -158,8 +181,8 @@ class Game:
         self.player = Object(self.con,0, 0, '@', 'player', libtcod.white, blocks=True, fighter=fighter_component)
         self.player_hp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_red, libtcod.darker_red, self.panel,type='hp', gEngine=self.gEngine)
         self.player_xp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_grey, libtcod.dark_grey, self.panel,type='xp', gEngine=self.gEngine)
-        self.ticker.clear_ticker()
-        self.ticker.schedule_turn(self.player.fighter.speed, self.player)
+        #self.ticker.clear_ticker()
+        #self.ticker.schedule_turn(self.player.fighter.speed, self.player)
         
         self.particles = []
         self.objects = []
@@ -177,35 +200,37 @@ class Game:
         self.load_level(self.depth, 'down')
         self.message.message('Welcome to Ascension!', 1)
 
-    def load_level(self, level, direction):
+    def load_level(self, level, direction=None):
         self.logger.log.info('Loading level %i' % level)
         self.ticker.schedule.clear()
         self.ticker.schedule_turn(self.player.fighter.speed, self.player)
         self.gEngine.map_init_level(self.Map.MAP_WIDTH, self.Map.MAP_HEIGHT)
 
         level_to_load = None
+        #if direction:
         for item in self.current_dungeon:
             if item.depth == level:
                 level_to_load = item
+        #else:
+        #    level_to_load = level
 
         self.objects = level_to_load.objects
         self.Map.map = level_to_load.map
         self.gEngine.set_fov_map(level_to_load.fov_map)
-        self.gEngine.set_map(level_to_load.draw_map)
-
+        #self.gEngine.set_map(level_to_load.draw_map)
+        self.Map.set_draw_map(level_to_load.map, self)
         for node in level_to_load.spawn_nodes:
             self.ticker.schedule_turn(0, node)
 
         for item in self.objects:
-            if item.misc:
-                if item.misc.type == 'down' and direction == 'up': # if the player goes up, we put him at down stairs
-                    self.player.x = item.x
-                    self.player.y = item.y
-                    #break
-                elif item.misc.type == 'up' and direction == 'down': # if the player goes down, we put him at the up stairs
-                    self.player.x = item.x
-                    self.player.y = item.y
-                    #break
+            if direction:
+                if item.misc:
+                    if item.misc.type == 'down' and direction == 'up': # if the player goes up, we put him at down stairs
+                        self.player.x = item.x
+                        self.player.y = item.y
+                    elif item.misc.type == 'up' and direction == 'down': # if the player goes down, we put him at the up stairs
+                        self.player.x = item.x
+                        self.player.y = item.y
             if item.fighter:
                 self.ticker.schedule_turn(item.fighter.speed, item)
         #level_to_load = self.current_dungeon[level-1]
@@ -298,7 +323,7 @@ class Game:
                         
                 if player_action == 'exit' or libtcod.console_is_window_closed():
                     self.logger.log.info('Exiting and saving game..')
-                    #self.save_game()
+                    self.save_game()
                     break
                     
                 #fast forward until the next object gets its turn
@@ -316,7 +341,7 @@ class Game:
         path = os.path.join(sys.path[0],'content')
         path = path.replace('library.zip','')
         img = self.gEngine.image_load(os.path.join(path,'img','menu_background_2.png'))
-        m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Quit'],self.con)        
+        m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Options (not working)', 'Quit'], self.con)
         m_menu.is_visible = True
         #m_menu.can_drag = False
         
@@ -325,7 +350,7 @@ class Game:
             r,g,b = libtcod.red
             self.gEngine.console_set_default_foreground(0, r,g,b)
             self.gEngine.console_print(0, SCREEN_WIDTH//2, SCREEN_HEIGHT-2,'By Grishnak and SentientDeth')
-            
+            libtcod.console_credits_render(2, SCREEN_HEIGHT-2, True)
             choice = m_menu.menu()
             self.gEngine.console_flush()
             
@@ -343,7 +368,7 @@ class Game:
                 #    continue
                 self.play_game()
                 self.main_menu()
-            if choice == 2 or choice == None:  #quit
+            if choice == 3 or choice == None:  #quit
                 self.logger.log.info('Quitting game')
                 break
 ##============================================================================
@@ -483,7 +508,7 @@ class Game:
     def handle_keys(self):
 ##============================================================================
         key = libtcod.console_check_for_keypress(libtcod.KEY_PRESSED)
-        
+        #libtcod.sys_check_for_event()
         move_keys = {self.keys.key_north :(0,-1),
                     self.keys.key_south  :(0,1) ,
                     self.keys.key_east   :(1,0),
@@ -569,7 +594,7 @@ class Game:
                     msg = 'Press the key next to an item to use it, or any other to cancel.\n'
                     chosen_item = inventory_menu(0,msg,self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=self)
                     if chosen_item is not None:
-                        chosen_item.use(self.player.fighter.inventory,self.player,self)
+                        chosen_item.item.use(self.player.fighter.inventory,self.player,self)
                         return 'turn-used'
                     
      
@@ -578,7 +603,12 @@ class Game:
                     msg = 'Press the key next to an item to drop it, or any other to cancel.\n'
                     chosen_item = inventory_menu(0,msg,self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=self)
                     if chosen_item is not None:
-                        chosen_item.drop(self.player.fighter.inventory,self.player)
+                        if chosen_item in self.player.fighter.inventory:
+                            #self.player.objects = self.objects
+                            chosen_item.objects = self.objects
+                            chosen_item.item.drop(self.player.fighter.inventory, self.player)
+                            self.logger.log.debug("item x,y %d,%d, player x,y %d,%d" % (chosen_item.x, chosen_item.y, self.player.x, self.player.y))
+                            chosen_item.send_to_back()
                         return 'turn-used'
                         
                 return 'didnt-take-turn'
