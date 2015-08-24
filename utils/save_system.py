@@ -240,11 +240,12 @@ def load_player(player, p, game=None):
         for item in items:
             player.fighter.inventory.append(load_item(Object(), item, game))
     if len(equipment) > 1:
-        equipment.pop(len(items)-1)
+        equipment.pop(len(equipment)-1)
         for item in equipment:
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
+            
     p = string.split(p[0], PADDING)
     player.name = p[0]
     player.x = int(p[1])
@@ -344,9 +345,15 @@ def load_misc(misc, m, game):
 def load_item(item, i, game=None):
     i = string.split(i, PADDING)
     item.name = i[0]
-    item.x = int(i[1])
-    item.y = int(i[2])
-    print item.name
+    if i[1] == 'None':
+        item.x = None
+    else:
+        item.x = int(i[1])
+    if i[2] == 'None':
+        item.x = None
+    else:
+        item.y = int(i[2])
+
     #add a case for each type of item
     if 'potion of ' in item.name:
         item.name = string.split(item.name, 'potion of ')
