@@ -94,3 +94,59 @@ ImportError: Module use of python25.dll conflicts with this version of Python.
 [2015-08-23 22:10:17,617] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ¿remains of trollÿÿÿ, here.
 [2015-08-23 22:10:17,956] - main.DEBUG - [utils.message():120] - ÿÿÿYou see a ÿpotion of healingÿÿÿ, here.
 [2015-08-23 22:10:18,276] - main.DEBUG - [utils.message():120] - ÿÿYou picked up a ÿpotion of healingÿÿ!
+[2015-08-23 22:18:00,242] - main.INFO - [game.play_game():325] - Exiting and saving game..
+[2015-08-23 22:18:00,242] - main.INFO - [game.save_game():145] - Saving game.
+[2015-08-23 22:18:00,243] - main.DEBUG - [save_system.save_player():190] - scroll of fireball
+[2015-08-23 22:18:00,243] - main.DEBUG - [save_system.save_player():190] - scroll of confusion
+[2015-08-23 22:18:00,243] - main.DEBUG - [save_system.save_player():190] - scroll of lightning
+[2015-08-23 22:18:00,243] - main.DEBUG - [save_system.save_player():190] - potion of healing
+[2015-08-23 22:18:00,246] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,252] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,257] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,263] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,267] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,275] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,279] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,285] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,290] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,296] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,301] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,305] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,311] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,316] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,322] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,326] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,332] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,338] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,342] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,348] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,354] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,358] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,365] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,369] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,375] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,381] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,385] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,391] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,397] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,401] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,407] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,413] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,417] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,423] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,428] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,434] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,438] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,444] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,448] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,454] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,460] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,467] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,473] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,479] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,483] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,490] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,494] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:00,500] - main.DEBUG - [map.return_bitmask_map():236] - 79, 42
+[2015-08-23 22:18:01,513] - main.INFO - [game.main_menu():372] - Quitting game
+[2015-08-23 22:18:01,546] - main.INFO - [game.main_menu():372] - Quitting game

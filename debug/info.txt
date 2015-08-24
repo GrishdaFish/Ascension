@@ -21,3 +21,7 @@ Traceback (most recent call last):
 ImportError: Module use of python25.dll conflicts with this version of Python.
 [2015-08-23 22:04:06,842] - main.INFO - [game.load_level():204] - Loading level 1
 [2015-08-23 22:04:06,849] - main.INFO - [game.initialize_fov():267] - Initializing FoV.
+[2015-08-23 22:18:00,242] - main.INFO - [game.play_game():325] - Exiting and saving game..
+[2015-08-23 22:18:00,242] - main.INFO - [game.save_game():145] - Saving game.
+[2015-08-23 22:18:01,513] - main.INFO - [game.main_menu():372] - Quitting game
+[2015-08-23 22:18:01,546] - main.INFO - [game.main_menu():372] - Quitting game
