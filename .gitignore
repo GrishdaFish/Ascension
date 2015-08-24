@@ -47,7 +47,12 @@ Temporary Items
 *.sav
 *.rar
 *.zip
-save.*
 *.pnproj
 *.pnps
 formula_discussion.txt
+debug
+debug.txt
+scrap.py
+setup.py
+save_system_backup.py
+new object code
