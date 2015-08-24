@@ -48,3 +48,6 @@ Temporary Items
 *.rar
 *.zip
 save.*
+*.pnproj
+*.pnps
+formula_discussion.txt
