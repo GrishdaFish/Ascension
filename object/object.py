@@ -116,7 +116,7 @@ class Object:
  
 class Fighter:
     #combat-related properties and methods (monster, player, NPC).
-    def __init__(self, hp, defense, power, death_function=None,Str=10,Dex=10,Int=10,money=0,ticker=None,speed=0,xp_value=0):
+    def __init__(self, hp, defense, power, death_function=None, Con=10, Str=10,Dex=10,Int=10,money=0,ticker=None,speed=0,xp_value=0):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
@@ -136,10 +136,18 @@ class Fighter:
         
         self.class_mod=1.0
         self.combat_mod=1.0
-        self.stats=[Str,Dex,Int]
-        self.max_hp = self.max_hp + ((self.stats[0]*self.level)//2)
+        self.stats = [Str, Dex, Int, Con]
+
+        self.max_hp = 8 + self.stats[3]  # = self.max_hp + ((self.stats[0]*self.level)//2)
         hp = self.max_hp
-        self.hp=hp
+        self.hp = hp
+
+        self.max_mp = 1 + (2*self.stats[2])
+        mp = self.max_mp
+        self.mp = mp
+
+        #self.melee_bonus
+
         self.base_crit_bonus = ((self.stats[1]//2)+(self.stats[2]//4))*1.1
         self.base_attack_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))+(self.stats[1]//2)
         self.base_defense_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))
@@ -172,14 +180,13 @@ class Fighter:
             col = 2
         else:
             col = 5
-        #get the attackers chance to hit,5% chance at least to hit
+        '''#get the attackers chance to hit,5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)
         to_hit+=self.base_attack_bonus
         
         #base 5% chance to miss
         to_miss = libtcod.random_get_float(0,5.00,100.00)
         to_miss+=target.fighter.base_defense_bonus
-                
             
         if to_hit > to_miss:
             if not self.wielded[0] and not self.wielded[1]:
@@ -200,7 +207,6 @@ class Fighter:
                     #damage = damage**damage <-- LOL
                     #CRIT
                     #Player attacks troll for 437,893,890,380,859,375 hit points.
-                     
                     
             if damage > 0:
                 #make the target take some damage
@@ -212,7 +218,8 @@ class Fighter:
                 else:
                     self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!',col)
         else:
-            self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)
+            self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)'''
+
     def take_damage(self, damage,attacker):
         #apply damage if possible
         if damage > 0:

@@ -171,7 +171,6 @@ def save_misc(misc):
 
 
 def save_player(player):
-    log = logging.getLogger('main')
     player_save = ''
     player_save += player.name
     player_save += PADDING
@@ -192,7 +191,6 @@ def save_player(player):
     player_save += END_PLAYER
 
     for item in player.fighter.inventory:
-        log.debug(item.name)
         player_save += save_item(item)
     player_save += END_INVENTORY
 
@@ -239,9 +237,7 @@ def load(game=None):
 def load_player(player, p, game=None):
     p = string.split(p, END_PLAYER)
     i = p[1]
-    game.logger.log.debug(p)
     items = string.split(i, END_INVENTORY)
-    game.logger.log.debug(items)
 
     equipment = string.split(items[1], END_EQUIPMENT)
     items = string.split(items[0], END_ITEM)
@@ -259,14 +255,12 @@ def load_player(player, p, game=None):
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
-            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
     if len(wielded) > 1:
         wielded.pop()
         for item in wielded:
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
-            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
 
     p = string.split(p[0], PADDING)
     player.name = p[0]
@@ -366,7 +360,6 @@ def load_misc(misc, m, game):
 
 def load_item(item, i, game=None):
     i = string.split(i, PADDING)
-    game.logger.log.debug(i)
     item.name = i[0]
     if i[1] == 'None':
         item.x = None
