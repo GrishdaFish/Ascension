@@ -1,9 +1,0 @@
-[2015-08-23 22:28:08,934] - main.ERROR - [game.__init__():84] - Module use of python25.dll conflicts with this version of Python.
-Traceback (most recent call last):
-  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\game\game.py", line 79, in __init__
-    import cEngine as gEngine#Try importing the pyd
-  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 25, in <module>
-    _cEngine = swig_import_helper()
-  File "C:\Users\Grishnak\Dropbox\source\Python\Ascension\src\cEngine.py", line 21, in swig_import_helper
-    _mod = imp.load_module('_cEngine', fp, pathname, description)
-ImportError: Module use of python25.dll conflicts with this version of Python.
