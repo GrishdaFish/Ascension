@@ -4,7 +4,7 @@ Finialize (mostly) data structures.
 Implement timing system - Done, need to have different actions take different ammounts of time
 Keep track of dungeon levels - done
 add experience and level up system - roughly done
-create saving and loading system - mostly done need to save turn scheduling
+create saving and loading system - Done
 
 options menu
 help menu
@@ -12,11 +12,11 @@ character stats menu or merge with equipment menu
 
 create classes and races (player generation)
 More monsters, items and spells
+Merchant "shopping cart" + selling to NPCs
 
-Create spell effects
+
 Ranged combat
-Scrolling map in gEngine
-Re-do save system
+Re-do save system - Done
 
 
 
@@ -31,8 +31,9 @@ Cave Generator
 Add Town (non menu)
 Add in plenty of options
 Improve UI and Mouse Support
-Merchant "shopping cart"
+Create spell effects
 
+Scrolling map in gEngine(post-poned until the rewrite)
 
 
 LARGE OVERARCHING GOALS (Not a complete list)

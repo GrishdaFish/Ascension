@@ -502,7 +502,6 @@ class Game:
         #for added effect, transform the player into a corpse!
         self.player.char = '%'
         self.player.color = libtcod.dark_red
-     
 
 ##============================================================================
     def handle_keys(self):
@@ -563,8 +562,8 @@ class Game:
                     for object in self.objects:
                         if object.x == self.player.x and object.y == self.player.y and object.misc:
                             if object.misc.type == 'up':
-                                if self.Map.depth == 1:
-                                    #go to town
+                                if self.depth == 1:
+                                    town_menu(0, 'Welcome to Town', self, INVENTORY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH)
                                     return 'turn-used'
                                 else:
                                     self.depth -= 1

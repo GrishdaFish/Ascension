@@ -184,6 +184,9 @@ def save_player(player):
     player_save += PADDING
 
     player_save += str(player.fighter.max_hp)
+    player_save += PADDING
+
+    player_save += str(player.fighter.money)
     player_save += END_PLAYER
 
     for item in player.fighter.inventory:
@@ -206,20 +209,12 @@ def load(game=None):
     save_file.close()
 
     save_array = string.split(s, END_OF_OBJECT)
-    #print save_array
 
     version = save_array.pop(0)
     num_levels = save_array.pop(0)
     current_depth = int(save_array.pop(0))
     p = save_array.pop(0)
     save_array.pop(len(save_array)-1)  # remove this line after town is added.
-
-    #print version
-    #print num_levels
-    #print current_depth
-    #print p
-    #print save_array
-    #print len(save_array)
 
     if game:
         load_player(game.player, p, game)
@@ -256,6 +251,7 @@ def load_player(player, p, game=None):
     player.y = int(p[2])
     player.fighter.hp = int(p[3])
     player.fighter.max_hp = int(p[4])
+    player.fighter.money = int(p[5])
 
 
 def load_level(level, game=None):
@@ -270,8 +266,6 @@ def load_level(level, game=None):
 
     mapp = string.split(level[0], MAP_PADDING)
     depth = int(mapp.pop(0))
-    #load map from bitmask
-    #assign Level class everything
     #build fov maps
 
     misc_obs = []

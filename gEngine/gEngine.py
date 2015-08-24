@@ -200,7 +200,13 @@ class gEngine:
                             libtcod.console_put_char_ex(con,tile.x,tile.y,' ',self.color_tile_wall,self.color_dark_wall)
                         else:
                             libtcod.console_put_char_ex(con,tile.x,tile.y,' ',self.color_tile_ground,self.color_dark_ground)
-        
+
+    def map_draw_scrolling(self, con):
+        if con == 0:
+            pass
+        else:
+            pass
+
     def map_is_explored(self,x,y):
         for tile in self.mMap:
             if tile.x == x and tile.y == y:
