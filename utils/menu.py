@@ -686,9 +686,10 @@ def equipment_menu(equipment,screen_height,screen_width,game):
                             opt.append(item)
                 chosen=inventory_menu(0,msg,opt,50,screen_height,screen_width,game=game)
                 if chosen:##if one was selected, confirm to equip it
-                    msg = 'Put on '+color_text(chosen.owner.name,chosen.owner.color)+' ?'
-                    if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
-                        chosen.use(game.player.fighter.inventory,game.player,game)
+                    if not isinstance(chosen, int):
+                        msg = 'Put on '+color_text(chosen.item.owner.name,chosen.item.owner.color)+' ?'
+                        if confirm_screen(0,msg,screen_height,screen_width,game=game):
+                            chosen.item.use(game.player.fighter.inventory,game.player,game)
                 
         else:##Armor, same procedure as weapons
             if equip_option[index]:
@@ -707,9 +708,10 @@ def equipment_menu(equipment,screen_height,screen_width,game):
                             opt.append(item)
                 chosen=inventory_menu(0,msg,opt,50,screen_height,screen_width,game=game)
                 if chosen:
-                    msg = 'Put on '+color_text(chosen.owner.name,chosen.owner.color)+' ?'
-                    if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
-                        chosen.use(game.player.fighter.inventory,game.player,game)
+                    if not isinstance(chosen, int):
+                        msg = 'Put on '+color_text(chosen.item.owner.name, chosen.item.owner.color)+' ?'
+                        if confirm_screen(0,msg,screen_height,screen_width,game=game):
+                            chosen.item.use(game.player.fighter.inventory,game.player,game)
                         
         game.gEngine.console_remove_console(window)
         return

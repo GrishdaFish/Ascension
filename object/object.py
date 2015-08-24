@@ -373,3 +373,5 @@ def monster_death(monster):
     monster.name = 'remains of ' + monster.name
     monster.send_to_back()
 
+
+
