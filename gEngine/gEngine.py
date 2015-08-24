@@ -157,8 +157,8 @@ class gEngine:
         
     def map_init_level(self,sizeX,sizeY):
         self.FOV = libtcod.map_new(sizeX,sizeY)
-        #for tile in self.mMap:
-        #    tile.explored = False
+        for tile in self.mMap:
+            tile.explored = False
         
     def map_add_tile(self,x,y,cell,blocked,block_sight,explored,spawn_node):
         self.mMap.append(Tile(x,y,cell,blocked,block_sight,explored,spawn_node))
