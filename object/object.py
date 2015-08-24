@@ -42,7 +42,7 @@ class Object:
         if self.projectile:
             self.projectile.owner = self
             
-    def move(self, dx, dy,map,objects):
+    def move(self, dx, dy, map, objects):
         #move by the given amount, if the destination is not blocked
         if not self.is_blocked(self.x + dx, self.y + dy,map,objects):
             self.x += dx

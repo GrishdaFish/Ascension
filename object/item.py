@@ -148,6 +148,7 @@ class Equipment:
                     if target.fighter.wielded[1]:
                         self.un_equip(target,target.fighter.wielded[1])
                     return
+
     def put_on(self,target,slot,owner,game,type='wep'):
         if type == 'wep':
             target.fighter.wielded[slot] = owner

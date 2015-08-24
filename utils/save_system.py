@@ -27,6 +27,7 @@ END_MONSTER = '%---'
 END_PLAYER = '@---'
 END_INVENTORY = '@###'
 END_EQUIPMENT = '@$$$$'
+END_WIELDED = '@%%%'
 
 class Object:  # an object we use to hold save information
     def __init__(self, name=None, x=None, y=None, hp=None, max_hp=None):
@@ -61,6 +62,7 @@ def save(game):
 
     save_file.write(completed_save)
     save_file.close()
+
 
 def save_level(game, level):
     ret = ''
@@ -197,7 +199,14 @@ def save_player(player):
     for item in player.fighter.equipment:
         if item is not None:
             player_save += save_item(item)
+
     player_save += END_EQUIPMENT
+
+    for item in player.fighter.wielded:
+        if item is not None:
+            player_save += save_item(item)
+
+    player_save += END_WIELDED
 
     player_save += END_OF_OBJECT
     return player_save
@@ -232,20 +241,33 @@ def load_player(player, p, game=None):
     i = p[1]
     game.logger.log.debug(p)
     items = string.split(i, END_INVENTORY)
+    game.logger.log.debug(items)
 
-    equipment = string.split(items[1], END_ITEM)
+    equipment = string.split(items[1], END_EQUIPMENT)
     items = string.split(items[0], END_ITEM)
+    wielded = string.split(equipment[1], END_WIELDED)
+    equipment = string.split(equipment[0], END_ITEM)
+    wielded = string.split(wielded[0], END_ITEM)
+
     if len(items) > 1:
         items.pop(len(items)-1)
         for item in items:
             player.fighter.inventory.append(load_item(Object(), item, game))
     if len(equipment) > 1:
-        equipment.pop(len(equipment)-1)
+        equipment.pop()
         for item in equipment:
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
-            
+            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
+    if len(wielded) > 1:
+        wielded.pop()
+        for item in wielded:
+            i = load_item(Object(), item, game)
+            player.fighter.inventory.append(i)
+            i.item.use(player.fighter.inventory, player, game, True)
+            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
+
     p = string.split(p[0], PADDING)
     player.name = p[0]
     player.x = int(p[1])
@@ -344,6 +366,7 @@ def load_misc(misc, m, game):
 
 def load_item(item, i, game=None):
     i = string.split(i, PADDING)
+    game.logger.log.debug(i)
     item.name = i[0]
     if i[1] == 'None':
         item.x = None
