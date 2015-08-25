@@ -257,7 +257,7 @@ class Console:
             object.objects = self.game.objects
             
 ##============================================================================
-    def python(self,param=None,add_param=None):
+    def python(self, param=None, add_param=None):
 ##============================================================================
         ##for the shell commands, only accessable in debug mode
         if self.debug_level == 'debug':
@@ -276,8 +276,20 @@ class Console:
                     for line in output:
                         self.message_list.append('>>>'+line)                
             else:
-                self.message_list.append('Not enough parameters passed!')
-    
+                #self.message_list.append('Not enough parameters passed!')
+                command = param
+                position = self.capturer.tell()
+                try:
+                    exec(command)
+                except:
+                    output = ['Command failed']
+                else:
+                    self.message_list.append('Command accepted')
+                    self.capturer.seek(position,0)
+                    output = self.capturer.read().split('\n')
+                finally:
+                    for line in output:
+                        self.message_list.append('>>>'+line)
         
     def teleport_down(self):
         if self.debug_level == 'debug':

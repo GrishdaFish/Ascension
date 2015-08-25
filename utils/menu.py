@@ -603,8 +603,14 @@ def color_text(text,color_f=None,color_b=None,game=None):
 ##============================================================================
 def equipment_menu(equipment,screen_height,screen_width,game):
 ##============================================================================
-    slots=['torso','head','left hand','right hand','legs','left foot',
-        'right foot','left arm','right arm','right shoulder','left shoulder','back']
+    slots = ['torso',
+             'head',
+             'hands',
+             'legs',
+             'arms',
+             'feet',
+             'shoulders',
+             'back']
     
     options=[]
     wielded = equipment[0]

@@ -2,8 +2,8 @@ import sys
 import os
 import string
 import logging
-sys.path.append(os.path.join(sys.path[0],'map'))
-sys.path.append(os.path.join(sys.path[0],'object'))
+sys.path.append(os.path.join(sys.path[0], 'map'))
+sys.path.append(os.path.join(sys.path[0], 'object'))
 
 MAP = None
 try:

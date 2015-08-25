@@ -1,7 +1,10 @@
 import sys
+import os
 import math
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
+sys.path.append(os.path.join(sys.path[0],'game'))
+import combat
 
 ##I might rewrite this system, the bigger the game gets, the more cumbersome this
 ##system gets. :(
@@ -117,70 +120,77 @@ class Object:
 class Fighter:
     #combat-related properties and methods (monster, player, NPC).
     def __init__(self, hp, defense, power, death_function=None, Con=10, Str=10,Dex=10,Int=10,money=0,ticker=None,speed=0,xp_value=0):
-        self.max_hp = hp
-        self.hp = hp
-        self.defense = defense
-        self.power = power
         self.death_function = death_function
         self.type = 'melee'
-        self.money=money
-        self.ticker=ticker
+        self.money = money
         self.speed = speed
-        self.level=1
-        self.current_xp=xp_value
-        self.xp_to_next_level=1000
-        #self.ticker.schedule_turn(self.speed, self.owner)
-        ##below are equipment slots
-        self.inventory=[]
-        
-        
-        self.class_mod=1.0
-        self.combat_mod=1.0
+        self.level = 1
+        self.current_xp = xp_value
+        self.xp_to_next_level = 1000
+        self.inventory = []
+        self.owner = None
+        self.ticker = ticker
         self.stats = [Str, Dex, Int, Con]
+        self.unused_skill_points = 0
 
-        self.max_hp = 8 + self.stats[3]  # = self.max_hp + ((self.stats[0]*self.level)//2)
+        self.max_hp = combat.hp_bonus(Con)
         hp = self.max_hp
         self.hp = hp
 
-        self.max_mp = 1 + (2*self.stats[2])
+        '''self.max_mp = 1 + (2*self.stats[2])
         mp = self.max_mp
-        self.mp = mp
+        self.mp = mp'''
 
-        #self.melee_bonus
-
-        self.base_crit_bonus = ((self.stats[1]//2)+(self.stats[2]//4))*1.1
-        self.base_attack_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))+(self.stats[1]//2)
-        self.base_defense_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))
-        self.power = (self.stats[0]+(self.level*int((self.class_mod*self.combat_mod))))//2
-        
-        #print self.base_crit_bonus,self.base_attack_bonus,self.base_defense_bonus,self.power
-        ## base stats: 7.7% 16 11 5
-        #armor
-        self.equipment=[None,None,None,None,None,None,None,None,None,None,None,None]
+        self.equipment = [None, None, None, None, None, None, None]
         
         #accessories
-        self.accessories=[None,None,None]
+        self.accessories = [None, None, None]
         
         #weapons/shield
-        self.wielded=[None,None]
-        
+        self.wielded = [None, None]
+
+        self.skills = combat.skill_list
+
     def level_up(self):
-        self.level+=1
-        self.current_xp-=self.xp_to_next_level
-        self.xp_to_next_level = self.xp_to_next_level*self.level
-        self.max_hp = self.max_hp + ((self.stats[0]*self.level)//2)
+        self.xp_to_next_level, sp = combat.next_level(self.level)
+        self.unused_skill_points += sp
+        self.level += 1
+        self.max_hp += combat.hp_bonus(self.stats[3])
         hp = self.max_hp
-        self.hp=hp
-        self.base_attack_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))+(self.stats[1]//2)
-        self.base_defense_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))
-        self.power = (self.stats[0]+(self.level*int((self.class_mod*self.combat_mod))))//2
-        
-    def attack(self, target,player=False):
+        self.hp = hp
+
+    def apply_skill_points(self):
+        pass
+
+    def get_skill(self, name):
+        for skill in self.skills:
+            if skill.get_name() == name:
+                return skill
+        return None
+
+    def attack(self, target, player=False):
         if not player:
             col = 2
         else:
             col = 5
-        '''#get the attackers chance to hit,5% chance at least to hit
+
+        attack_roll = libtcod.random_get_int(0, 1, 20)
+        attack_roll += combat.get_melee_bonus(self.owner)
+
+        evasion_roll = combat.get_evasion_class(target)
+        deflection_roll = combat.get_deflection_class(target)
+        blocking_roll = combat.get_blocking_class(target)
+
+        if evasion_roll > attack_roll:
+            pass  # attack misses
+        elif deflection_roll > attack_roll:
+            pass  # attack gets deflected
+        elif blocking_roll > attack_roll:
+            pass  # attack gets blocked
+        else:
+            pass  # attack succeeds
+
+        '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)
         to_hit+=self.base_attack_bonus
         
@@ -220,14 +230,14 @@ class Fighter:
         else:
             self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)'''
 
-    def take_damage(self, damage,attacker):
+    def take_damage(self, damage, attacker):
         #apply damage if possible
         if damage > 0:
             self.hp -= damage
  
             #check for death. if there's a death function, call it
             if self.hp <= 0:
-                attacker.fighter.current_xp+=self.current_xp
+                attacker.fighter.current_xp += self.current_xp
                 function = self.death_function
                 if function is not None:
                     function(self.owner)
@@ -241,16 +251,18 @@ class Fighter:
 #x,y offsets for co-ords next to the player
 offsets = [(1,0),(0,1),(-1,0),(0,-1),
            (1,1),(-1,1),(-1,-1),(1,-1)]
-def get_next_to_player(mob,player,map):
+
+
+def get_next_to_player(mob, player, map):
     d = 100
     dx,dy = 0,0
     for i in range(len(offsets)):
         px,py = offsets[i]
-        if mob.owner.distance(player.x+px,player.y+py) < d:
-            if not mob.owner.is_blocked(player.x+px,player.y+py,map,mob.owner.objects):
-                dx,dy = player.x+px,player.y+py
-                d = mob.owner.distance(player.x+px,player.y+py)
-    return dx,dy
+        if mob.owner.distance(player.x+px, player.y+py) < d:
+            if not mob.owner.is_blocked(player.x+px, player.y+py, map, mob.owner.objects):
+                dx, dy = player.x+px,player.y+py
+                d = mob.owner.distance(player.x+px, player.y+py)
+    return dx, dy
         
 class BasicMonster:
     #AI for a basic monster.

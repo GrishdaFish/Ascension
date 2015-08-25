@@ -181,6 +181,7 @@ class StatusBar:
 ##===============================================================================
     def render(self,px,py,gEngine=None):
 ##===============================================================================
+        maximum, value = 0, 0
         if self.type == 'hp':
             value = self.owner.hp
             maximum = self.owner.max_hp            
@@ -191,7 +192,10 @@ class StatusBar:
             maximum = self.owner.xp_to_next_level        
         if self.type == 'status':##for status ailments or buffs like poison, stun or regen
             pass
-            
+
+        if maximum <= 0:
+            maximum = 0.1
+
         msg = self.type.capitalize() +': ' + str(value) + '/' +str(maximum)    
         
         if value <= 0:

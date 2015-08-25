@@ -91,10 +91,15 @@ class Equipment:
             else:
                 return damage
     
-    def equip(self,target,game=None,owner=None,slot=0):
-        locations= {'torso':0,'head':1,'left_hand':2,'right_hand':3,
-                    'legs':4,'right_foot':5,'left_foot':6,'left_arm':7,
-                    'right_arm':8,'left_shoulder':9,'right_shoulder':10,'back':11,}
+    def equip(self, target, game=None, owner=None, slot=0):
+        locations = {'torso':    0,
+                    'head':     1,
+                    'hands':    2,
+                    'legs':     3,
+                    'feet':     4,
+                    'arms':     5,
+                    'shoulder': 6,
+                    'back':     7}
         
         if self.type == 'armor':
             if target.fighter.equipment[locations[self.location]] is None:
