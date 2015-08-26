@@ -85,20 +85,26 @@ def get_armor_class(creature):
 
 
 def get_blocking_class(creature):
-    roll = libtcod.random_get_int(0, 1, 20)
-    roll += get_stat_bonus(creature.fighter.stats[0])
-    roll += creature.fighter.get_skill('Shield').get_bonus()
-    roll -= get_armor_penalty(creature)*2
-    return roll
+    if creature.fighter.wielded[1] is not None:
+        if creature.fighter.wielded[1].item.equipment.type == 'shield':
+            roll = libtcod.random_get_int(0, 1, 20)
+            roll += get_stat_bonus(creature.fighter.stats[0])
+            roll += creature.fighter.get_skill('Shield').get_bonus()
+            roll -= get_armor_penalty(creature)*2
+            return roll
+    return 0
 
 
 def get_deflection_class(creature):
-    roll = libtcod.random_get_int(0, 1, 20)
-    roll += get_stat_bonus(creature.fighter.stats[1])
-    roll += creature.fighter.get_skill('Parry').get_bonus()
-    roll -= get_armor_penalty(creature)*2
-    return roll
-
+    hands = creature.fighter.wielded
+    if hands[0] == 'melee' and hands[1] == 'melee' or hands[1] is None:
+        if hands[0] != hands[1]:
+            roll = libtcod.random_get_int(0, 1, 20)
+            roll += get_stat_bonus(creature.fighter.stats[1])
+            roll += creature.fighter.get_skill('Parry').get_bonus()
+            roll -= get_armor_penalty(creature)*2
+            return roll
+    return 0
 
 def get_evasion_class(creature):
     roll = libtcod.random_get_int(0, 1, 20)
