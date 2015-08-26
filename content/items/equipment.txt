@@ -139,6 +139,7 @@ object_type "weapon" {
 /*===============================================
                 Base Armor
 ===============================================*/
+/*
 object_type "armor" { //rings,amulets and such will be considered armor
     string name="chest armor"
     char cell=']' //keep armor this character
@@ -150,4 +151,135 @@ object_type "armor" { //rings,amulets and such will be considered armor
     int base_value=75
     string description=""
     float threat_level=0.5
+}
+*/
+
+object_type "armor" {
+    string name = "robe"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "shirt"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "platemail"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 2
+}
+
+object_type "armor" {
+    string name = "plate"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 3
+    int penalty = 3
+}
+
+object_type "armor" {
+    string name = "helm"
+    char cell = ']'
+    string type = "armor"
+    string location = "head"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 1
+}
+
+object_type "armor" {
+    string name = "spaulders"
+    char cell = ']'
+    string type = "armor"
+    string location = "shoulders"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 2
+}
+
+object_type "armor" {
+    string name = "sleeves"
+    char cell = ']'
+    string type = "armor"
+    string location = "arms"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "gloves"
+    char cell = ']'
+    string type = "armor"
+    string location = "hands"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "pants"
+    char cell = ']'
+    string type = "armor"
+    string location = "legs"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "boots"
+    char cell = ']'
+    string type = "armor"
+    string location = "feet"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 1
+    int penalty = 0
 }

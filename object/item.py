@@ -7,7 +7,8 @@ import menu
 
 class Item:
     #an item that can be picked up and used.
-    def __init__(self, spell=None,equipment=None):
+    def __init__(self, spell=None, equipment=None):
+        self.owner = None
         self.value=0
         self.spell = spell
         if self.spell:
@@ -66,7 +67,8 @@ class Item:
 class Equipment:
     def __init__(self,min_power=None,max_power=None,crit_bonus=None,defense=None,
                     type=None,location=None,best_defense_type=None,worst_defense_type=None,
-                    handed=None,dual_wield=None,damage_type=None,threat_level=None):
+                    handed=None,dual_wield=None,damage_type=None,threat_level=None,
+                    allowed_materials=None, bonus=0, penalty=0, description=None):
         self.min_power=min_power
         self.max_power=max_power
         self.crit_bonus=crit_bonus
@@ -79,6 +81,10 @@ class Equipment:
         self.dual_wield=dual_wield
         self.damage_type=damage_type
         self.threat_level=threat_level
+        self.allowed_materials = allowed_materials
+        self.bonus = bonus
+        self.penalty = penalty
+        self.description = description
         
     def calc_damage(self,best_type=None,worst_type=None,damage_type=None,damage=None):
         ##get final damage/damage reduction,before player stats, crits, chance to hit
@@ -92,14 +98,16 @@ class Equipment:
                 return damage
     
     def equip(self, target, game=None, owner=None, slot=0):
-        locations = {'torso':    0,
+        locations = {
+                    'torso':    0,
                     'head':     1,
                     'hands':    2,
                     'legs':     3,
                     'feet':     4,
                     'arms':     5,
-                    'shoulder': 6,
-                    'back':     7}
+                    'shoulders': 6,
+                    'back':     7
+        }
         
         if self.type == 'armor':
             if target.fighter.equipment[locations[self.location]] is None:
@@ -108,6 +116,8 @@ class Equipment:
                     game.message.message(owner.name+" equipped.",1)                    
                     target.fighter.inventory.remove(owner)
                 target.fighter.defense+=self.defense
+                target.fighter.set_armor_bonus()
+                target.fighter.set_armor_penalty()
                 return
             else:
                 remove = target.fighter.equipment[locations[self.location]]
@@ -115,9 +125,12 @@ class Equipment:
                 target.fighter.equipment[locations[self.location]] = owner
                 target.fighter.defense-=remove.item.equipment.defense
                 target.fighter.defense+=self.defense
+                target.fighter.set_armor_bonus()
+                target.fighter.set_armor_penalty()
                 if game:
                     game.message.message(owner.name+" equipped.",1)
                     target.fighter.inventory.remove(owner)
+
                 return
                 
         if self.type == 'melee':

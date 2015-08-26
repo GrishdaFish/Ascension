@@ -7,7 +7,7 @@ Not implemented ingame, for future use
 */
 
 
-
+/*
 object_type "material" {
     string name="leather"
     int modifier=0      //modifier to power/defense and threat level
@@ -105,3 +105,20 @@ object_type "material" {
     color col="159,159,159"
     string description=""
 }
+*/
+
+object_type "material" {
+    string name = "iron"
+    float price_mod = 1.0
+    float rarity = 1.0
+    int type = 2 //1 for cloth, 2 for metal
+    int can_be_made_from = 3 //1 for weapons only, 2 armor only, 3 both
+    string description=""
+    color col="127,127,127"
+    int armor_bonus = 2
+    int armor_penalty = 2
+    int weight = 2
+    int sharpness = 2
+    int durability = 4
+}
+

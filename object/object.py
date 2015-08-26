@@ -82,7 +82,7 @@ class Object:
             objects.remove(self)
             objects.insert(0, self)
  
-    def draw(self,fov_map,gEngine,force_display=False):
+    def draw(self, fov_map, gEngine, force_display=False):
         #only show if it's visible to the player
         if force_display:
             h,s,v = gEngine.console_get_char_background(self.con,self.x,self.y)
@@ -116,7 +116,8 @@ class Object:
                 return True
      
         return False
- 
+
+
 class Fighter:
     #combat-related properties and methods (monster, player, NPC).
     def __init__(self, hp, defense, power, death_function=None, Con=10, Str=10,Dex=10,Int=10,money=0,ticker=None,speed=0,xp_value=0):
@@ -132,10 +133,13 @@ class Fighter:
         self.ticker = ticker
         self.stats = [Str, Dex, Int, Con]
         self.unused_skill_points = 0
-
+        self.defense = 0
         self.max_hp = combat.hp_bonus(Con)
         hp = self.max_hp
         self.hp = hp
+
+        self.armor_bonus = 0
+        self.armor_penalty = 0
 
         '''self.max_mp = 1 + (2*self.stats[2])
         mp = self.max_mp
@@ -162,6 +166,20 @@ class Fighter:
     def apply_skill_points(self):
         pass
 
+    def set_armor_bonus(self):
+        bonus = 0
+        for item in self.equipment:
+            if item is not None:
+                bonus += item.item.equipment.bonus
+        self.armor_bonus = bonus
+
+    def set_armor_penalty(self):
+        penalty = 0
+        for item in self.equipment:
+            if item is not None:
+                penalty += item.item.equipment.penalty
+        self.armor_penalty = penalty
+
     def get_skill(self, name):
         for skill in self.skills:
             if skill.get_name() == name:
@@ -180,15 +198,16 @@ class Fighter:
         evasion_roll = combat.get_evasion_class(target)
         deflection_roll = combat.get_deflection_class(target)
         blocking_roll = combat.get_blocking_class(target)
-
+        msg = 'A: %d, E: %d, D: %d, B: %d ' % (attack_roll, evasion_roll, deflection_roll, blocking_roll)
+        self.owner.message.message(msg)
         if evasion_roll > attack_roll:
-            pass  # attack misses
+            self.owner.message.message('Attack was Evaded')  # attack misses
         elif deflection_roll > attack_roll:
-            pass  # attack gets deflected
-        elif blocking_roll > attack_roll:
-            pass  # attack gets blocked
+            self.owner.message.message('Attack was Deflected')  # attack gets deflected
+        elif blocking_roll > attack_roll:  # need to check for shield
+            self.owner.message.message('Attack was Blocked')  # attack gets blocked
         else:
-            pass  # attack succeeds
+            self.owner.message.message('Attack hit!')  # attack succeeds
 
         '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)

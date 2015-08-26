@@ -3,7 +3,7 @@ from item import *
 from object import *
 from misc import *
 from spells import *
-
+import logging
 
 class GameObjects:
 ##============================================================================
@@ -26,8 +26,11 @@ class GameObjects:
         self.weapon_mats= []
         self.armor_mat_rarity = {}
         self.weapon_mat_rarity = {}
+        log = logging.getLogger('main')
         for item in self.materials:
-            if item.can_be_weapon:
+            log.debug(item.name)
+            if item.can_be_made_from == 1 or item.can_be_made_from == 3:
+                log.debug('%s added to weapons' % item.name)
                 self.weapon_mats.append(item)
                 '''if item.rarity >= 1.0:
                     self.weapon_mat_rarity.setdefault(1.0, []).append(item.name)
@@ -35,7 +38,8 @@ class GameObjects:
                     pass
                 elif item.rarity > 0.5 and item.rarity < 0.75:
                     pass '''
-            if item.can_be_armor:
+            if item.can_be_made_from == 2 or item.can_be_made_from == 3:
+                log.debug('%s added to armor' % item.name)
                 self.armor_mats.append(item)
 
 ##============================================================================
@@ -186,10 +190,11 @@ class GameObjects:
                         picked = True
             if not mat:
                 mat = self.get_mat_from_rarity(type)
+                game.logger.log.debug(mat.name)
                 #mat = self.weapon_mats[libtcod.random_get_int(0,0,(len(self.weapon_mats)-1))]
-        
-            eq.min_power+=mat.modifier
-            eq.max_power+=mat.modifier
+
+            #eq.min_power+=mat.modifier
+            #eq.max_power+=mat.modifier
             eq.threat_level+=mat.modifier
             
             equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
@@ -210,7 +215,8 @@ class GameObjects:
                 mat = self.get_mat_from_rarity(type)
                 #mat = self.armor_mats[libtcod.random_get_int(0,0,(len(self.armor_mats)-1))]
                 
-            eq.defense+=mat.modifier
+            eq.bonus+=mat.armor_bonus
+            eq.penalty += mat.armor_bonus
             eq.threat_level+=mat.modifier
             
             equip_component = Equipment(defense=eq.defense,type=eq.type,location=eq.location,

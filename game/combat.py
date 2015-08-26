@@ -77,11 +77,11 @@ def get_stat_bonus(stat):
 
 
 def get_armor_penalty(creature):
-    return 0
+    return creature.fighter.armor_penalty
 
 
 def get_armor_class(creature):
-    return 0
+    return creature.fighter.armor_bonus
 
 
 def get_blocking_class(creature):

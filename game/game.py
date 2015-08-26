@@ -61,25 +61,23 @@ color_tile_wall = libtcod.Color(177,177,177)
 color_tile_ground = libtcod.Color(190,190,190)
 
 
-
-
 class Game:
 ##============================================================================
-    def __init__(self,content,logger,key_set):
+    def __init__(self, content, logger, key_set):
 ##============================================================================
         self.version = '0.0.1a'
         self.objects = []
-        self.logger=logger
+        self.logger = logger
         self.logger.log.info('Init Game and Game Screen.')
-        self.debug_level = 'debug'##prints errors verbosly to the game screen        
-                                  ##On release, just a confirmation menu
-                                  ##Also affects the use of the python interperter
-                                  ##in the console, disabled on release
+        self.debug_level = 'debug'  # prints errors verbosely to the game screen
+                                    # On release, just a confirmation menu
+                                    # Also affects the use of the python interpreter
+                                    # in the console, disabled on release
         try:
-            import cEngine as gEngine#Try importing the pyd
+            import cEngine as gEngine  # Try importing the pyd
             self.logger.log.debug('gEngine pyd/so imported')
-        except ImportError,err:#if that fails, import the python prototype
-            sys.path.append(os.path.join(sys.path[0],'gEngine'))
+        except ImportError, err:  # if that fails, import the python prototype
+            sys.path.append(os.path.join(sys.path[0], 'gEngine'))
             self.logger.log.debug('gEngine pyd/so import failed, using python prototype')
             self.logger.log.exception(err)
             import gEngine
@@ -116,6 +114,7 @@ class Game:
 
         libtcod.console_set_keyboard_repeat(50, 50)
         libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
+
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================
     def setup_keys(self):
