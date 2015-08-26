@@ -210,7 +210,9 @@ class Fighter:
         elif blocking_roll > attack_roll:  # need to check for shield
             msg += '...Blocked'
         else:
-            msg += '...Successful'
+            if self.wielded[0] is not None:
+                dmg = self.wielded[0].item.equipment.calc_damage()
+                msg += '...Successful. Hit for %d damage!' % dmg
         self.owner.message.message(msg)
         '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)

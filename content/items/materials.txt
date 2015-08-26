@@ -120,5 +120,6 @@ object_type "material" {
     int weight = 2
     int sharpness = 2
     int durability = 4
+    int modifier = 3
 }
 

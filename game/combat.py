@@ -109,5 +109,11 @@ def get_evasion_class(creature):
 
 
 def get_melee_bonus(creature):
-    return 0
+    roll = 0
+    for weapon in creature.fighter.wielded:
+        if weapon is not None:
+            roll += weapon.item.equipment.accuracy
+            if weapon.item.equipment.handed == 2:
+                break
+    return roll
 

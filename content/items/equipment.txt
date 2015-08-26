@@ -70,22 +70,19 @@ large
 object_type "weapon" {
     string name="dagger"
     char cell='/'//should keep weapons this character
-    int min_power=2//min and max damage before armor type bonuses/penalties
-    int max_power=5
-    float crit_bonus = 10.0//critical strike chance 1.0 = 1% 
     string type="melee"//can be only melee for now, ranged will come later
     int handed=1//how many hands it takes to wield
     bool dual_wield=true//can be dual wielded?
-	int defense=1
     string damage_type="piercing"//2x damage vs this protection type
+    string family = "knife" // the skill family this weapon belongs in
     int base_value=50//base value of the item before materials
     string description=""//Description of the item, not including material
     float threat_level=0.5//for calculating spawns, higher number = more dangerous
     string size="tiny"
     dice damage = "1d4"
-    int accuracy = 2
+    int accuracy = 2 //accuracy bonus or penalty
     }
-
+/*
 object_type "weapon" {
     string name="shortsword"
     char cell='/'//should keep weapons this character
@@ -143,7 +140,7 @@ object_type "weapon" {
     int accuracy = 0
     
     }
-
+*/
 /*===============================================
                 Base Armor
 ===============================================*/

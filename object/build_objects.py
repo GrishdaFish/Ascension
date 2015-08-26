@@ -162,21 +162,21 @@ class GameObjects:
         return None
         
 ##============================================================================
-    def build_equipment(self,game,x,y,type=None,name=None,mat=None):
+    def build_equipment(self, game, x, y, type=None, name=None, mat=None):
 ##============================================================================
         #for getting base equipments, no special effects or unique/legendary
         
         #if mat or name return None, random mats or equipments are used
         if mat:
             mat = self.get_mat_from_name(mat)
-                
+        eq = None
         if name:
             eq = self.get_equip_from_name(name)
             if eq:
                 type = eq.type
             
         if not type:
-            r = libtcod.random_get_int(0,0,(len(self.equipment)-1))
+            r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
             eq = self.equipment[r]
             type = eq.type
     
@@ -184,7 +184,7 @@ class GameObjects:
             if not name:
                 picked = False
                 while not picked:
-                    r = libtcod.random_get_int(0,0,(len(self.equipment)-1))
+                    r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
                     if self.equipment[r].type == 'melee':
                         eq = self.equipment[r]
                         picked = True
@@ -192,14 +192,15 @@ class GameObjects:
                 mat = self.get_mat_from_rarity(type)
                 #mat = self.weapon_mats[libtcod.random_get_int(0,0,(len(self.weapon_mats)-1))]
 
-            #eq.min_power+=mat.modifier
-            #eq.max_power+=mat.modifier
-            eq.threat_level+=mat.modifier
-            
-            equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
+            #eq.min_power += mat.modifier
+            #eq.max_power += mat.modifier
+            eq.threat_level += mat.modifier
+            equip_component = Equipment(type=eq.type, handed=eq.handed, dual_wield=eq.dual_wield,
+                                        threat_level=eq.threat_level, accuracy=eq.accuracy, damage=eq.damage)
+            '''equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
                 crit_bonus=eq.crit_bonus,type=eq.type,handed=eq.handed,
-                dual_wield=eq.dual_wield,damage_type=eq.damage_type,threat_level=eq.threat_level)
-                    
+                dual_wield=eq.dual_wield,damage_type=eq.damage_type,threat_level=eq.threat_level, accuracy=eq.accuracy)
+            '''
                     
         if type == 'armor':
             if not name:
