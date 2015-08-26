@@ -82,6 +82,8 @@ object_type "weapon" {
     string description=""//Description of the item, not including material
     float threat_level=0.5//for calculating spawns, higher number = more dangerous
     string size="tiny"
+    dice damage = "1d4"
+    int accuracy = 2
     }
 
 object_type "weapon" {
@@ -99,6 +101,8 @@ object_type "weapon" {
     string description=""
     float threat_level=0.75
     string size="small"
+    dice damage = "1d6"
+    int accuracy = 1
     }
 
 object_type "weapon" {
@@ -116,6 +120,8 @@ object_type "weapon" {
     string description=""
     float threat_level=1.0
     string size="normal"
+    dice damage = "1d8"
+    int accuracy = 0
     }
 
 object_type "weapon" {
@@ -125,7 +131,7 @@ object_type "weapon" {
     int max_power=11
     float crit_bonus = 3.0
     string type="melee"
-    int handed=1
+    int handed=2
     bool dual_wield=false//can be dual wielded?
 	int defense=0
     string damage_type="slashing"//2x damage vs this protection type
@@ -133,26 +139,14 @@ object_type "weapon" {
     string description=""
     float threat_level=2.0
     string size="large"
+    dice damage = "2d10"
+    int accuracy = 0
     
     }
 
 /*===============================================
                 Base Armor
 ===============================================*/
-/*
-object_type "armor" { //rings,amulets and such will be considered armor
-    string name="chest armor"
-    char cell=']' //keep armor this character
-    int defense=2 //base defense
-    string type="armor" //rings amulets and such will be "accessory"
-    string location="torso" //location on the body
-    string best_defense_type="blunt" //best,worst,2xdefense vs best,2x damage vs worst
-    string worst_defense_type="piercing" 
-    int base_value=75
-    string description=""
-    float threat_level=0.5
-}
-*/
 
 object_type "armor" {
     string name = "robe"

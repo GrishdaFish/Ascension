@@ -680,6 +680,11 @@ def equipment_menu(equipment,screen_height,screen_width,game):
                 msg = 'Take off '+color_text(equip_option[index].name,equip_option[index].color)+' ?'                
                 if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
                     equip_option[index].item.equipment.un_equip(game.player,equip_option[index])
+                    if equip_option[index].item.equipment.handed == 2:
+                        if index == 0:
+                            wielded[1] = None
+                        else:
+                            wielded[0] = None
                     wielded[index]=None
                     
             else:##otherwise pop into the inventory, to select an item to equip

@@ -190,7 +190,6 @@ class GameObjects:
                         picked = True
             if not mat:
                 mat = self.get_mat_from_rarity(type)
-                game.logger.log.debug(mat.name)
                 #mat = self.weapon_mats[libtcod.random_get_int(0,0,(len(self.weapon_mats)-1))]
 
             #eq.min_power+=mat.modifier

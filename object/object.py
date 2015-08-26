@@ -134,6 +134,7 @@ class Fighter:
         self.stats = [Str, Dex, Int, Con]
         self.unused_skill_points = 0
         self.defense = 0
+
         self.max_hp = combat.hp_bonus(Con)
         hp = self.max_hp
         self.hp = hp
@@ -145,7 +146,7 @@ class Fighter:
         mp = self.max_mp
         self.mp = mp'''
 
-        self.equipment = [None, None, None, None, None, None, None]
+        self.equipment = [None, None, None, None, None, None, None, None]
         
         #accessories
         self.accessories = [None, None, None]
@@ -198,17 +199,19 @@ class Fighter:
         evasion_roll = combat.get_evasion_class(target)
         deflection_roll = combat.get_deflection_class(target)
         blocking_roll = combat.get_blocking_class(target)
-        msg = 'A: %d, E: %d, D: %d, B: %d ' % (attack_roll, evasion_roll, deflection_roll, blocking_roll)
-        self.owner.message.message(msg)
-        if evasion_roll > attack_roll:
-            self.owner.message.message('Attack was Evaded')  # attack misses
-        elif deflection_roll > attack_roll:
-            self.owner.message.message('Attack was Deflected')  # attack gets deflected
-        elif blocking_roll > attack_roll:  # need to check for shield
-            self.owner.message.message('Attack was Blocked')  # attack gets blocked
-        else:
-            self.owner.message.message('Attack hit!')  # attack succeeds
 
+        msg = 'A: %d, E: %d, D: %d, B: %d ' % (attack_roll, evasion_roll, deflection_roll, blocking_roll)
+        #self.owner.message.message(msg)
+
+        if evasion_roll > attack_roll:
+            msg += '...Evaded'
+        elif deflection_roll > attack_roll:  # need to check for a weapon or something that can deflect
+            msg += '...Deflected'
+        elif blocking_roll > attack_roll:  # need to check for shield
+            msg += '...Blocked'
+        else:
+            msg += '...Successful'
+        self.owner.message.message(msg)
         '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)
         to_hit+=self.base_attack_bonus

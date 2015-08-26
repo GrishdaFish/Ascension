@@ -135,6 +135,9 @@ class Equipment:
                 
         if self.type == 'melee':
             if self.handed==1:
+                if target.fighter.wielded[1]is not None:
+                    if target.fighter.wielded[1].item.equipment.handed == 2:
+                        target.fighter.wielded[1] = None
                 if not self.dual_wield:
                     if target.fighter.wielded[0]:
                         self.un_equip(target,target.fighter.wielded[0])
@@ -159,13 +162,21 @@ class Equipment:
                             self.put_on(target,1,owner,game)
                     return
     
-            if self.handed==2:
+            if self.handed == 2:
                 if target.fighter.wielded[0]:
-                    self.un_equip(target,target.fighter.wielded[0])
-                    self.put_on(target,0,owner,game)                    
+                    self.un_equip(target, target.fighter.wielded[0])
+                    self.put_on(target, 0, owner, game)
                     if target.fighter.wielded[1]:
-                        self.un_equip(target,target.fighter.wielded[1])
-                    return
+                        self.un_equip(target, target.fighter.wielded[1])
+                    target.fighter.wielded[1] = owner
+                    #self.put_on(target, 1, owner, game)
+                else:
+                    self.put_on(target, 0, owner, game)
+                    if target.fighter.wielded[1]:
+                        self.un_equip(target, target.fighter.wielded[1])
+                    target.fighter.wielded[1] = owner
+                    #self.put_on(target, 1, owner, game)
+
 
     def put_on(self,target,slot,owner,game,type='wep'):
         if type == 'wep':

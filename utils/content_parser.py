@@ -1,5 +1,5 @@
 import libtcodpy as libtcod
-
+import logging
 
 class ContentParser:
     def __init__(self, logger):
@@ -70,6 +70,10 @@ class Listener:
         if type == 'damage_type': self.object.damage_type = value
         if type == 'threat_level': self.object.threat_level = value
         if type == 'size': self.object.size = value
+        if type == 'damage':
+            print value
+            self.object.damage = value
+        if type == 'accuracy': self.object.accuracy = value
 
     def armor_parse(self, type, value):
         if type == 'name': self.object.name = value
@@ -210,6 +214,8 @@ class Weapon:
         self.value = 0
         self.threat_level = 0.0
         self.size = None
+        self.damage = None
+        self.accuracy = 0
 
 
 class Armor:
