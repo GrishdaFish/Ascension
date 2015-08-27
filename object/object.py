@@ -202,7 +202,6 @@ class Fighter:
 
         msg = 'A: %d, E: %d, D: %d, B: %d ' % (attack_roll, evasion_roll, deflection_roll, blocking_roll)
         #self.owner.message.message(msg)
-
         if evasion_roll > attack_roll:
             msg += '...Evaded'
         elif deflection_roll > attack_roll:  # need to check for a weapon or something that can deflect
@@ -211,9 +210,26 @@ class Fighter:
             msg += '...Blocked'
         else:
             if self.wielded[0] is not None:
-                dmg = self.wielded[0].item.equipment.calc_damage()
+                skill = self.get_skill(self.wielded[0].item.equipment.damage_type)
+                dmg = skill.get_bonus()
+                if dmg is None:
+                    dmg = 0
+                dmg += self.wielded[0].item.equipment.calc_damage()
+                dmg = int(dmg)
                 msg += '...Successful. Hit for %d damage!' % dmg
-        self.owner.message.message(msg)
+                self.owner.message.message(msg, col)
+                if dmg > 0:
+                    #make the target take some damage
+                    self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' for ' + str(dmg) + ' hit points.',col)
+                    target.fighter.take_damage(dmg, self.owner)
+                else:
+                    if libtcod.random_get_int(0, 0, 100) < 25:#25% chance to always do at least 1 damage
+                        target.fighter.take_damage(1, self.owner)
+                    else:
+                        self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!',col)
+            #else:
+            #    self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)
+
         '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)
         to_hit+=self.base_attack_bonus

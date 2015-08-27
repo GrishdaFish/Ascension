@@ -73,7 +73,7 @@ object_type "weapon" {
     string type="melee"//can be only melee for now, ranged will come later
     int handed=1//how many hands it takes to wield
     bool dual_wield=true//can be dual wielded?
-    string damage_type="piercing"//2x damage vs this protection type
+    string damage_type="Knives"//2x damage vs this protection type
     string family = "knife" // the skill family this weapon belongs in
     int base_value=50//base value of the item before materials
     string description=""//Description of the item, not including material
@@ -112,7 +112,7 @@ object_type "weapon" {
     int handed=1
     bool dual_wield=false//can be dual wielded?
 	int defense=0
-    string damage_type="slashing"//2x damage vs this protection type
+    string damage_type="Knives"//
     int base_value=100
     string description=""
     float threat_level=1.0

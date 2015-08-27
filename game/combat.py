@@ -2,7 +2,7 @@ __author__ = 'Grishnak'
 import sys
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
-
+import logging
 
 class Skill:
     def __init__(self, category, name, description):
@@ -37,8 +37,9 @@ skill_list = [
     Skill('Discipline', 'Dodge',      'Ability to dodge incoming attacks.'),
     Skill('Discipline', 'Armor',      'Skill in reducing the penalties of wearing armor.'),
     Skill('Discipline', 'Shield',     'Proficiency at using shields.'),
-    Skill('Discipline', 'Parry',      'Ability to deflect incoming attacks with weapons.')
+    Skill('Discipline', 'Parry',      'Ability to deflect incoming attacks with weapons.'),
 
+    Skill('Weapon', 'Knives', 'Master in the use of small, pointed weapons.')
 ]
 basic_levels = [  # Total xp: Skill Points
     (1000,   2),
@@ -97,14 +98,23 @@ def get_blocking_class(creature):
 
 def get_deflection_class(creature):
     hands = creature.fighter.wielded
-    if hands[0] == 'melee' and hands[1] == 'melee' or hands[1] is None:
-        if hands[0] != hands[1]:
-            roll = libtcod.random_get_int(0, 1, 20)
-            roll += get_stat_bonus(creature.fighter.stats[1])
-            roll += creature.fighter.get_skill('Parry').get_bonus()
-            roll -= get_armor_penalty(creature)*2
+    roll = 0
+    log = logging.getLogger('main')
+    if hands[1] is not None:
+        log.debug(hands[1].item.equipment.type)
+        if hands[1].item.equipment.type != 'melee':
             return roll
-    return 0
+    if hands[0] is not None:
+        log.debug(hands[0].item.equipment.type)
+        if hands[0].item.equipment.type == 'melee':
+            if hands[0] != hands[1]:  # make sure its not a 2-h weap
+                roll = libtcod.random_get_int(0, 1, 20)
+                roll += get_stat_bonus(creature.fighter.stats[1])
+                roll += creature.fighter.get_skill('Parry').get_bonus()
+                roll -= get_armor_penalty(creature)*2
+                return roll
+    return roll
+
 
 def get_evasion_class(creature):
     roll = libtcod.random_get_int(0, 1, 20)

@@ -196,7 +196,8 @@ class GameObjects:
             #eq.max_power += mat.modifier
             eq.threat_level += mat.modifier
             equip_component = Equipment(type=eq.type, handed=eq.handed, dual_wield=eq.dual_wield,
-                                        threat_level=eq.threat_level, accuracy=eq.accuracy, damage=eq.damage)
+                                        threat_level=eq.threat_level, accuracy=eq.accuracy, damage=eq.damage,
+                                        damage_type=eq.damage_type)
             '''equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
                 crit_bonus=eq.crit_bonus,type=eq.type,handed=eq.handed,
                 dual_wield=eq.dual_wield,damage_type=eq.damage_type,threat_level=eq.threat_level, accuracy=eq.accuracy)
