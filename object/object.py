@@ -209,6 +209,7 @@ class Fighter:
         elif blocking_roll > attack_roll:  # need to check for shield
             msg += '...Blocked'
         else:
+            dmg = 0
             if self.wielded[0] is not None:
                 skill = self.get_skill(self.wielded[0].item.equipment.damage_type)
                 dmg = skill.get_bonus()
@@ -218,15 +219,22 @@ class Fighter:
                 dmg = int(dmg)
                 msg += '...Successful. Hit for %d damage!' % dmg
                 self.owner.message.message(msg, col)
-                if dmg > 0:
-                    #make the target take some damage
-                    self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' for ' + str(dmg) + ' hit points.',col)
-                    target.fighter.take_damage(dmg, self.owner)
+            else:
+                #For dual wielding
+                pass
+            if dmg > 0:
+                if attack_roll < 10 + self.armor_bonus:
+                    dmg *= 0.25
+                    dmg = int(dmg)
+                #make the target take some damage
+                self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' for ' + str(dmg) + ' hit points.',col)
+                target.fighter.take_damage(dmg, self.owner)
+
+            else:
+                if libtcod.random_get_int(0, 0, 100) < 25:  # 25% chance to always do at least 1 damage
+                    target.fighter.take_damage(1, self.owner)
                 else:
-                    if libtcod.random_get_int(0, 0, 100) < 25:#25% chance to always do at least 1 damage
-                        target.fighter.take_damage(1, self.owner)
-                    else:
-                        self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!',col)
+                    self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!', col)
             #else:
             #    self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)
 
