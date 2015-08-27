@@ -218,9 +218,8 @@ class Fighter:
                 dmg += self.wielded[0].item.equipment.calc_damage()
                 dmg = int(dmg)
                 msg += '...Successful. Hit for %d damage!' % dmg
-                self.owner.message.message(msg, col)
             else:
-                #For dual wielding
+                #For empty slots
                 pass
             if dmg > 0:
                 if attack_roll < 10 + self.armor_bonus:
@@ -235,8 +234,8 @@ class Fighter:
                     target.fighter.take_damage(1, self.owner)
                 else:
                     self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!', col)
-            #else:
-            #    self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)
+
+        self.owner.message.message(msg, col)
 
         '''#get the attackers chance to hit, 5% chance at least to hit
         to_hit = libtcod.random_get_float(0,5.00,100.00)
