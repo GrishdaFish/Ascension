@@ -212,7 +212,8 @@ class Fighter:
             dmg = 0
             if self.wielded[0] is not None:
                 skill = self.get_skill(self.wielded[0].item.equipment.damage_type)
-                dmg = skill.get_bonus()
+                if skill is not None:
+                    dmg = skill.get_bonus()
                 if dmg is None:
                     dmg = 0
                 dmg += self.wielded[0].item.equipment.calc_damage()
@@ -384,12 +385,13 @@ def monster_death(monster):
     #drop all of equipped gear from monsters
     for item in monster.fighter.wielded:
         if item:
-            monster.fighter.inventory.append(item)
+            if item.item.equipment.type != 'monster_melee':
+                monster.fighter.inventory.append(item)
     for item in monster.fighter.equipment:
         if item:
             monster.fighter.inventory.append(item)
     for item in monster.fighter.inventory:
-        item.item.drop(monster.fighter.inventory,monster,False)
+        item.item.drop(monster.fighter.inventory, monster, False)
         item.send_to_back()
         
     monster.fighter.ticker.remove_object(monster)

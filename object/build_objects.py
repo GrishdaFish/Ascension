@@ -221,15 +221,28 @@ class GameObjects:
             eq.threat_level+=mat.modifier
             
             equip_component = Equipment(defense=eq.defense,type=eq.type,location=eq.location,
-                best_defense_type=eq.best_defense_type,worst_defense_type=eq.worst_defense_type,
-                threat_level=eq.threat_level+mat.modifier)
-        
-        
-        item_component = Item(equipment=equip_component)
-        item_component.value = int(eq.value*mat.price_mod)
-        name = mat.name+" "+eq.name
-        equip = Object(game.con,x,y,eq.cell,name,mat.color,item=item_component)
-        
+                                        best_defense_type=eq.best_defense_type,worst_defense_type=eq.worst_defense_type,
+                                        threat_level=eq.threat_level+mat.modifier)
+
+        if type == 'monster_melee':
+            if not name:
+                picked = False
+                while not picked:
+                    r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
+                    if self.equipment[r].type == 'monster_melee':
+                        eq = self.equipment[r]
+                        picked = True
+            equip_component = Equipment(type=eq.type, handed=eq.handed, dual_wield=eq.dual_wield,
+                                        accuracy=eq.accuracy, damage=eq.damage,
+                                        damage_type=eq.damage_type)
+        if eq.type != "monster_melee":
+            item_component = Item(equipment=equip_component)
+            item_component.value = int(eq.value*mat.price_mod)
+            name = mat.name+" "+eq.name
+            equip = Object(game.con,  x, y, eq.cell, name, mat.color, item=item_component)
+        else:
+            item_component = Item(equipment=equip_component)
+            equip = Object(game.con, x, y, ' ', eq.name, (0, 0, 0), item=item_component)
         equip.message = game.message
         equip.objects = game.objects
         
@@ -272,9 +285,11 @@ class GameObjects:
         monster = Object(game.con,x, y, mob.cell, mob.name, mob.color,
             blocks=True, fighter=fighter_component, ai=ai_component)
         monster.fighter.ticker.schedule_turn(monster.fighter.speed, monster)
+
+        monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="monster_melee")
         if mob.can_equip_gear:
             r = libtcod.random_get_int(0,0,100)
-            if r < 50:
+            if r > 85:  # 15 % chance the mob will have a weapon
                 monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="melee")
         return monster    
 

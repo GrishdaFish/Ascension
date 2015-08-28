@@ -32,6 +32,7 @@ class Listener:
         if name == 'material': self.object = Material()
         if name == 'key_set': self.object = KeyControls()
         if name == 'game_options': self.object = GameOptions()
+        if name == 'monster_weapon': self.object = MonsterWeapon()
         return True
 
     def new_flag(self, name):
@@ -56,6 +57,7 @@ class Listener:
         if self.struct_type == 'material': self.material_parse(type, value)
         if self.struct_type == 'key_set': self.key_parse(type, value)
         if self.struct_type == 'game_options': self.option_parse(type, value)
+        if self.struct_type == 'monster_weapon': self.monster_weapon(type, value)
 
     def weapon_parse(self, type, value):
         if type == 'name': self.object.name = value
@@ -164,6 +166,15 @@ class Listener:
 
     def option_parse(self, type, value):
         if type == 'key_set': self.object.key_set = value
+
+    def monster_weapon(self, type, value):
+        if type == 'name': self.object.name = value
+        if type == 'type': self.object.type = value
+        if type == 'handed': self.object.handed = value
+        if type == 'dual_wield': self.object.dual_wield = value
+        if type == 'damage_type': self.object.damage_type = value
+        if type == 'damage': self.object.damage = value
+        if type == 'accuracy': self.object.accuracy = value
 
     def error(self, msg):
         self.logger.log.error(msg)
@@ -288,6 +299,17 @@ class KeyControls:
         self.key_equip = None
         self.key_help = None
         self.key_drop = None
+
+
+class MonsterWeapon:
+    def __init__(self):
+        self.name = ""
+        self.type = ""
+        self.handed = 0
+        self.dual_wield = False
+        self.damage = None
+        self.accuracy = 0
+        self.damage_type = ''
 
 
 class GameOptions:

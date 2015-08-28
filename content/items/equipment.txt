@@ -97,11 +97,30 @@ object_type "weapon" {
 /*===============================================
                 Monster Weapons
 ===============================================*/
-object_type "weapon"{
-
-
+object_type "monster_weapon"{
+    string name="claw"
+    string type="monster_melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
+    bool dual_wield=true//can be dual wielded?
+    string damage_type="Claw"//2x damage vs this protection type
+    dice damage = "1d2"
+    int accuracy = -1 //accuracy bonus or penalty
 }
 
+/*===============================================
+                Legendary Weapons
+===============================================*/
+object_type "legendary_weapon"{
+    string name = "Uriel's Brand"
+    string base_weapon = "long sword"
+    string pref_mat = "steel"
+
+    int base_value = 1500
+    float threat_level = 3.0
+    dice bonus_dice = "1d8"
+    string[] bonus_type = ["dexterity", "fire", "accuracy", "deflect"]
+    int[] bonus_magnitude = [3, 5, 5, 5]
+}
 /*===============================================
                 Base Armor
 ===============================================*/
