@@ -39,7 +39,10 @@ skill_list = [
     Skill('Discipline', 'Shield',     'Proficiency at using shields.'),
     Skill('Discipline', 'Parry',      'Ability to deflect incoming attacks with weapons.'),
 
-    Skill('Weapon', 'Knives', 'Master in the use of small, pointed weapons.')
+    Skill('Weapon', 'Knives', 'Mastery in the use of small, pointed weapons.'),
+    Skill('Weapon', 'Straightsword', 'Mastery in the use of straight edged weapons.'),
+    Skill('Weapon', 'Curvesword', 'Mastery in the use of swords with curved edges.'),
+    Skill('Weapon', 'Axe', 'Mastery in the use of axes.'),
 ]
 basic_levels = [  # Total xp: Skill Points
     (1000,   2),
@@ -66,7 +69,7 @@ basic_levels = [  # Total xp: Skill Points
 
 
 def hp_bonus(con):
-    return 8 + get_stat_bonus(con)
+    return 15 + (get_stat_bonus(con) * 2)
 
 
 def next_level(level):

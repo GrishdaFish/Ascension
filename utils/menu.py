@@ -607,12 +607,12 @@ def equipment_menu(equipment,screen_height,screen_width,game):
              'head',
              'hands',
              'legs',
-             'arms',
              'feet',
+             'arms',
              'shoulders',
              'back']
-    
-    options=[]
+
+    options = []
     wielded = equipment[0]
     equip = equipment[1]
     acc = equipment[2]

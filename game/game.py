@@ -332,7 +332,6 @@ class Game:
             #check for game state = dead        
         except Exception,err:
             self.message.error_message(err,self)
-            
 
 ##============================================================================
     def main_menu(self):
