@@ -582,18 +582,23 @@ class Game:
                                 return 'turn-used'
                                 
                 if key.c is ord(self.keys.key_equip):
-                    eq = (self.player.fighter.wielded,self.player.fighter.equipment,None)
-                    equipment_menu(eq,SCREEN_HEIGHT,SCREEN_WIDTH,self)
+                    eq = (self.player.fighter.wielded, self.player.fighter.equipment,None)
+                    equipment_menu(eq, SCREEN_HEIGHT, SCREEN_WIDTH, self)
                     return 'turn-used'
-                    
+
+                if key.c is ord(self.keys.key_char):
+                    index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    if index is not None:
+                        index.increase_level(5)
+                        return 'turn-used'
+
                 if key.c is ord(self.keys.key_inventory):
                     #show the inventory; if an item is selected, use it
                     msg = 'Press the key next to an item to use it, or any other to cancel.\n'
-                    chosen_item = inventory_menu(0,msg,self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=self)
+                    chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
                     if chosen_item is not None:
                         chosen_item.item.use(self.player.fighter.inventory,self.player,self)
                         return 'turn-used'
-                    
      
                 if key.c is ord(self.keys.key_drop):
                     #show the inventory; if an item is selected, drop it

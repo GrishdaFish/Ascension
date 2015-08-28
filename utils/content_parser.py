@@ -163,6 +163,7 @@ class Listener:
         if type == 'key_equip': self.object.key_equip = value
         if type == 'key_help': self.object.key_help = value
         if type == 'key_drop': self.object.key_drop = value
+        if type == 'key_char': self.object.key_char = value
 
     def option_parse(self, type, value):
         if type == 'key_set': self.object.key_set = value
@@ -299,6 +300,7 @@ class KeyControls:
         self.key_equip = None
         self.key_help = None
         self.key_drop = None
+        self.key_char = None
 
 
 class MonsterWeapon:

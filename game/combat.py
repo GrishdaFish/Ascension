@@ -28,6 +28,8 @@ class Skill:
     def get_name(self):
         return self.name
 
+    def set_bonus(self, level):
+        self.level = level
 
 skill_list = [
     Skill('Discipline', 'One-Handed', 'Mastery of one handed weapons.'),

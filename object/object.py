@@ -256,8 +256,8 @@ class Fighter:
             self.hp = self.max_hp
             
 #x,y offsets for co-ords next to the player
-offsets = [(1,0),(0,1),(-1,0),(0,-1),
-           (1,1),(-1,1),(-1,-1),(1,-1)]
+offsets = [(1, 0), (0, 1), (-1, 0), (0, -1),
+           (1, 1), (-1, 1), (-1, -1), (1, -1)]
 
 
 def get_next_to_player(mob, player, map):
