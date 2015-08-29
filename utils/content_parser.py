@@ -110,6 +110,9 @@ class Listener:
         if type == 'col': self.object.color = value
         if type == 'size': self.object.size = value
         if type == 'can_equip_gear': self.object.can_equip_gear = value
+        if type == 'defense_bonus':
+            self.object.defense_bonus = value
+            print value
 
     def consum_parse(self, type, value):
         if type == 'name': self.object.name = value
@@ -266,6 +269,7 @@ class Monster:
         self.xp_value = 0
         self.size = None
         self.can_equip_gear = False
+        self.defense_bonus = 0
 
 
 class Material:

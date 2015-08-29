@@ -266,7 +266,7 @@ class GameObjects:
         #returns Object
         if not mob_name:
             mob = None
-            while mob == None:
+            while mob is None:
                 if threat_level:
                     mob = self.get_monster(self.get_mob_from_threat(threat_level))
                 else:
@@ -284,6 +284,7 @@ class GameObjects:
         
         monster = Object(game.con,x, y, mob.cell, mob.name, mob.color,
             blocks=True, fighter=fighter_component, ai=ai_component)
+
         monster.fighter.ticker.schedule_turn(monster.fighter.speed, monster)
 
         monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="monster_melee")
@@ -291,6 +292,10 @@ class GameObjects:
             r = libtcod.random_get_int(0,0,100)
             if r > 85:  # 15 % chance the mob will have a weapon
                 monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="melee")
+        for skill in monster.fighter.skills:
+            skill.set_bonus(mob.defense_bonus)
+        monster.fighter.max_hp = mob.hp
+        monster.fighter.hp = mob.hp
         return monster    
 
 ##============================================================================

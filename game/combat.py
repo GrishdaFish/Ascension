@@ -106,7 +106,6 @@ def get_deflection_class(creature):
     roll = 0
     log = logging.getLogger('main')
     if hands[1] is not None:
-        log.debug(hands[1].item.equipment.type)
         if hands[1].item.equipment.type != 'melee':
             return roll
     if hands[0] is not None:

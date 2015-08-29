@@ -49,6 +49,7 @@ class Console:
             'python'            :self.python,
             'teleport_down'     :self.teleport_down,
             'teleport_up'       :self.teleport_up,
+            'max_skills'        :self.max_skills,
             
         }
 
@@ -161,6 +162,9 @@ class Console:
             except ex:
                 self.game.message.error_message(ex)
 
+    def max_skills(self):
+        for skill in self.game.player.fighter.skills:
+            skill.set_bonus(5)
 ##============================================================================
     def spawn_monster(self,param=None,add_param=None):
 ##============================================================================

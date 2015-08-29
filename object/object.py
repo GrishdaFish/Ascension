@@ -1,6 +1,8 @@
 import sys
 import os
 import math
+import copy
+import logging
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'game'))
@@ -153,8 +155,7 @@ class Fighter:
         
         #weapons/shield
         self.wielded = [None, None]
-
-        self.skills = combat.skill_list
+        self.skills = copy.deepcopy(combat.skill_list)  # skill list needs to have its own copies
 
     def level_up(self):
         self.xp_to_next_level, sp = combat.next_level(self.level)
@@ -200,7 +201,8 @@ class Fighter:
         deflection_roll = combat.get_deflection_class(target)
         blocking_roll = combat.get_blocking_class(target)
 
-
+        msg = "A: %d, E:%d" % (attack_roll, evasion_roll)
+        self.owner.message.message(msg)
         msg = ''
         if evasion_roll > attack_roll:
             msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but the attack was evaded!'

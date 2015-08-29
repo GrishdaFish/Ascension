@@ -26,8 +26,8 @@ SCREEN_HEIGHT = 50
 
 PANEL_HEIGHT = 7
 #size of the map
-MAP_WIDTH = SCREEN_WIDTH
-MAP_HEIGHT = SCREEN_HEIGHT - PANEL_HEIGHT
+MAP_WIDTH = 80#SCREEN_WIDTH
+MAP_HEIGHT = 43#SCREEN_HEIGHT - PANEL_HEIGHT
 MAX_DEPTH = 25
 
 #sizes and coordinates relevant for the GUI
@@ -182,7 +182,7 @@ class Game:
         self.player_xp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_grey, libtcod.dark_grey, self.panel,type='xp', gEngine=self.gEngine)
         #self.ticker.clear_ticker()
         #self.ticker.schedule_turn(self.player.fighter.speed, self.player)
-        
+
         self.particles = []
         self.objects = []
         for i in xrange(1, MAX_DEPTH):
