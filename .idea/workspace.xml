@@ -16,7 +16,7 @@
     <SUITE FILE_PATH="coverage/src$binary_testing.coverage" NAME="binary_testing Coverage Results" MODIFIED="1440314924267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Necrodouche/spare crap" />
     <SUITE FILE_PATH="coverage/src$CaveGen.coverage" NAME="CaveGen Coverage Results" MODIFIED="1440303916525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../LH-Arena/src" />
     <SUITE FILE_PATH="coverage/src$save_system.coverage" NAME="save_system Coverage Results" MODIFIED="1440371379593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1440863239860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1440978078949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -35,7 +35,7 @@
           <file leaf-file-name="core.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/core.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="595" max-vertical-offset="935">
+                <state vertical-scroll-proportion="0.0" vertical-offset="212" max-vertical-offset="901">
                   <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
                   <folding />
                 </state>
@@ -52,12 +52,27 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="game.py" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="game.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/game/game.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.529595" vertical-offset="0" max-vertical-offset="11288">
-                  <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="11288">
+                  <caret line="44" column="14" selection-start-line="44" selection-start-column="14" selection-end-line="44" selection-end-column="14" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="save_system.py" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/utils/save_system.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.20560747" vertical-offset="4118" max-vertical-offset="6698">
+                  <caret line="315" column="5" selection-start-line="315" selection-start-column="5" selection-end-line="315" selection-end-column="5" />
+                  <folding>
+                    <element signature="e#0#10#0" expanded="true" />
+                    <element signature="e#1935#3031#0" expanded="false" />
+                    <element signature="e#3061#3413#0" expanded="false" />
+                    <element signature="e#3446#3609#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -75,7 +90,7 @@
           <file leaf-file-name="combat.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/game/combat.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2057">
+                <state vertical-scroll-proportion="0.0" vertical-offset="816" max-vertical-offset="2057">
                   <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
                   <folding>
                     <element signature="e#2534#2919#0" expanded="false" />
@@ -108,29 +123,6 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="debug.txt" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/debug/debug.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-18.37037" vertical-offset="9568" max-vertical-offset="10166">
-                  <caret line="592" column="0" selection-start-line="592" selection-start-column="0" selection-end-line="592" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-              <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-                <state />
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="prefix.txt" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/content/items/prefix.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="493" max-vertical-offset="748">
-                  <caret line="29" column="64" selection-start-line="29" selection-start-column="64" selection-end-line="29" selection-end-column="64" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file leaf-file-name="suffix.txt" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/content/items/suffix.txt">
               <provider selected="true" editor-type-id="text-editor">
@@ -148,8 +140,8 @@
           <file leaf-file-name="map.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/map/map.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="7157">
-                  <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="3519" max-vertical-offset="7123">
+                  <caret line="234" column="62" selection-start-line="234" selection-start-column="62" selection-end-line="234" selection-end-column="62" />
                   <folding />
                 </state>
               </provider>
@@ -158,20 +150,20 @@
           <file leaf-file-name="build_objects.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/object/build_objects.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2958" max-vertical-offset="4233">
-                  <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="4182">
+                  <caret line="29" column="35" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
                   <folding>
-                    <element signature="e#7140#11165#0" expanded="false" />
+                    <element signature="e#6987#11012#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="debug.txt" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="debug.txt" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/debug/debug.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="10064" max-vertical-offset="10166">
-                  <caret line="592" column="0" selection-start-line="592" selection-start-column="0" selection-end-line="592" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.8341463" vertical-offset="405" max-vertical-offset="1020">
+                  <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -180,21 +172,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="item.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/object/item.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="1887" max-vertical-offset="3349">
-                  <caret line="111" column="33" selection-start-line="104" selection-start-column="20" selection-end-line="111" selection-end-column="33" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="object.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="object.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/object/object.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.529595" vertical-offset="510" max-vertical-offset="5253">
-                  <caret line="157" column="97" selection-start-line="157" selection-start-column="97" selection-end-line="157" selection-end-column="97" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="1989" max-vertical-offset="5253">
+                  <caret line="136" column="36" selection-start-line="136" selection-start-column="36" selection-end-line="136" selection-end-column="36" />
                   <folding>
                     <element signature="e#0#10#0" expanded="true" />
                     <element signature="e#300#4301#0" expanded="false" />
@@ -203,11 +185,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="options.txt" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/options.txt">
+          <file leaf-file-name="save.sav" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/save.sav">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="178" max-vertical-offset="884">
-                  <caret line="45" column="25" selection-start-line="45" selection-start-column="25" selection-end-line="45" selection-end-column="25" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="3213">
+                  <caret line="183" column="14" selection-start-line="183" selection-start-column="14" selection-end-line="183" selection-end-column="14" />
                   <folding />
                 </state>
               </provider>
@@ -270,13 +252,11 @@
       <list>
         <option value="$PROJECT_DIR$/object/spells.py" />
         <option value="$PROJECT_DIR$/../../LH-Arena/src/CaveGen.py" />
-        <option value="$PROJECT_DIR$/map/map.py" />
         <option value="$PROJECT_DIR$/utils/save.sav" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/TODO.txt" />
         <option value="$PROJECT_DIR$/save.sav" />
         <option value="$PROJECT_DIR$/gEngine/gEngine.py" />
-        <option value="$PROJECT_DIR$/utils/save_system.py" />
         <option value="$PROJECT_DIR$/utils/utils.py" />
         <option value="$PROJECT_DIR$/object/item.py" />
         <option value="$PROJECT_DIR$/scrap.py" />
@@ -287,11 +267,13 @@
         <option value="$PROJECT_DIR$/utils/console.py" />
         <option value="$PROJECT_DIR$/game/combat.py" />
         <option value="$PROJECT_DIR$/utils/content_parser.py" />
-        <option value="$PROJECT_DIR$/debug/debug.txt" />
         <option value="$PROJECT_DIR$/content/actors/monsters.txt" />
-        <option value="$PROJECT_DIR$/object/build_objects.py" />
-        <option value="$PROJECT_DIR$/game/game.py" />
         <option value="$PROJECT_DIR$/object/object.py" />
+        <option value="$PROJECT_DIR$/game/game.py" />
+        <option value="$PROJECT_DIR$/map/map.py" />
+        <option value="$PROJECT_DIR$/debug/debug.txt" />
+        <option value="$PROJECT_DIR$/utils/save_system.py" />
+        <option value="$PROJECT_DIR$/object/build_objects.py" />
       </list>
     </option>
   </component>
@@ -802,7 +784,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -884,7 +866,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="2856" max-vertical-offset="5304">
           <caret line="226" column="36" selection-start-line="226" selection-start-column="36" selection-end-line="226" selection-end-column="36" />
           <folding>
-            <element signature="e#7140#11165#0" expanded="false" />
+            <element signature="e#6987#11012#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1012,13 +994,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/save.sav">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="555">
-          <caret line="0" column="64" selection-start-line="0" selection-start-column="35" selection-end-line="0" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9610984" vertical-offset="129" max-vertical-offset="1071">
@@ -1048,24 +1023,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/save.sav">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="555">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gEngine/gEngine.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2703" max-vertical-offset="3723">
           <caret line="159" column="0" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/save_system.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1239" max-vertical-offset="1938">
-          <caret line="396" column="0" selection-start-line="396" selection-start-column="0" selection-end-line="396" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1081,6 +1042,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="17410" max-vertical-offset="30430">
           <caret line="1038" column="10" selection-start-line="1038" selection-start-column="6" selection-end-line="1038" selection-end-column="10" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1109,22 +1071,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
           <caret line="29" column="64" selection-start-line="29" selection-start-column="64" selection-end-line="29" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="901">
-          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/map/map.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1836" max-vertical-offset="7140">
-          <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
           <folding />
         </state>
       </provider>
@@ -1188,17 +1134,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/debug/debug.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="10064" max-vertical-offset="10166">
-          <caret line="592" column="0" selection-start-line="592" selection-start-column="0" selection-end-line="592" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/content/items/suffix.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
@@ -1215,27 +1150,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/object/build_objects.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2958" max-vertical-offset="4233">
-          <caret line="286" column="0" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
-          <folding>
-            <element signature="e#7140#11165#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/game/combat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2057">
-          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
-          <folding>
-            <element signature="e#2534#2919#0" expanded="false" />
-            <element signature="e#2962#3638#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/game/game.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3179" max-vertical-offset="11356">
@@ -1244,15 +1158,84 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/save.sav">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="429" max-vertical-offset="3213">
+          <caret line="183" column="14" selection-start-line="183" selection-start-column="14" selection-end-line="183" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="212" max-vertical-offset="901">
+          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/map/map.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3519" max-vertical-offset="7123">
+          <caret line="234" column="62" selection-start-line="234" selection-start-column="62" selection-end-line="234" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/game/combat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="816" max-vertical-offset="2057">
+          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+          <folding>
+            <element signature="e#2534#2919#0" expanded="false" />
+            <element signature="e#2962#3638#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/save_system.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20560747" vertical-offset="4118" max-vertical-offset="6698">
+          <caret line="315" column="5" selection-start-line="315" selection-start-column="5" selection-end-line="315" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#1935#3031#0" expanded="false" />
+            <element signature="e#3061#3413#0" expanded="false" />
+            <element signature="e#3446#3609#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/object/object.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.529595" vertical-offset="510" max-vertical-offset="5253">
-          <caret line="157" column="97" selection-start-line="157" selection-start-column="97" selection-end-line="157" selection-end-column="97" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1989" max-vertical-offset="5253">
+          <caret line="136" column="36" selection-start-line="136" selection-start-column="36" selection-end-line="136" selection-end-column="36" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
             <element signature="e#300#4301#0" expanded="false" />
           </folding>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/object/build_objects.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="4182">
+          <caret line="29" column="35" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
+          <folding>
+            <element signature="e#6987#11012#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/debug/debug.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8341463" vertical-offset="405" max-vertical-offset="1020">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
       </provider>
     </entry>
   </component>

@@ -28,9 +28,7 @@ class GameObjects:
         self.weapon_mat_rarity = {}
         log = logging.getLogger('main')
         for item in self.materials:
-            log.debug(item.name)
             if item.can_be_made_from == 1 or item.can_be_made_from == 3:
-                log.debug('%s added to weapons' % item.name)
                 self.weapon_mats.append(item)
                 '''if item.rarity >= 1.0:
                     self.weapon_mat_rarity.setdefault(1.0, []).append(item.name)
@@ -39,7 +37,6 @@ class GameObjects:
                 elif item.rarity > 0.5 and item.rarity < 0.75:
                     pass '''
             if item.can_be_made_from == 2 or item.can_be_made_from == 3:
-                log.debug('%s added to armor' % item.name)
                 self.armor_mats.append(item)
 
 ##============================================================================
