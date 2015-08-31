@@ -26,8 +26,8 @@ SCREEN_HEIGHT = 50
 
 PANEL_HEIGHT = 7
 #size of the map
-MAP_WIDTH = SCREEN_WIDTH
-MAP_HEIGHT = SCREEN_HEIGHT - PANEL_HEIGHT
+MAP_WIDTH = 80#SCREEN_WIDTH
+MAP_HEIGHT = 43#SCREEN_HEIGHT - PANEL_HEIGHT
 MAX_DEPTH = 25
 
 #sizes and coordinates relevant for the GUI
@@ -51,7 +51,7 @@ FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True  #light walls or not
 TORCH_RADIUS = 10
  
-LIMIT_FPS = 60 
+LIMIT_FPS = 30
  
 color_dark_wall = libtcod.darker_grey
 color_light_wall = libtcod.Color(99,99,99)
@@ -61,25 +61,23 @@ color_tile_wall = libtcod.Color(177,177,177)
 color_tile_ground = libtcod.Color(190,190,190)
 
 
-
-
 class Game:
 ##============================================================================
-    def __init__(self,content,logger,key_set):
+    def __init__(self, content, logger, key_set):
 ##============================================================================
         self.version = '0.0.1a'
         self.objects = []
-        self.logger=logger
+        self.logger = logger
         self.logger.log.info('Init Game and Game Screen.')
-        self.debug_level = 'debug'##prints errors verbosly to the game screen        
-                                  ##On release, just a confirmation menu
-                                  ##Also affects the use of the python interperter
-                                  ##in the console, disabled on release
+        self.debug_level = 'debug'  # prints errors verbosely to the game screen
+                                    # On release, just a confirmation menu
+                                    # Also affects the use of the python interpreter
+                                    # in the console, disabled on release
         try:
-            import cEngine as gEngine#Try importing the pyd
+            import cEngine as gEngine  # Try importing the pyd
             self.logger.log.debug('gEngine pyd/so imported')
-        except ImportError,err:#if that fails, import the python prototype
-            sys.path.append(os.path.join(sys.path[0],'gEngine'))
+        except ImportError, err:  # if that fails, import the python prototype
+            sys.path.append(os.path.join(sys.path[0], 'gEngine'))
             self.logger.log.debug('gEngine pyd/so import failed, using python prototype')
             self.logger.log.exception(err)
             import gEngine
@@ -116,6 +114,7 @@ class Game:
 
         libtcod.console_set_keyboard_repeat(50, 50)
         libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
+
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================
     def setup_keys(self):
@@ -183,7 +182,7 @@ class Game:
         self.player_xp_bar = StatusBar(self.player.fighter, BAR_WIDTH, libtcod.light_grey, libtcod.dark_grey, self.panel,type='xp', gEngine=self.gEngine)
         #self.ticker.clear_ticker()
         #self.ticker.schedule_turn(self.player.fighter.speed, self.player)
-        
+
         self.particles = []
         self.objects = []
         for i in xrange(1, MAX_DEPTH):
@@ -333,7 +332,6 @@ class Game:
             #check for game state = dead        
         except Exception,err:
             self.message.error_message(err,self)
-            
 
 ##============================================================================
     def main_menu(self):
@@ -584,18 +582,23 @@ class Game:
                                 return 'turn-used'
                                 
                 if key.c is ord(self.keys.key_equip):
-                    eq = (self.player.fighter.wielded,self.player.fighter.equipment,None)
-                    equipment_menu(eq,SCREEN_HEIGHT,SCREEN_WIDTH,self)
+                    eq = (self.player.fighter.wielded, self.player.fighter.equipment,None)
+                    equipment_menu(eq, SCREEN_HEIGHT, SCREEN_WIDTH, self)
                     return 'turn-used'
-                    
+
+                if key.c is ord(self.keys.key_char):
+                    index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    if index is not None:
+                        index.increase_level(5)
+                        return 'turn-used'
+
                 if key.c is ord(self.keys.key_inventory):
                     #show the inventory; if an item is selected, use it
                     msg = 'Press the key next to an item to use it, or any other to cancel.\n'
-                    chosen_item = inventory_menu(0,msg,self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=self)
+                    chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
                     if chosen_item is not None:
                         chosen_item.item.use(self.player.fighter.inventory,self.player,self)
                         return 'turn-used'
-                    
      
                 if key.c is ord(self.keys.key_drop):
                     #show the inventory; if an item is selected, drop it

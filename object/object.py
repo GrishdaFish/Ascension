@@ -1,7 +1,12 @@
 import sys
+import os
 import math
+import copy
+import logging
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
+sys.path.append(os.path.join(sys.path[0],'game'))
+import combat
 
 ##I might rewrite this system, the bigger the game gets, the more cumbersome this
 ##system gets. :(
@@ -79,7 +84,7 @@ class Object:
             objects.remove(self)
             objects.insert(0, self)
  
-    def draw(self,fov_map,gEngine,force_display=False):
+    def draw(self, fov_map, gEngine, force_display=False):
         #only show if it's visible to the player
         if force_display:
             h,s,v = gEngine.console_get_char_background(self.con,self.x,self.y)
@@ -113,114 +118,135 @@ class Object:
                 return True
      
         return False
- 
+
+
 class Fighter:
     #combat-related properties and methods (monster, player, NPC).
-    def __init__(self, hp, defense, power, death_function=None,Str=10,Dex=10,Int=10,money=0,ticker=None,speed=0,xp_value=0):
-        self.max_hp = hp
-        self.hp = hp
-        self.defense = defense
-        self.power = power
+    def __init__(self, hp, defense, power, death_function=None, Con=10, Str=10, Dex=10, Int=10, money=0,ticker=None,speed=0,xp_value=0):
         self.death_function = death_function
         self.type = 'melee'
-        self.money=money
-        self.ticker=ticker
+        self.money = money
         self.speed = speed
-        self.level=1
-        self.current_xp=xp_value
-        self.xp_to_next_level=1000
-        #self.ticker.schedule_turn(self.speed, self.owner)
-        ##below are equipment slots
-        self.inventory=[]
-        
-        
-        self.class_mod=1.0
-        self.combat_mod=1.0
-        self.stats=[Str,Dex,Int]
-        self.max_hp = self.max_hp + ((self.stats[0]*self.level)//2)
+        self.level = 1
+        self.current_xp = xp_value
+        self.xp_to_next_level = 1000
+        self.inventory = []
+        self.owner = None
+        self.ticker = ticker
+        self.stats = [Str, Dex, Int, Con]
+        self.unused_skill_points = 0
+        self.defense = 0
+
+        self.max_hp = combat.hp_bonus(Con)
         hp = self.max_hp
-        self.hp=hp
-        self.base_crit_bonus = ((self.stats[1]//2)+(self.stats[2]//4))*1.1
-        self.base_attack_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))+(self.stats[1]//2)
-        self.base_defense_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))
-        self.power = (self.stats[0]+(self.level*int((self.class_mod*self.combat_mod))))//2
-        
-        #print self.base_crit_bonus,self.base_attack_bonus,self.base_defense_bonus,self.power
-        ## base stats: 7.7% 16 11 5
-        #armor
-        self.equipment=[None,None,None,None,None,None,None,None,None,None,None,None]
+        self.hp = hp
+
+        self.armor_bonus = 0
+        self.armor_penalty = 0
+
+        '''self.max_mp = 1 + (2*self.stats[2])
+        mp = self.max_mp
+        self.mp = mp'''
+
+        self.equipment = [None, None, None, None, None, None, None, None]
         
         #accessories
-        self.accessories=[None,None,None]
+        self.accessories = [None, None, None]
         
         #weapons/shield
-        self.wielded=[None,None]
-        
+        self.wielded = [None, None]
+        self.skills = copy.deepcopy(combat.skill_list)  # skill list needs to have its own copies
+
     def level_up(self):
-        self.level+=1
-        self.current_xp-=self.xp_to_next_level
-        self.xp_to_next_level = self.xp_to_next_level*self.level
-        self.max_hp = self.max_hp + ((self.stats[0]*self.level)//2)
+        self.xp_to_next_level, sp = combat.next_level(self.level)
+        self.unused_skill_points += sp
+        self.level += 1
+        self.max_hp += combat.hp_bonus(self.stats[3])
         hp = self.max_hp
-        self.hp=hp
-        self.base_attack_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))+(self.stats[1]//2)
-        self.base_defense_bonus = (self.stats[1]+(self.level*int((self.class_mod*self.combat_mod))))
-        self.power = (self.stats[0]+(self.level*int((self.class_mod*self.combat_mod))))//2
-        
-    def attack(self, target,player=False):
+        self.hp = hp
+
+    def apply_skill_points(self):
+        pass
+
+    def set_armor_bonus(self):
+        bonus = 0
+        for item in self.equipment:
+            if item is not None:
+                bonus += item.item.equipment.bonus
+        self.armor_bonus = bonus
+
+    def set_armor_penalty(self):
+        penalty = 0
+        for item in self.equipment:
+            if item is not None:
+                penalty += item.item.equipment.penalty
+        self.armor_penalty = penalty
+
+    def get_skill(self, name):
+        for skill in self.skills:
+            if skill.get_name() == name:
+                return skill
+        return None
+
+    def attack(self, target, player=False):
         if not player:
             col = 2
         else:
             col = 5
-        #get the attackers chance to hit,5% chance at least to hit
-        to_hit = libtcod.random_get_float(0,5.00,100.00)
-        to_hit+=self.base_attack_bonus
-        
-        #base 5% chance to miss
-        to_miss = libtcod.random_get_float(0,5.00,100.00)
-        to_miss+=target.fighter.base_defense_bonus
-                
-            
-        if to_hit > to_miss:
-            if not self.wielded[0] and not self.wielded[1]:
-                damage = self.power - target.fighter.defense
-            else:
-                wep = self.wielded[0].item.equipment
-                if not target.fighter.equipment[0]:
-                    damage = self.power + wep.calc_damage(damage_type=wep.damage_type) - target.fighter.defense
-                else:
-                    bdt=target.fighter.equipment[0].item.equipment.best_defense_type
-                    wdt=target.fighter.equipment[0].item.equipment.worst_defense_type
-                    damage = self.power + wep.calc_damage(damage_type=wep.damage_type,best_type=bdt,worst_type=wdt) - target.fighter.defense
-                    
-                crit = libtcod.random_get_float(0,0,100.00)
-                if crit <= (self.base_crit_bonus+wep.crit_bonus):
-                    self.owner.message.message('CRIT',3)
-                    damage = damage*2
-                    #damage = damage**damage <-- LOL
-                    #CRIT
-                    #Player attacks troll for 437,893,890,380,859,375 hit points.
-                     
-                    
-            if damage > 0:
-                #make the target take some damage
-                self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' for ' + str(damage) + ' hit points.',col)
-                target.fighter.take_damage(damage,self.owner)
-            else:
-                if libtcod.random_get_int(0,0,100) < 25:#25% chance to always do at least 1 damage
-                    target.fighter.take_damage(1,self.owner)
-                else:
-                    self.owner.message.message(self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!',col)
+
+        attack_roll = libtcod.random_get_int(0, 1, 20)
+        attack_roll += combat.get_melee_bonus(self.owner)
+
+        evasion_roll = combat.get_evasion_class(target)
+        deflection_roll = combat.get_deflection_class(target)
+        blocking_roll = combat.get_blocking_class(target)
+
+        msg = "A: %d, E:%d" % (attack_roll, evasion_roll)
+        self.owner.message.message(msg)
+        msg = ''
+        if evasion_roll > attack_roll:
+            msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but the attack was evaded!'
+        elif deflection_roll > attack_roll:  # need to check for a weapon or something that can deflect
+            msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but the attack was deflected!'
+        elif blocking_roll > attack_roll:  # need to check for shield
+            msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but the attack was blocked!'
         else:
-            self.owner.message.message(self.owner.name.capitalize()+' misses ' + target.name +'.',col)
-    def take_damage(self, damage,attacker):
+            dmg = 0
+            if self.wielded[0] is not None:
+                skill = self.get_skill(self.wielded[0].item.equipment.damage_type)
+                if skill is not None:
+                    dmg = skill.get_bonus()
+                if dmg is None:
+                    dmg = 0
+                dmg += self.wielded[0].item.equipment.calc_damage()
+                dmg = int(dmg)
+            else:
+                #For empty slots
+                pass
+            if dmg > 0:
+                if attack_roll < 10 + self.armor_bonus:
+                    dmg *= 0.25
+                    dmg = int(dmg)
+                #make the target take some damage
+                msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' for ' + str(dmg) + '!'
+                target.fighter.take_damage(dmg, self.owner)
+            else:
+                if libtcod.random_get_int(0, 0, 100) < 25:  # 25% chance to always do at least 1 damage
+                    dmg = 1
+                    target.fighter.take_damage(dmg, self.owner)
+                    msg = self.owner.name.capitalize() + ' scratches ' + target.name + ' for ' + str(dmg) + '!'
+                else:
+                    msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!'
+
+        self.owner.message.message(msg, col)
+
+    def take_damage(self, damage, attacker):
         #apply damage if possible
         if damage > 0:
             self.hp -= damage
- 
             #check for death. if there's a death function, call it
             if self.hp <= 0:
-                attacker.fighter.current_xp+=self.current_xp
+                attacker.fighter.current_xp += self.current_xp
                 function = self.death_function
                 if function is not None:
                     function(self.owner)
@@ -232,19 +258,22 @@ class Fighter:
             self.hp = self.max_hp
             
 #x,y offsets for co-ords next to the player
-offsets = [(1,0),(0,1),(-1,0),(0,-1),
-           (1,1),(-1,1),(-1,-1),(1,-1)]
-def get_next_to_player(mob,player,map):
+offsets = [(1, 0), (0, 1), (-1, 0), (0, -1),
+           (1, 1), (-1, 1), (-1, -1), (1, -1)]
+
+
+def get_next_to_player(mob, player, map):
     d = 100
     dx,dy = 0,0
     for i in range(len(offsets)):
         px,py = offsets[i]
-        if mob.owner.distance(player.x+px,player.y+py) < d:
-            if not mob.owner.is_blocked(player.x+px,player.y+py,map,mob.owner.objects):
-                dx,dy = player.x+px,player.y+py
-                d = mob.owner.distance(player.x+px,player.y+py)
-    return dx,dy
-        
+        if mob.owner.distance(player.x+px, player.y+py) < d:
+            if not mob.owner.is_blocked(player.x+px, player.y+py, map, mob.owner.objects):
+                dx, dy = player.x+px,player.y+py
+                d = mob.owner.distance(player.x+px, player.y+py)
+    return dx, dy
+
+
 class BasicMonster:
     #AI for a basic monster.
     def take_turn(self,game):
@@ -266,7 +295,8 @@ class BasicMonster:
         else:#start wandering
             self.owner.ai = WanderingMonster(x=self.owner.x,y=self.owner.y)
             self.owner.ai.owner = self.owner
-            
+
+
 class WanderingMonster:
     #Ai for a monster to randomly wander around when not in the view of the player
     def __init__(self,radius=3,x=0,y=0):
@@ -305,7 +335,8 @@ class WanderingMonster:
         if libtcod.map_is_in_fov(game.fov_map, self.owner.x, self.owner.y):
             self.owner.ai = BasicMonster()
             self.owner.ai.owner = self.owner
-            
+
+
 class ConfusedMonster:
     #AI for a temporarily confused monster (reverts to previous AI after a while).
     def __init__(self, old_ai, num_turns=3):
@@ -322,7 +353,8 @@ class ConfusedMonster:
         else:#restore the previous AI 
             self.owner.ai = self.old_ai
             self.owner.message.message('The ' + self.owner.name + ' is no longer confused!', 2)
- 
+
+
 class RangedMonster:
       #AI for a ranged type monster 
       def take_turn(self,game):
@@ -355,12 +387,13 @@ def monster_death(monster):
     #drop all of equipped gear from monsters
     for item in monster.fighter.wielded:
         if item:
-            monster.fighter.inventory.append(item)
+            if item.item.equipment.type != 'monster_melee':
+                monster.fighter.inventory.append(item)
     for item in monster.fighter.equipment:
         if item:
             monster.fighter.inventory.append(item)
     for item in monster.fighter.inventory:
-        item.item.drop(monster.fighter.inventory,monster,False)
+        item.item.drop(monster.fighter.inventory, monster, False)
         item.send_to_back()
         
     monster.fighter.ticker.remove_object(monster)

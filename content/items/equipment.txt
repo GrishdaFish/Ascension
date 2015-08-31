@@ -1,153 +1,259 @@
-/* <-- btw this is a block comment anything inbetween /* and */ will be ignored.
-Try not to add too many more items, since we will be adding stuff to them.
-Dont want to make too much work to have to go back and update for now.
-Once we have all mechanics in place, then we can really start adding content
-
-Armor object_type has been updated with string type="armor"
-rings and such will have string type="accessory".
-
-Maybe revise crit stats, bigger weapons like greatswords should have far lower crit rate
-to make up for increased base damage.
-
-Also, blunt weapons should have VERY low crit rate, but possibly higher base damage 
-than blade types of similar format, smaller range (IE 4-5, instead of 2-5) or have
-HUGE max damage, but also a HUGE range (IE 1-20)
-
-
-Unique equipment will have string pref_material = "". It wont make the item have that material,
-just a strong bias towards it.
-
-Armor types =
-
-torso
-head
-left_hand
-right_hand
-legs
-right_foot
-left_foot
-left_arm
-right_arm
-left_shoulder
-right_shoulder
-back// for capes
-
-For accessories
-finger
-neck
-//equipment item format
-//may have additions later
-//Added defense to weapons
-
-UPDATE-> Equipment now has a base cost, which will be multiplied by material value
-Equipment now has a string for a description.
-Not implemented ingame, for future use
-
-Added basic threat_level for equipment. Will be used in calculating spawns
-
-Todo Additions:
-string[] crit_type
-int speed
-
-UPDATE-> Weapons now have a size stat, sizes are:
-tiny
-small
-normal
-large
-
-
-*/
 
 
 /*======================================================
                     Base Weapons
 =======================================================*/
-
-/*======================================================
-                      Swords
-=======================================================*/
-
 object_type "weapon" {
     string name="dagger"
     char cell='/'//should keep weapons this character
-    int min_power=2//min and max damage before armor type bonuses/penalties
-    int max_power=5
-    float crit_bonus = 10.0//critical strike chance 1.0 = 1% 
     string type="melee"//can be only melee for now, ranged will come later
     int handed=1//how many hands it takes to wield
     bool dual_wield=true//can be dual wielded?
-	int defense=1
-    string damage_type="piercing"//2x damage vs this protection type
+    string damage_type="Knives"//2x damage vs this protection type
+    string family = "knife" // the skill family this weapon belongs in
+    int base_value=25//base value of the item before materials
+    string description=""//Description of the item, not including material
+    float threat_level=0.5//for calculating spawns, higher number = more dangerous
+    string size="tiny"
+    dice damage = "1d4"
+    int accuracy = 2 //accuracy bonus or penalty
+    }
+object_type "weapon" {
+    string name="short sword"
+    char cell='/'//should keep weapons this character
+    string type="melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
+    bool dual_wield=true//can be dual wielded?
+    string damage_type="Straightsword"//2x damage vs this protection type
+    string family = "straightsword" // the skill family this weapon belongs in
     int base_value=50//base value of the item before materials
     string description=""//Description of the item, not including material
     float threat_level=0.5//for calculating spawns, higher number = more dangerous
     string size="tiny"
+    dice damage = "1d6"
+    int accuracy = 1 //accuracy bonus or penalty
     }
-
 object_type "weapon" {
-    string name="shortsword"
+    string name="long sword"
     char cell='/'//should keep weapons this character
-    int min_power=3
-    int max_power=7
-    float crit_bonus = 3.0
-    string type="melee"
-    int handed=1
+    string type="melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
     bool dual_wield=true//can be dual wielded?
-	int defense=0
-    string damage_type="slashing"//2x damage vs this protection type
-    int base_value=75
-    string description=""
-    float threat_level=0.75
-    string size="small"
+    string damage_type="Straightsword"//2x damage vs this protection type
+    string family = "straightsword" // the skill family this weapon belongs in
+    int base_value=75//base value of the item before materials
+    string description=""//Description of the item, not including material
+    float threat_level=0.5//for calculating spawns, higher number = more dangerous
+    string size="tiny"
+    dice damage = "1d8"
+    int accuracy = 0 //accuracy bonus or penalty
     }
-
 object_type "weapon" {
-    string name="longsword"
+    string name="great sword"
     char cell='/'//should keep weapons this character
-    int min_power=4
-    int max_power=9
-    float crit_bonus = 3.0
-    string type="melee"
-    int handed=1
+    string type="melee"//can be only melee for now, ranged will come later
+    int handed=2//how many hands it takes to wield
     bool dual_wield=false//can be dual wielded?
-	int defense=0
-    string damage_type="slashing"//2x damage vs this protection type
-    int base_value=100
-    string description=""
-    float threat_level=1.0
-    string size="normal"
+    string damage_type="Straightsword"//2x damage vs this protection type
+    string family = "straightsword" // the skill family this weapon belongs in
+    int base_value=100//base value of the item before materials
+    string description=""//Description of the item, not including material
+    float threat_level=0.5//for calculating spawns, higher number = more dangerous
+    string size="tiny"
+    dice damage = "2d10"
+    int accuracy = 0 //accuracy bonus or penalty
     }
-
 object_type "weapon" {
-    string name="greatsword"
+    string name="katana"
     char cell='/'//should keep weapons this character
-    int min_power=5
-    int max_power=11
-    float crit_bonus = 3.0
-    string type="melee"
-    int handed=1
-    bool dual_wield=false//can be dual wielded?
-	int defense=0
-    string damage_type="slashing"//2x damage vs this protection type
-    int base_value=150
-    string description=""
-    float threat_level=2.0
-    string size="large"
-    
+    string type="melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
+    bool dual_wield=true//can be dual wielded?
+    string damage_type="Curvesword"//2x damage vs this protection type
+    string family = "curvesword" // the skill family this weapon belongs in
+    int base_value=75//base value of the item before materials
+    string description=""//Description of the item, not including material
+    float threat_level=0.5//for calculating spawns, higher number = more dangerous
+    string size="tiny"
+    dice damage = "1d8"
+    int accuracy = 1 //accuracy bonus or penalty
+    }
+object_type "weapon" {
+    string name="battleaxe"
+    char cell='/'//should keep weapons this character
+    string type="melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
+    bool dual_wield=true//can be dual wielded?
+    string damage_type="Axe"//2x damage vs this protection type
+    string family = "axe" // the skill family this weapon belongs in
+    int base_value=75//base value of the item before materials
+    string description=""//Description of the item, not including material
+    float threat_level=0.5//for calculating spawns, higher number = more dangerous
+    string size="tiny"
+    dice damage = "1d8"
+    int accuracy = -1 //accuracy bonus or penalty
     }
 
 /*===============================================
+                Monster Weapons
+===============================================*/
+object_type "monster_weapon"{
+    string name="claw"
+    string type="monster_melee"//can be only melee for now, ranged will come later
+    int handed=1//how many hands it takes to wield
+    bool dual_wield=true//can be dual wielded?
+    string damage_type="Claw"//2x damage vs this protection type
+    dice damage = "1d2"
+    int accuracy = -1 //accuracy bonus or penalty
+}
+
+/*===============================================
+                Legendary Weapons
+===============================================*/
+object_type "legendary_weapon"{
+    string name = "Uriel's Brand"
+    string base_weapon = "long sword"
+    string pref_mat = "steel"
+
+    int base_value = 1500
+    float threat_level = 3.0
+    dice bonus_dice = "1d8"
+    string[] bonus_type = ["dexterity", "fire", "accuracy", "deflect"]
+    int[] bonus_magnitude = [3, 5, 5, 5]
+}
+/*===============================================
                 Base Armor
 ===============================================*/
-object_type "armor" { //rings,amulets and such will be considered armor
-    string name="chest armor"
-    char cell=']' //keep armor this character
-    int defense=2 //base defense
-    string type="armor" //rings amulets and such will be "accessory"
-    string location="torso" //location on the body
-    string best_defense_type="blunt" //best,worst,2xdefense vs best,2x damage vs worst
-    string worst_defense_type="piercing" 
-    int base_value=75
-    string description=""
-    float threat_level=0.5
+
+object_type "armor" {
+    string name = "robe"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
 }
+
+object_type "armor" {
+    string name = "shirt"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "platemail"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 2
+}
+
+object_type "armor" {
+    string name = "plate"
+    char cell = ']'
+    string type = "armor"
+    string location = "torso"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 1 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 3
+    int penalty = 3
+}
+
+object_type "armor" {
+    string name = "helm"
+    char cell = ']'
+    string type = "armor"
+    string location = "head"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 1
+}
+
+object_type "armor" {
+    string name = "spaulders"
+    char cell = ']'
+    string type = "armor"
+    string location = "shoulders"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 2
+    int penalty = 2
+}
+
+object_type "armor" {
+    string name = "sleeves"
+    char cell = ']'
+    string type = "armor"
+    string location = "arms"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "gloves"
+    char cell = ']'
+    string type = "armor"
+    string location = "hands"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "pants"
+    char cell = ']'
+    string type = "armor"
+    string location = "legs"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 0
+    int penalty = 0
+}
+
+object_type "armor" {
+    string name = "boots"
+    char cell = ']'
+    string type = "armor"
+    string location = "feet"
+    int base_value = 75
+    string description = ""
+    float threat_level = 0.5
+    int allowed_materials = 3 //1 for cloth, 2 for metal, 3 for both
+    int bonus = 1
+    int penalty = 0
+}
+/*===============================================
+                Legendary Armor
+===============================================*/

@@ -3,7 +3,7 @@ from item import *
 from object import *
 from misc import *
 from spells import *
-
+import logging
 
 class GameObjects:
 ##============================================================================
@@ -26,8 +26,9 @@ class GameObjects:
         self.weapon_mats= []
         self.armor_mat_rarity = {}
         self.weapon_mat_rarity = {}
+        log = logging.getLogger('main')
         for item in self.materials:
-            if item.can_be_weapon:
+            if item.can_be_made_from == 1 or item.can_be_made_from == 3:
                 self.weapon_mats.append(item)
                 '''if item.rarity >= 1.0:
                     self.weapon_mat_rarity.setdefault(1.0, []).append(item.name)
@@ -35,7 +36,7 @@ class GameObjects:
                     pass
                 elif item.rarity > 0.5 and item.rarity < 0.75:
                     pass '''
-            if item.can_be_armor:
+            if item.can_be_made_from == 2 or item.can_be_made_from == 3:
                 self.armor_mats.append(item)
 
 ##============================================================================
@@ -158,21 +159,21 @@ class GameObjects:
         return None
         
 ##============================================================================
-    def build_equipment(self,game,x,y,type=None,name=None,mat=None):
+    def build_equipment(self, game, x, y, type=None, name=None, mat=None):
 ##============================================================================
         #for getting base equipments, no special effects or unique/legendary
         
         #if mat or name return None, random mats or equipments are used
         if mat:
             mat = self.get_mat_from_name(mat)
-                
+        eq = None
         if name:
             eq = self.get_equip_from_name(name)
             if eq:
                 type = eq.type
             
         if not type:
-            r = libtcod.random_get_int(0,0,(len(self.equipment)-1))
+            r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
             eq = self.equipment[r]
             type = eq.type
     
@@ -180,22 +181,24 @@ class GameObjects:
             if not name:
                 picked = False
                 while not picked:
-                    r = libtcod.random_get_int(0,0,(len(self.equipment)-1))
+                    r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
                     if self.equipment[r].type == 'melee':
                         eq = self.equipment[r]
                         picked = True
             if not mat:
                 mat = self.get_mat_from_rarity(type)
                 #mat = self.weapon_mats[libtcod.random_get_int(0,0,(len(self.weapon_mats)-1))]
-        
-            eq.min_power+=mat.modifier
-            eq.max_power+=mat.modifier
-            eq.threat_level+=mat.modifier
-            
-            equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
+
+            #eq.min_power += mat.modifier
+            #eq.max_power += mat.modifier
+            eq.threat_level += mat.modifier
+            equip_component = Equipment(type=eq.type, handed=eq.handed, dual_wield=eq.dual_wield,
+                                        threat_level=eq.threat_level, accuracy=eq.accuracy, damage=eq.damage,
+                                        damage_type=eq.damage_type)
+            '''equip_component = Equipment(min_power=eq.min_power,max_power=eq.max_power,
                 crit_bonus=eq.crit_bonus,type=eq.type,handed=eq.handed,
-                dual_wield=eq.dual_wield,damage_type=eq.damage_type,threat_level=eq.threat_level)
-                    
+                dual_wield=eq.dual_wield,damage_type=eq.damage_type,threat_level=eq.threat_level, accuracy=eq.accuracy)
+            '''
                     
         if type == 'armor':
             if not name:
@@ -210,19 +213,33 @@ class GameObjects:
                 mat = self.get_mat_from_rarity(type)
                 #mat = self.armor_mats[libtcod.random_get_int(0,0,(len(self.armor_mats)-1))]
                 
-            eq.defense+=mat.modifier
+            eq.bonus+=mat.armor_bonus
+            eq.penalty += mat.armor_bonus
             eq.threat_level+=mat.modifier
             
             equip_component = Equipment(defense=eq.defense,type=eq.type,location=eq.location,
-                best_defense_type=eq.best_defense_type,worst_defense_type=eq.worst_defense_type,
-                threat_level=eq.threat_level+mat.modifier)
-        
-        
-        item_component = Item(equipment=equip_component)
-        item_component.value = int(eq.value*mat.price_mod)
-        name = mat.name+" "+eq.name
-        equip = Object(game.con,x,y,eq.cell,name,mat.color,item=item_component)
-        
+                                        best_defense_type=eq.best_defense_type,worst_defense_type=eq.worst_defense_type,
+                                        threat_level=eq.threat_level+mat.modifier)
+
+        if type == 'monster_melee':
+            if not name:
+                picked = False
+                while not picked:
+                    r = libtcod.random_get_int(0, 0, (len(self.equipment)-1))
+                    if self.equipment[r].type == 'monster_melee':
+                        eq = self.equipment[r]
+                        picked = True
+            equip_component = Equipment(type=eq.type, handed=eq.handed, dual_wield=eq.dual_wield,
+                                        accuracy=eq.accuracy, damage=eq.damage,
+                                        damage_type=eq.damage_type)
+        if eq.type != "monster_melee":
+            item_component = Item(equipment=equip_component)
+            item_component.value = int(eq.value*mat.price_mod)
+            name = mat.name+" "+eq.name
+            equip = Object(game.con,  x, y, eq.cell, name, mat.color, item=item_component)
+        else:
+            item_component = Item(equipment=equip_component)
+            equip = Object(game.con, x, y, ' ', eq.name, (0, 0, 0), item=item_component)
         equip.message = game.message
         equip.objects = game.objects
         
@@ -246,7 +263,7 @@ class GameObjects:
         #returns Object
         if not mob_name:
             mob = None
-            while mob == None:
+            while mob is None:
                 if threat_level:
                     mob = self.get_monster(self.get_mob_from_threat(threat_level))
                 else:
@@ -264,11 +281,18 @@ class GameObjects:
         
         monster = Object(game.con,x, y, mob.cell, mob.name, mob.color,
             blocks=True, fighter=fighter_component, ai=ai_component)
+
         monster.fighter.ticker.schedule_turn(monster.fighter.speed, monster)
+
+        monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="monster_melee")
         if mob.can_equip_gear:
             r = libtcod.random_get_int(0,0,100)
-            if r < 50:
+            if r > 85:  # 15 % chance the mob will have a weapon
                 monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="melee")
+        for skill in monster.fighter.skills:
+            skill.set_bonus(mob.defense_bonus)
+        monster.fighter.max_hp = mob.hp
+        monster.fighter.hp = mob.hp
         return monster    
 
 ##============================================================================

@@ -7,7 +7,8 @@ import menu
 
 class Item:
     #an item that can be picked up and used.
-    def __init__(self, spell=None,equipment=None):
+    def __init__(self, spell=None, equipment=None):
+        self.owner = None
         self.value=0
         self.spell = spell
         if self.spell:
@@ -25,15 +26,15 @@ class Item:
                 msg = menu.color_text('Your inventory is full, cannot pick up ',libtcod.yellow)
                 msg+= menu.color_text(self.owner.name,self.owner.color)
                 msg+= menu.color_text('.',libtcod.yellow)
-                self.owner.message.message(msg,0)#'Your inventory is full, cannot pick up ' + self.owner.name + '.', 3)
+                self.owner.message.message(msg,0)
             else:
                 inventory.append(self.owner)
                 self.owner.objects.remove(self.owner)
                 msg = menu.color_text('You picked up a ',libtcod.yellow)
                 msg+= menu.color_text(self.owner.name,self.owner.color)
                 msg+= menu.color_text('!',libtcod.yellow)
-                self.owner.message.message(msg,0)#'You picked up a ' + self.owner.name + '!',3)
-     
+                self.owner.message.message(msg,0)
+
     def drop(self,inventory, owner, mes=True):
         #add to the map and remove from the owners inventory. 
         #also, place it at the owners coordinates
@@ -46,8 +47,8 @@ class Item:
             msg = menu.color_text('%s dropped a '%owner.name.capitalize(),libtcod.yellow)
             msg+= menu.color_text(self.owner.name,self.owner.color)
             msg+= menu.color_text('.',libtcod.yellow)
-            self.owner.message.message(msg,0)#owner.name.capitalize()+' dropped a ' + self.owner.name + '.',3)
- 
+            self.owner.message.message(msg,0)
+
     def use(self,inventory,creature,game,player=True):
         #just call the "use_function" if it is defined
         if player == True:
@@ -64,9 +65,10 @@ class Item:
 
 
 class Equipment:
-    def __init__(self,min_power=None,max_power=None,crit_bonus=None,defense=None,
-                    type=None,location=None,best_defense_type=None,worst_defense_type=None,
-                    handed=None,dual_wield=None,damage_type=None,threat_level=None):
+    def __init__(self,min_power=0, max_power=0, crit_bonus=0, defense=0,
+                    type='',location='',best_defense_type='',worst_defense_type='',
+                    handed=0,dual_wield=None,damage_type='',threat_level=0,
+                    allowed_materials=0, bonus=0, penalty=0, description='', accuracy=0, damage=None):
         self.min_power=min_power
         self.max_power=max_power
         self.crit_bonus=crit_bonus
@@ -79,22 +81,36 @@ class Equipment:
         self.dual_wield=dual_wield
         self.damage_type=damage_type
         self.threat_level=threat_level
+        self.allowed_materials = allowed_materials
+        self.bonus = bonus
+        self.penalty = penalty
+        self.description = description
+        self.accuracy = accuracy
+        self.damage = damage
         
-    def calc_damage(self,best_type=None,worst_type=None,damage_type=None,damage=None):
-        ##get final damage/damage reduction,before player stats, crits, chance to hit
-        if self.type == "melee":
-            damage = libtcod.random_get_int(0,self.min_power,self.max_power)
-            if self.damage_type == best_type:
-                return damage // 2 #rounded down
-            elif self.damage_type == worst_type:
-                return damage*2
-            else:
-                return damage
+    def calc_damage(self):
+        total_damage = 0
+        if self.damage is not None:
+            num_dice = self.damage.nb_dices
+            sides = self.damage.nb_faces
+            multiplier = self.damage.multiplier
+            bonus = self.damage.addsub
+            for i in range(num_dice):
+                total_damage += libtcod.random_get_int(0, 1, sides)
+            total_damage = (total_damage * multiplier) + bonus
+        return total_damage
     
-    def equip(self,target,game=None,owner=None,slot=0):
-        locations= {'torso':0,'head':1,'left_hand':2,'right_hand':3,
-                    'legs':4,'right_foot':5,'left_foot':6,'left_arm':7,
-                    'right_arm':8,'left_shoulder':9,'right_shoulder':10,'back':11,}
+    def equip(self, target, game=None, owner=None, slot=0):
+        locations = {
+                    'torso':    0,
+                    'head':     1,
+                    'hands':    2,
+                    'legs':     3,
+                    'feet':     4,
+                    'arms':     5,
+                    'shoulders': 6,
+                    'back':     7
+        }
         
         if self.type == 'armor':
             if target.fighter.equipment[locations[self.location]] is None:
@@ -102,21 +118,29 @@ class Equipment:
                 if game:
                     game.message.message(owner.name+" equipped.",1)                    
                     target.fighter.inventory.remove(owner)
-                target.fighter.defense+=self.defense
+                #target.fighter.defense+=self.defense
+                target.fighter.set_armor_bonus()
+                target.fighter.set_armor_penalty()
                 return
             else:
                 remove = target.fighter.equipment[locations[self.location]]
                 self.un_equip(target,remove)
                 target.fighter.equipment[locations[self.location]] = owner
-                target.fighter.defense-=remove.item.equipment.defense
-                target.fighter.defense+=self.defense
+                #target.fighter.defense-=remove.item.equipment.defense
+                #target.fighter.defense+=self.defense
+                target.fighter.set_armor_bonus()
+                target.fighter.set_armor_penalty()
                 if game:
                     game.message.message(owner.name+" equipped.",1)
                     target.fighter.inventory.remove(owner)
+
                 return
                 
         if self.type == 'melee':
             if self.handed==1:
+                if target.fighter.wielded[1]is not None:
+                    if target.fighter.wielded[1].item.equipment.handed == 2:
+                        target.fighter.wielded[1] = None
                 if not self.dual_wield:
                     if target.fighter.wielded[0]:
                         self.un_equip(target,target.fighter.wielded[0])
@@ -130,7 +154,7 @@ class Equipment:
                         
                 ##Non dual wielding 1 handed weapons   
                 else:
-                    if target.fighter.wielded[0]:##something in hand 1
+                    if target.fighter.wielded[0]: # something in hand 1
                         self.un_equip(target,target.fighter.wielded[0])
                         self.put_on(target,0,owner,game)
                     else:
@@ -141,13 +165,21 @@ class Equipment:
                             self.put_on(target,1,owner,game)
                     return
     
-            if self.handed==2:
+            if self.handed == 2:
                 if target.fighter.wielded[0]:
-                    self.un_equip(target,target.fighter.wielded[0])
-                    self.put_on(target,0,owner,game)                    
+                    self.un_equip(target, target.fighter.wielded[0])
+                    self.put_on(target, 0, owner, game)
                     if target.fighter.wielded[1]:
-                        self.un_equip(target,target.fighter.wielded[1])
-                    return
+                        self.un_equip(target, target.fighter.wielded[1])
+                    target.fighter.wielded[1] = owner
+                    #self.put_on(target, 1, owner, game)
+                else:
+                    self.put_on(target, 0, owner, game)
+                    if target.fighter.wielded[1]:
+                        self.un_equip(target, target.fighter.wielded[1])
+                    target.fighter.wielded[1] = owner
+                    #self.put_on(target, 1, owner, game)
+
 
     def put_on(self,target,slot,owner,game,type='wep'):
         if type == 'wep':

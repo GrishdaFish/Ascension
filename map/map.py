@@ -233,7 +233,6 @@ class Map:
         for x in range(width):
             for y in range(height):
                 bit_map_arr.append(map[x][y].return_bitmask())
-        self.logger.log.debug("%d, %d" % (x, y))
         return bit_map_arr
 
     def build_bitmask_map(self,bitmask_map,game):

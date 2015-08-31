@@ -29,6 +29,7 @@ option_struct "key_set" {
     string key_equip="e"
     string key_help="?"
     string key_drop="f"
+    string key_char = "c"
 }
 
 option_struct "key_set" {
@@ -42,4 +43,5 @@ option_struct "key_set" {
     string key_equip="e"
     string key_help="?"
     string key_drop="d"
+    string key_char = "c"
 }

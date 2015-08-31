@@ -2,8 +2,9 @@ import sys
 import os
 import string
 import logging
-sys.path.append(os.path.join(sys.path[0],'map'))
-sys.path.append(os.path.join(sys.path[0],'object'))
+import zlib
+sys.path.append(os.path.join(sys.path[0], 'map'))
+sys.path.append(os.path.join(sys.path[0], 'object'))
 
 MAP = None
 try:
@@ -16,18 +17,26 @@ except ImportError:
 
 PADDING = '****'  # to signify the end of a block of data
 END_OF_OBJECT = "&&&&"  # the end of an entire object (player, level, etc..)
+
 MAP_PADDING = '@'  # between each "tile" of the map
 END_OF_MAP = '!!!!'  # the end of the map
+
 END_OF_MISC = '####'  # the end of the misc objects in the level
 END_MISC = '#---'
+
 END_OF_ITEMS = '$$$$'  # the end of the items in the level
 END_ITEM = '$---'
+
 END_OF_MONSTERS = "%%%%"  # the end of the monsters in the level
 END_MONSTER = '%---'
+
+END_SKILL = '(---'
+
 END_PLAYER = '@---'
 END_INVENTORY = '@###'
 END_EQUIPMENT = '@$$$$'
 END_WIELDED = '@%%%'
+END_SKILLS = '@^^^'
 
 class Object:  # an object we use to hold save information
     def __init__(self, name=None, x=None, y=None, hp=None, max_hp=None):
@@ -43,7 +52,7 @@ def save(game):
         pass
     else:
         pass
-    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'w+')
+    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'wb')
 
     completed_save = ''
     completed_save += game.version
@@ -60,6 +69,7 @@ def save(game):
     for level in game.current_dungeon:
         completed_save += save_level(game, level)
 
+    completed_save = zlib.compress(completed_save)
     save_file.write(completed_save)
     save_file.close()
 
@@ -170,8 +180,19 @@ def save_misc(misc):
     return ret
 
 
+def save_skill(skill):
+    ret = ''
+
+    ret = skill.get_name()
+    ret += PADDING
+
+    ret += str(skill.get_bonus())
+    ret += END_SKILL
+
+    return ret
+
+
 def save_player(player):
-    log = logging.getLogger('main')
     player_save = ''
     player_save += player.name
     player_save += PADDING
@@ -189,24 +210,35 @@ def save_player(player):
     player_save += PADDING
 
     player_save += str(player.fighter.money)
+    player_save += PADDING
+
+    player_save += str(player.fighter.level)
+    player_save += PADDING
+
+    player_save += str(player.fighter.current_xp)
+    player_save += PADDING
+
+    player_save += str(player.fighter.unused_skill_points)
     player_save += END_PLAYER
 
     for item in player.fighter.inventory:
-        log.debug(item.name)
         player_save += save_item(item)
     player_save += END_INVENTORY
 
     for item in player.fighter.equipment:
         if item is not None:
             player_save += save_item(item)
-
     player_save += END_EQUIPMENT
 
     for item in player.fighter.wielded:
         if item is not None:
             player_save += save_item(item)
-
     player_save += END_WIELDED
+
+    for item in player.fighter.skills:
+        if item is not None:
+            player_save += save_skill(item)
+    player_save += END_SKILLS
 
     player_save += END_OF_OBJECT
     return player_save
@@ -216,7 +248,7 @@ def load(game=None):
     save_file = open(os.path.join(sys.path[0], 'save.sav'), 'rb')
     s = save_file.read()
     save_file.close()
-
+    s = zlib.decompress(s)
     save_array = string.split(s, END_OF_OBJECT)
 
     version = save_array.pop(0)
@@ -239,13 +271,11 @@ def load(game=None):
 def load_player(player, p, game=None):
     p = string.split(p, END_PLAYER)
     i = p[1]
-    game.logger.log.debug(p)
     items = string.split(i, END_INVENTORY)
-    game.logger.log.debug(items)
-
     equipment = string.split(items[1], END_EQUIPMENT)
     items = string.split(items[0], END_ITEM)
     wielded = string.split(equipment[1], END_WIELDED)
+    skills = string.split(wielded[1], END_SKILL)
     equipment = string.split(equipment[0], END_ITEM)
     wielded = string.split(wielded[0], END_ITEM)
 
@@ -259,14 +289,21 @@ def load_player(player, p, game=None):
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
-            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
     if len(wielded) > 1:
         wielded.pop()
         for item in wielded:
             i = load_item(Object(), item, game)
             player.fighter.inventory.append(i)
             i.item.use(player.fighter.inventory, player, game, True)
-            game.logger.log.debug('Item: %s, Type %s' % (i.name, i.item.equipment.type))
+
+    if len(skills) >1:
+        skills.pop()
+        for skill in skills:
+            skill = string.split(skill, PADDING)
+            s = player.fighter.get_skill(skill[0])
+            s.set_bonus(int(skill[1]))
+
+
 
     p = string.split(p[0], PADDING)
     player.name = p[0]
@@ -275,6 +312,9 @@ def load_player(player, p, game=None):
     player.fighter.hp = int(p[3])
     player.fighter.max_hp = int(p[4])
     player.fighter.money = int(p[5])
+    # level
+    # current xp
+    # unused skill points
 
 
 def load_level(level, game=None):
@@ -366,7 +406,6 @@ def load_misc(misc, m, game):
 
 def load_item(item, i, game=None):
     i = string.split(i, PADDING)
-    game.logger.log.debug(i)
     item.name = i[0]
     if i[1] == 'None':
         item.x = None

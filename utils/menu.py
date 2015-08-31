@@ -443,9 +443,12 @@ def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None
     in_drag_zone = False
     mouse_highlight = False
     mouse = None
-    key = None
+    key = libtcod.console_check_for_keypress()
     first_run = True
-    libtcod.console_check_for_keypress() 
+
+    while key.vk is not libtcod.KEY_NONE:
+        key = libtcod.console_check_for_keypress(True)
+
     while not libtcod.console_is_window_closed():
         game.gEngine.console_flush()    
         game.gEngine.console_blit(window, 0, 0,width,height,0,w_pos,h_pos,1.0, 1.0)
@@ -525,7 +528,7 @@ def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None
             return mouse_choice
       
         ##Menu Keyboard Input
-        key = libtcod.console_check_for_keypress()  
+        key = libtcod.console_check_for_keypress(True)
         
         index = key.c - ord('a')
         
@@ -603,10 +606,16 @@ def color_text(text,color_f=None,color_b=None,game=None):
 ##============================================================================
 def equipment_menu(equipment,screen_height,screen_width,game):
 ##============================================================================
-    slots=['torso','head','left hand','right hand','legs','left foot',
-        'right foot','left arm','right arm','right shoulder','left shoulder','back']
-    
-    options=[]
+    slots = ['torso',
+             'head',
+             'hands',
+             'legs',
+             'feet',
+             'arms',
+             'shoulders',
+             'back']
+
+    options = []
     wielded = equipment[0]
     equip = equipment[1]
     acc = equipment[2]
@@ -674,6 +683,11 @@ def equipment_menu(equipment,screen_height,screen_width,game):
                 msg = 'Take off '+color_text(equip_option[index].name,equip_option[index].color)+' ?'                
                 if confirm_screen(0,msg,screen_height,screen_width,game=game):                    
                     equip_option[index].item.equipment.un_equip(game.player,equip_option[index])
+                    if equip_option[index].item.equipment.handed == 2:
+                        if index == 0:
+                            wielded[1] = None
+                        else:
+                            wielded[0] = None
                     wielded[index]=None
                     
             else:##otherwise pop into the inventory, to select an item to equip
@@ -730,7 +744,7 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
         options = [color_text(item.name,item.color) for item in inventory]
     else:
         options = inventory
-    index = menu(con,header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
+    index = menu(con, header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
     #if an item was chosen, return it
     if index is None or len(inventory) == 0:
         return None
@@ -750,9 +764,34 @@ def options_menu(con, header, options, screen_width, screen_height, bg=None):
         if option.key_set:
             current_set = option.key_set
 
+
 def help_menu():
     pass
 
+
+def character_menu(con, header, skill_list, screen_width, screen_height, game, is_name=False ):
+    options = []
+    if len(skill_list) == 0:
+        options = ['No skills to display']
+        length = len('No skills to display')
+    else:
+        length = 0
+        for item in skill_list:
+            skill = ''
+            skill += item.get_name()
+            skill += ' Level: ' + str(item.get_bonus())
+            options.append(skill)
+            l = len(skill)
+            if l > length:
+                length = l
+    length += 2
+    index = menu(con, header, options, length, screen_height, screen_width, bg=None, game=game)
+    if index is None or len(skill_list) == 0:
+        return None
+    if not is_name:
+        return skill_list[index]
+    else:
+        return index
 
 ##============================================================================
 def town_menu(con, header, game, width, screen_height, screen_width):
