@@ -301,7 +301,7 @@ def load_player(player, p, game=None):
         for skill in skills:
             skill = string.split(skill, PADDING)
             s = player.fighter.get_skill(skill[0])
-            s.set_bonus(skill[1])
+            s.set_bonus(int(skill[1]))
 
 
 
@@ -315,6 +315,7 @@ def load_player(player, p, game=None):
     # level
     # current xp
     # unused skill points
+
 
 def load_level(level, game=None):
     level = string.split(level, END_OF_MAP)
