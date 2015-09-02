@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7ef8a05c-f239-4fe1-9a91-4e3c338f7cab" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/object/build_objects.py" afterPath="$PROJECT_DIR$/object/build_objects.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gEngine/gEngine.py" afterPath="$PROJECT_DIR$/gEngine/gEngine.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/menu.py" afterPath="$PROJECT_DIR$/utils/menu.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="src.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -21,7 +18,7 @@
     <SUITE FILE_PATH="coverage/src$binary_testing.coverage" NAME="binary_testing Coverage Results" MODIFIED="1440314924267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Necrodouche/spare crap" />
     <SUITE FILE_PATH="coverage/src$CaveGen.coverage" NAME="CaveGen Coverage Results" MODIFIED="1440303916525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../LH-Arena/src" />
     <SUITE FILE_PATH="coverage/src$save_system.coverage" NAME="save_system Coverage Results" MODIFIED="1440371379593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441228403021" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441228580750" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -82,7 +79,7 @@
                     <element signature="e#23048#24195#0" expanded="false" />
                     <element signature="e#24337#29837#0" expanded="false" />
                     <element signature="e#30033#30664#0" expanded="false" />
-                    <element signature="e#30726#45831#0" expanded="false" />
+                    <element signature="e#30726#45828#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -172,8 +169,8 @@
           <file leaf-file-name="menu.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/utils/menu.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.64555055" vertical-offset="3295" max-vertical-offset="10081">
-                  <caret line="867" column="92" selection-start-line="867" selection-start-column="92" selection-end-line="867" selection-end-column="92" />
+                <state vertical-scroll-proportion="0.54298645" vertical-offset="3346" max-vertical-offset="10081">
+                  <caret line="866" column="38" selection-start-line="866" selection-start-column="38" selection-end-line="866" selection-end-column="38" />
                   <folding>
                     <element signature="e#204#7979#0" expanded="false" />
                     <element signature="e#6978#7979#0" expanded="false" />
@@ -1214,8 +1211,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.64555055" vertical-offset="3295" max-vertical-offset="10081">
-          <caret line="867" column="92" selection-start-line="867" selection-start-column="92" selection-end-line="867" selection-end-column="92" />
+        <state vertical-scroll-proportion="0.54298645" vertical-offset="3346" max-vertical-offset="10081">
+          <caret line="866" column="38" selection-start-line="866" selection-start-column="38" selection-end-line="866" selection-end-column="38" />
           <folding>
             <element signature="e#204#7979#0" expanded="false" />
             <element signature="e#6978#7979#0" expanded="false" />

@@ -864,7 +864,7 @@ def inventory(con, player, game, width=80, height=43):
         y = 1
         for i in range(len(inventory_items)):
             text = '(' + chr(letter_index) + ') ' + inventory_items[i]
-            if current_selection == y - 1:
+            if current_selection == y :
                 r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
                 game.gEngine.console_set_default_background(inventory_window, r, g, b)
             else:
