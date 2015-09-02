@@ -824,6 +824,7 @@ def inventory(con, player, game, width=80, height=43):
 
     return_item = None
     key = libtcod.console_check_for_keypress(True)
+    current_selection = None
     while key.vk != libtcod.KEY_ESCAPE:
         game.gEngine.console_flush()
         # get input just after flush
@@ -841,6 +842,7 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_clear(compare_window)
 
         # set up draw screen
+        r, g, b = libtcod.white
         game.gEngine.console_set_default_foreground(inventory_window, r, g, b)
         game.gEngine.console_print_frame(inventory_window, 0, 0, width/2, height, True)
 
@@ -853,6 +855,7 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_set_default_foreground(compare_window, r, g, b)
         game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
 
+
         # ========================================================================
         # print inventory
         # ========================================================================
@@ -861,10 +864,15 @@ def inventory(con, player, game, width=80, height=43):
         y = 1
         for i in range(len(inventory_items)):
             text = '(' + chr(letter_index) + ') ' + inventory_items[i]
-            game.gEngine.console_print(inventory_window, 1, y+1, text)
+            if current_selection == y - 1:
+                r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
+                game.gEngine.console_set_default_background(inventory_window, r, g, b)
+            else:
+                game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
+            game.gEngine.console_print_ex(inventory_window, 1, y+2, libtcod.BKGND_SET, libtcod.LEFT, text)
             y += 1
             letter_index += 1
-
+        game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         # ========================================================================
         # print equipped weapons
         # ========================================================================
@@ -906,9 +914,10 @@ def inventory(con, player, game, width=80, height=43):
         # ========================================================================
 
         # Inventory input
-        if mouse.cx >= width/2 and mouse.cx <= width:  # inventory screen dims
+        if mouse.cx >= width/2 <= width:  # inventory screen dims
             if (mouse.cy-2) < len(inventory_items):
                 item = player.fighter.inventory[mouse.cy-2]
+                current_selection = mouse.cy-2
                 if item.item.equipment:
                     game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
                     game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
@@ -950,7 +959,9 @@ def inventory(con, player, game, width=80, height=43):
                         item.item.use(game.player.fighter.inventory, game.player, game)
                         d_box.destroy_box()
                         inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
-
+            else:
+                current_selection = None
+        # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         # Wielded
         if mouse.cx >= 0 and mouse.cx <= width/2:  # inventory screen dims
             if (mouse.cy-2) < len(player.fighter.wielded):

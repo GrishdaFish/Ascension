@@ -213,9 +213,9 @@ class GameObjects:
                 mat = self.get_mat_from_rarity(type)
                 #mat = self.armor_mats[libtcod.random_get_int(0,0,(len(self.armor_mats)-1))]
                 
-            eq.bonus+=mat.armor_bonus
+            eq.bonus += mat.armor_bonus
             eq.penalty += mat.armor_bonus
-            eq.threat_level+=mat.modifier
+            eq.threat_level += mat.modifier
             
             equip_component = Equipment(defense=eq.defense,type=eq.type,location=eq.location,
                                         best_defense_type=eq.best_defense_type,worst_defense_type=eq.worst_defense_type,

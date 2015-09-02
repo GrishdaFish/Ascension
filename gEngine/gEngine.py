@@ -109,7 +109,13 @@ class gEngine:
             libtcod.console_print(con,x,y,fmt)
         else:
             libtcod.console_print(self.mConsole[con-1],x,y,fmt)
-        
+
+    def console_print_ex(self,con,x,y, flag, alignment, fmt):
+        if con == 0:
+            libtcod.console_print_ex(con, x, y, flag, alignment, fmt)
+        else:
+            libtcod.console_print_ex(self.mConsole[con-1], x, y, flag, alignment, fmt)
+            libtcod.console_print_ex
     def console_flush(self):
         libtcod.console_flush()
         
