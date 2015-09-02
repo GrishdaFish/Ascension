@@ -790,14 +790,14 @@ def inventory(con, player, game, width=80, height=43):
     game.gEngine.console_set_default_foreground(compare_window, r, g, b)
     game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
 
-    slots = ['Torso',
-             'Head',
-             'Hands',
-             'Legs',
-             'Feet',
-             'Arms',
+    slots = ['Torso    ',
+             'Head     ',
+             'Hands    ',
+             'Legs     ',
+             'Feet     ',
+             'Arms     ',
              'Shoulders',
-             'Back']
+             'Back     ']
     #self.buttons.append(Button(self, self.option_labels[0], self.width//6-5, self.height/2-1, True))
     exit_button = Button(label='Exit', game=game,x_pos=(width/2)-9, y_pos=height-6, window=inventory_window,
                          dest_x=width/2, dest_y=0)
@@ -864,7 +864,7 @@ def inventory(con, player, game, width=80, height=43):
         y = 1
         for i in range(len(inventory_items)):
             text = '(' + chr(letter_index) + ') ' + inventory_items[i]
-            if current_selection == y :
+            if current_selection == y:
                 r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
                 game.gEngine.console_set_default_background(inventory_window, r, g, b)
             else:
@@ -879,17 +879,17 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_print(wielded_window, w_header_pos, 0, w_header)
         index = ord('1')
         if player.fighter.wielded[0] is None:
-            text = '(' + chr(index) + ') ' + 'Left Hand: ' + 'Empty'
+            text = '(' + chr(index) + ') ' + ' Left Hand: ' + 'Empty'
         else:
             t = color_text(player.fighter.wielded[0].name.capitalize(), player.fighter.wielded[0].color)
-            text = '(' + chr(index) + ') ' + 'Left Hand: ' + t
+            text = '(' + chr(index) + ') ' + ' Left Hand: ' + t
         index += 1
         game.gEngine.console_print(wielded_window, 1, 2, text)
         if player.fighter.wielded[1] is None:
-            text = '(' + chr(index) + ') ' + 'Left Hand: ' + 'Empty'
+            text = '(' + chr(index) + ') ' + 'Right Hand: ' + 'Empty'
         else:
             t = color_text(player.fighter.wielded[1].name.capitalize(), player.fighter.wielded[1].color)
-            text = '(' + chr(index) + ') ' + 'Left Hand: ' + t
+            text = '(' + chr(index) + ') ' + 'Right Hand: ' + t
         index += 1
         game.gEngine.console_print(wielded_window, 1, 3, text)
 
@@ -898,6 +898,7 @@ def inventory(con, player, game, width=80, height=43):
         # ========================================================================
         game.gEngine.console_print(equipment_window, e_header_pos, 0, e_header)
         i = 0
+        game.gEngine.console_set_alignment(equipment_window, libtcod.LEFT)
         for item in player.fighter.equipment:
             text = '(' + chr(index) + ') ' + slots[i] + ': '
             if item is None:
@@ -917,25 +918,25 @@ def inventory(con, player, game, width=80, height=43):
         if mouse.cx >= width/2 <= width:  # inventory screen dims
             if (mouse.cy-2) < len(inventory_items):
                 item = player.fighter.inventory[mouse.cy-2]
-                current_selection = mouse.cy-2
+                current_selection = mouse.cy-1
                 if item.item.equipment:
-                    game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
-                    game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
+                    game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
+                    game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
                     if item.item.equipment.type == 'melee':
                         damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
-                        game.gEngine.console_print(compare_window, 1, 4, 'Damage:   ' + damage)
+                        game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
                         game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
                     else:
-                        game.gEngine.console_print(compare_window, 1, 4, 'Armor:    ' + str(item.item.equipment.bonus))
-                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty:  ' + str(item.item.equipment.penalty))
-                    game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+                        game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
+                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
+                    game.gEngine.console_print(compare_window, 1, 6, 'Value   : ' + str(item.item.value))
                 if item.item.spell:
-                    game.gEngine.console_print(compare_window, 1, 2, 'Name:   ' + color_text(item.name.capitalize(), item.color))
-                    game.gEngine.console_print(compare_window, 1, 3, 'Type:   ' + item.item.spell.type.capitalize())
-                    game.gEngine.console_print(compare_window, 1, 4, 'Power:  ' + str(item.item.spell.min) + '-' + str(item.item.spell.max))
-                    game.gEngine.console_print(compare_window, 1, 5, 'Range:  ' + str(item.item.spell.range))
+                    game.gEngine.console_print(compare_window, 1, 2, 'Name  : ' + color_text(item.name.capitalize(), item.color))
+                    game.gEngine.console_print(compare_window, 1, 3, 'Type  : ' + item.item.spell.type.capitalize())
+                    game.gEngine.console_print(compare_window, 1, 4, 'Power : ' + str(item.item.spell.min) + '-' + str(item.item.spell.max))
+                    game.gEngine.console_print(compare_window, 1, 5, 'Range : ' + str(item.item.spell.range))
                     game.gEngine.console_print(compare_window, 1, 6, 'Radius: ' + str(item.item.spell.radius))
-                    game.gEngine.console_print(compare_window, 1, 7, 'Value:  ' + str(item.item.value))
+                    game.gEngine.console_print(compare_window, 1, 7, 'Value : ' + str(item.item.value))
                 if mouse.lbutton_pressed and item.item.spell:
                     i_n = color_text(item.name.capitalize(), item.color)
                     message = 'Do you want to use %s?' % i_n
@@ -968,23 +969,23 @@ def inventory(con, player, game, width=80, height=43):
                 item = player.fighter.wielded[mouse.cy-2]
                 if item is not None:
                     if item.item.equipment:
-                        game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
-                        game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
                         damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
-                        game.gEngine.console_print(compare_window, 1, 4, 'Damage:   ' + damage)
+                        game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
                         game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
-                        game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+                        game.gEngine.console_print(compare_window, 1, 6, 'Value   : ' + str(item.item.value))
 
         # Equipment
             elif (mouse.cy-2)-equip_y < len(player.fighter.equipment):
                 item = player.fighter.equipment[mouse.cy-2-equip_y]
                 if item is not None:
                     if item.item.equipment:
-                        game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
-                        game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
-                        game.gEngine.console_print(compare_window, 1, 4, 'Armor:    ' + str(item.item.equipment.bonus))
-                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty:  ' + str(item.item.equipment.penalty))
-                        game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
+                        game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
+                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
+                        game.gEngine.console_print(compare_window, 1, 6, 'Value   : ' + str(item.item.value))
             if mouse.lbutton_pressed and item is not None:
                 i_n = color_text(item.name.capitalize(), item.color)
                 message = 'Do you want to take %s off?' % i_n

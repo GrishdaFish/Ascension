@@ -18,7 +18,7 @@
     <SUITE FILE_PATH="coverage/src$binary_testing.coverage" NAME="binary_testing Coverage Results" MODIFIED="1440314924267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Necrodouche/spare crap" />
     <SUITE FILE_PATH="coverage/src$CaveGen.coverage" NAME="CaveGen Coverage Results" MODIFIED="1440303916525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../LH-Arena/src" />
     <SUITE FILE_PATH="coverage/src$save_system.coverage" NAME="save_system Coverage Results" MODIFIED="1440371379593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441228580750" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441231472338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -79,7 +79,7 @@
                     <element signature="e#23048#24195#0" expanded="false" />
                     <element signature="e#24337#29837#0" expanded="false" />
                     <element signature="e#30033#30664#0" expanded="false" />
-                    <element signature="e#30726#45828#0" expanded="false" />
+                    <element signature="e#30726#45939#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -97,10 +97,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="gEngine.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="gEngine.py" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/gEngine/gEngine.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="1683" max-vertical-offset="3825">
+                <state vertical-scroll-proportion="0.8765625" vertical-offset="1428" max-vertical-offset="3825">
                   <caret line="117" column="36" selection-start-line="117" selection-start-column="36" selection-end-line="117" selection-end-column="36" />
                   <folding />
                 </state>
@@ -139,10 +139,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="debug.txt" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="debug.txt" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/debug/debug.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.83360523" vertical-offset="16" max-vertical-offset="629">
+                <state vertical-scroll-proportion="-15.111111" vertical-offset="119" max-vertical-offset="629">
                   <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
                   <folding />
                 </state>
@@ -169,8 +169,8 @@
           <file leaf-file-name="menu.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/utils/menu.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.54298645" vertical-offset="3346" max-vertical-offset="10081">
-                  <caret line="866" column="38" selection-start-line="866" selection-start-column="38" selection-end-line="866" selection-end-column="38" />
+                <state vertical-scroll-proportion="0.6199095" vertical-offset="4213" max-vertical-offset="10098">
+                  <caret line="920" column="46" selection-start-line="920" selection-start-column="46" selection-end-line="920" selection-end-column="46" />
                   <folding>
                     <element signature="e#204#7979#0" expanded="false" />
                     <element signature="e#6978#7979#0" expanded="false" />
@@ -739,7 +739,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39935064" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23809524" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23809524" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1190,17 +1190,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gEngine/gEngine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1683" max-vertical-offset="3825">
-          <caret line="117" column="36" selection-start-line="117" selection-start-column="36" selection-end-line="117" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/debug/debug.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.83360523" vertical-offset="16" max-vertical-offset="629">
+        <state vertical-scroll-proportion="-15.111111" vertical-offset="119" max-vertical-offset="629">
           <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
           <folding />
         </state>
@@ -1209,10 +1201,18 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/gEngine/gEngine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8765625" vertical-offset="1428" max-vertical-offset="3825">
+          <caret line="117" column="36" selection-start-line="117" selection-start-column="36" selection-end-line="117" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/utils/menu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.54298645" vertical-offset="3346" max-vertical-offset="10081">
-          <caret line="866" column="38" selection-start-line="866" selection-start-column="38" selection-end-line="866" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.6199095" vertical-offset="4213" max-vertical-offset="10098">
+          <caret line="920" column="46" selection-start-line="920" selection-start-column="46" selection-end-line="920" selection-end-column="46" />
           <folding>
             <element signature="e#204#7979#0" expanded="false" />
             <element signature="e#6978#7979#0" expanded="false" />
