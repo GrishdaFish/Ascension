@@ -205,25 +205,36 @@ class Menus:
         
 class Button:
 ##============================================================================
-    def __init__(self,parent,label,x_pos,y_pos,type=True):
+    def __init__(self, dest_x=0, dest_y=0,parent=None, label=None, x_pos=None, y_pos=None, type=True, game=None, window=None):
 ##============================================================================
         self.width = 4 + len(label)
         self.height = 5
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.parent = parent
-        self.window = parent.game.gEngine.console_new(self.width,self.height)
+        if parent is None:
+            self.game = game
+            self.parent = self
+            self.dest_window = window
+            self.dest_x = dest_x
+            self.dest_y = dest_y
+        else:
+            self.parent = parent
+            self.dest_window = self.parent.window
+            self.dest_x = self.parent.x_pos
+            self.dest_y = self.parent.y_pos
+        self.window = self.parent.game.gEngine.console_new(self.width, self.height)
         self.label = label
         self.label_o = label
         r,g,b = libtcod.white
         self.parent.game.gEngine.console_set_default_foreground(self.window, r,g,b)
         self.parent.game.gEngine.console_set_alignment(self.window,2)
         self.type = type
+
 ##============================================================================
     def display(self):
 ##============================================================================
         self.parent.game.gEngine.console_blit(self.window, 0, 0,self.width,
-            self.height,self.parent.window,self.x_pos,self.y_pos,1.0, 1.0)
+            self.height,self.dest_window,self.x_pos,self.y_pos,1.0, 1.0)
 
         self.parent.game.gEngine.console_print_frame(self.window,0, 0, 
             self.width, self.height, False)
@@ -244,25 +255,25 @@ class Button:
     def mouse_input(self):
 ##============================================================================
         mouse = libtcod.mouse_get_status()
-        mx = mouse.cx -(self.x_pos + self.parent.x_pos)
-        my = mouse.cy -(self.y_pos + self.parent.y_pos)
+        mx = mouse.cx -(self.x_pos + self.dest_x)
+        my = mouse.cy -(self.y_pos + self.dest_y)
         
         if mx >= 0 and mx <= self.width and my >= 0 and my <= self.height:
             self.label = color_text(self.label_o,libtcod.red)
             if mouse.lbutton:
                 self.label = color_text(self.label_o,libtcod.green)
                 if mouse.lbutton_pressed:
-                    if self.type == True:
+                    if self.type is True:
                         return 1
                     else:
                         return 0
             if mouse.lbutton_pressed:
-                if self.type == True:
+                if self.type is True:
                     return 1
                 else:
                     return 0
         else:
-            self.label = color_text(self.label_o,libtcod.white)
+            self.label = color_text(self.label_o, libtcod.white)
             
         return -1
     
@@ -306,18 +317,18 @@ class DialogBox:
             self.option_labels = option_labels
             if option_labels == None:
                 self.option_labels = ['Ok']
-            self.buttons.append(Button(self,self.option_labels[0],
-                self.width//2-5,self.height/2-1,True))
+            self.buttons.append(Button(parent=self,label=self.option_labels[0],
+                x_pos=self.width//2-5,y_pos=self.height/2-1,type=True))
             
         elif type == 'option':
             self.run = self.option_box
             self.option_labels = option_labels
             if option_labels == None:
                 self.option_labels = ['Yes','No']
-            self.buttons.append(Button(self,self.option_labels[0],
-                self.width//6-5,self.height/2-1,True))
-            self.buttons.append(Button(self,self.option_labels[1],
-                self.width//3-5,self.height/2-1,False))
+            self.buttons.append(Button(parent=self,label=self.option_labels[0],
+                x_pos=self.width//6-5,y_pos=self.height/2-1,type=True))
+            self.buttons.append(Button(parent=self,label=self.option_labels[1],
+                x_pos=self.width//3-5,y_pos=self.height/2-1,type=False))
         self.last_input=0
         libtcod.mouse_get_status()
         
@@ -741,7 +752,7 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
     if len(inventory) == 0:
         options = ['Inventory is empty.']
     elif not is_name:
-        options = [color_text(item.name,item.color) for item in inventory]
+        options = [color_text(item.name, item.color) for item in inventory]
     else:
         options = inventory
     index = menu(con, header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
@@ -752,6 +763,271 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
         return inventory[index]#.item
     else:
         return index
+
+
+def inventory(con, player, game, width=80, height=43):
+    equip_height = 12
+    wield_height = 6
+    compare_height = height - (equip_height - wield_height)-(wield_height*2)
+
+    r, g, b = libtcod.white
+    equip_y = wield_height
+    compare_y = equip_height + wield_height
+
+    inventory_window = game.gEngine.console_new(width/2, height)
+    game.gEngine.console_set_default_foreground(inventory_window, r, g, b)
+    game.gEngine.console_print_frame(inventory_window, 0, 0, width/2, height, True)
+
+    equipment_window = game.gEngine.console_new(width/2, equip_height)
+    game.gEngine.console_set_default_foreground(equipment_window, r, g, b)
+    game.gEngine.console_print_frame(equipment_window, 0, 0, width/2, equip_height, True)
+
+    wielded_window = game.gEngine.console_new(width/2, wield_height)
+    game.gEngine.console_set_default_foreground(wielded_window, r, g, b)
+    game.gEngine.console_print_frame(wielded_window, 0, 0, width/2, wield_height, True)
+
+    compare_window = game.gEngine.console_new(width/2, compare_height)
+    game.gEngine.console_set_default_foreground(compare_window, r, g, b)
+    game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
+
+    slots = ['Torso',
+             'Head',
+             'Hands',
+             'Legs',
+             'Feet',
+             'Arms',
+             'Shoulders',
+             'Back']
+    #self.buttons.append(Button(self, self.option_labels[0], self.width//6-5, self.height/2-1, True))
+    exit_button = Button(label='Exit', game=game,x_pos=(width/2)-9, y_pos=height-6, window=inventory_window,
+                         dest_x=width/2, dest_y=0)
+    if len(player.fighter.inventory) == 0:
+        inventory_items = ['Inventory is empty.']
+    else:
+        inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
+
+    i_header = 'Inventory'
+    i_header_size = len(i_header)
+    i_header_pos = (width/4)-(i_header_size/2)
+
+    w_header = 'Weapons'
+    w_header_size = len(w_header)
+    w_header_pos = (width/8) - (w_header_size/2)
+
+    e_header = 'Equipment'
+    e_header_size = len(e_header)
+    e_header_pos = (width/8) - (e_header_size/2)
+
+    c_header = 'Compare/Examine'
+    c_header_size = len(c_header)
+    c_header_pos = (width/8) - (c_header_size/2)
+
+    return_item = None
+    key = libtcod.console_check_for_keypress(True)
+    while key.vk != libtcod.KEY_ESCAPE:
+        game.gEngine.console_flush()
+        # get input just after flush
+        key = libtcod.console_check_for_keypress(True)
+        mouse = libtcod.mouse_get_status()
+
+        game.gEngine.console_blit(inventory_window, 0, 0, width/2, height, 0, (width/2), 0, 1.0, 0.7)
+        game.gEngine.console_blit(wielded_window, 0, 0, width/2, height, 0, 0, 0, 1.0, 0.7)
+        game.gEngine.console_blit(equipment_window, 0, 0, width/2, height, 0, 0, equip_y, 1.0, 0.7)
+        game.gEngine.console_blit(compare_window, 0, 0, width/2, height, 0, 0, compare_y, 1.0, 0.7)
+
+        game.gEngine.console_clear(inventory_window)
+        game.gEngine.console_clear(wielded_window)
+        game.gEngine.console_clear(equipment_window)
+        game.gEngine.console_clear(compare_window)
+
+        # set up draw screen
+        game.gEngine.console_set_default_foreground(inventory_window, r, g, b)
+        game.gEngine.console_print_frame(inventory_window, 0, 0, width/2, height, True)
+
+        game.gEngine.console_set_default_foreground(equipment_window, r, g, b)
+        game.gEngine.console_print_frame(equipment_window, 0, 0, width/2, equip_height, True)
+
+        game.gEngine.console_set_default_foreground(wielded_window, r, g, b)
+        game.gEngine.console_print_frame(wielded_window, 0, 0, width/2, wield_height, True)
+
+        game.gEngine.console_set_default_foreground(compare_window, r, g, b)
+        game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
+
+        # ========================================================================
+        # print inventory
+        # ========================================================================
+        game.gEngine.console_print(inventory_window, i_header_pos, 0, i_header)
+        letter_index = ord('a')
+        y = 1
+        for i in range(len(inventory_items)):
+            text = '(' + chr(letter_index) + ') ' + inventory_items[i]
+            game.gEngine.console_print(inventory_window, 1, y+1, text)
+            y += 1
+            letter_index += 1
+
+        # ========================================================================
+        # print equipped weapons
+        # ========================================================================
+        game.gEngine.console_print(wielded_window, w_header_pos, 0, w_header)
+        index = ord('1')
+        if player.fighter.wielded[0] is None:
+            text = '(' + chr(index) + ') ' + 'Left Hand: ' + 'Empty'
+        else:
+            t = color_text(player.fighter.wielded[0].name.capitalize(), player.fighter.wielded[0].color)
+            text = '(' + chr(index) + ') ' + 'Left Hand: ' + t
+        index += 1
+        game.gEngine.console_print(wielded_window, 1, 2, text)
+        if player.fighter.wielded[1] is None:
+            text = '(' + chr(index) + ') ' + 'Left Hand: ' + 'Empty'
+        else:
+            t = color_text(player.fighter.wielded[1].name.capitalize(), player.fighter.wielded[1].color)
+            text = '(' + chr(index) + ') ' + 'Left Hand: ' + t
+        index += 1
+        game.gEngine.console_print(wielded_window, 1, 3, text)
+
+        # ========================================================================
+        # print equipped armor
+        # ========================================================================
+        game.gEngine.console_print(equipment_window, e_header_pos, 0, e_header)
+        i = 0
+        for item in player.fighter.equipment:
+            text = '(' + chr(index) + ') ' + slots[i] + ': '
+            if item is None:
+                text += 'Empty'
+            else:
+                text += color_text(player.fighter.equipment[i].name.capitalize(), player.fighter.equipment[i].color)
+            game.gEngine.console_print(equipment_window, 1, i+2, text)
+            i += 1
+            index += 1
+        game.gEngine.console_print(compare_window, c_header_pos, 0, c_header)
+
+        # ========================================================================
+        # handle mouse input
+        # ========================================================================
+
+        # Inventory input
+        if mouse.cx >= width/2 and mouse.cx <= width:  # inventory screen dims
+            if (mouse.cy-2) < len(inventory_items):
+                item = player.fighter.inventory[mouse.cy-2]
+                if item.item.equipment:
+                    game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
+                    game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
+                    if item.item.equipment.type == 'melee':
+                        damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
+                        game.gEngine.console_print(compare_window, 1, 4, 'Damage:   ' + damage)
+                        game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
+                    else:
+                        game.gEngine.console_print(compare_window, 1, 4, 'Armor:    ' + str(item.item.equipment.bonus))
+                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty:  ' + str(item.item.equipment.penalty))
+                    game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+                if item.item.spell:
+                    game.gEngine.console_print(compare_window, 1, 2, 'Name:   ' + color_text(item.name.capitalize(), item.color))
+                    game.gEngine.console_print(compare_window, 1, 3, 'Type:   ' + item.item.spell.type.capitalize())
+                    game.gEngine.console_print(compare_window, 1, 4, 'Power:  ' + str(item.item.spell.min) + '-' + str(item.item.spell.max))
+                    game.gEngine.console_print(compare_window, 1, 5, 'Range:  ' + str(item.item.spell.range))
+                    game.gEngine.console_print(compare_window, 1, 6, 'Radius: ' + str(item.item.spell.radius))
+                    game.gEngine.console_print(compare_window, 1, 7, 'Value:  ' + str(item.item.value))
+                if mouse.lbutton_pressed and item.item.spell:
+                    i_n = color_text(item.name.capitalize(), item.color)
+                    message = 'Do you want to use %s?' % i_n
+                    w = len(message)+2
+                    d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                    confirm = d_box.display_box()
+                    if confirm == 1:  # make sure if the player uses a scroll or potion, we exit inventory
+                        d_box.destroy_box()
+                        # Remember to remove consoles in reverse order of creation to avoid OOB errors
+                        return_item = item
+                        break
+                    else:
+                        d_box.destroy_box()
+                if mouse.lbutton_pressed and item.item.equipment:
+                    i_n = color_text(item.name.capitalize(), item.color)
+                    message = 'Do you want to put %s on?' % i_n
+                    w = len(message)+2
+                    d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                    confirm = d_box.display_box()
+                    if confirm == 1:
+                        item.item.use(game.player.fighter.inventory, game.player, game)
+                        d_box.destroy_box()
+                        inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
+
+        # Wielded
+        if mouse.cx >= 0 and mouse.cx <= width/2:  # inventory screen dims
+            if (mouse.cy-2) < len(player.fighter.wielded):
+                item = player.fighter.wielded[mouse.cy-2]
+                if item is not None:
+                    if item.item.equipment:
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
+                        damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
+                        game.gEngine.console_print(compare_window, 1, 4, 'Damage:   ' + damage)
+                        game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
+                        game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+
+        # Equipment
+            elif (mouse.cy-2)-equip_y < len(player.fighter.equipment):
+                item = player.fighter.equipment[mouse.cy-2-equip_y]
+                if item is not None:
+                    if item.item.equipment:
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name:     ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type:     ' + item.item.equipment.type.capitalize())
+                        game.gEngine.console_print(compare_window, 1, 4, 'Armor:    ' + str(item.item.equipment.bonus))
+                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty:  ' + str(item.item.equipment.penalty))
+                        game.gEngine.console_print(compare_window, 1, 6, 'Value:    ' + str(item.item.value))
+            if mouse.lbutton_pressed and item is not None:
+                i_n = color_text(item.name.capitalize(), item.color)
+                message = 'Do you want to take %s off?' % i_n
+                w = len(message)+2
+                d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                confirm = d_box.display_box()
+                if confirm == 1:
+                    item.item.equipment.un_equip(game.player, item)
+                    d_box.destroy_box()
+                    inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
+                    i = 0
+                    for x in player.fighter.wielded:
+                        if x == item:
+                            player.fighter.wielded[i] = None
+                        i += 1
+                    i = 0
+                    for x in player.fighter.equipment:
+                        if x == item:
+                            player.fighter.equipment[i] = None
+                        i += 1
+
+        # keyboard input
+        # keeps similar feel to old inventory if using the keys
+        index = key.c - ord('a')
+        if key:
+            if index >= 0 < len(inventory_items):
+                return_item = player.fighter.inventory[index]
+                break
+            index = key.c - ord('1')
+            '''if index >= 0 <= 1:
+                return_item = player.fighter.wielded[index]
+                break
+            elif index >= 2 <= 10:
+                return_item = player.fighter.equipment[index-2]
+                break'''
+        # ========================================================================
+        # handle buttons
+        # ========================================================================
+
+        # ========================================================================
+        # handle exit button
+        # ========================================================================
+        exit_input = exit_button.display()
+        for i in exit_input:
+            if i != -1:
+                key.vk = libtcod.KEY_ESCAPE
+                break
+    # Remember to remove consoles in reverse order of creation to avoid OOB errors
+    game.gEngine.console_remove_console(compare_window)
+    game.gEngine.console_remove_console(wielded_window)
+    game.gEngine.console_remove_console(equipment_window)
+    game.gEngine.console_remove_console(inventory_window)
+
+    return return_item
 
 
 def options_menu(con, header, options, screen_width, screen_height, bg=None):
@@ -801,11 +1077,11 @@ def town_menu(con, header, game, width, screen_height, screen_width):
         "Fizzilip's Magiteria",
         'Quests',
         'Finished',]
-    path = os.path.join(sys.path[0],'content')
-    path = path.replace('library.zip','')
-    backgrounds=[os.path.join(path,'img','bg-arm.png'),
-                os.path.join(path,'img','bg-wep.png'),
-                os.path.join(path,'img','bg-magic.png'),]
+    path = os.path.join(sys.path[0], 'content')
+    path = path.replace('library.zip', '')
+    backgrounds=[os.path.join(path, 'img', 'bg-arm.png'),
+                os.path.join(path, 'img', 'bg-wep.png'),
+                os.path.join(path, 'img', 'bg-magic.png'),]
     container=[]
     menus = []
     weapon,armor,consum,quest=[],[],[],[]

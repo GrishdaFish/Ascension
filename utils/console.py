@@ -50,6 +50,7 @@ class Console:
             'teleport_down'     :self.teleport_down,
             'teleport_up'       :self.teleport_up,
             'max_skills'        :self.max_skills,
+
             
         }
 

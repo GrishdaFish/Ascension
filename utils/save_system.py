@@ -38,6 +38,7 @@ END_EQUIPMENT = '@$$$$'
 END_WIELDED = '@%%%'
 END_SKILLS = '@^^^'
 
+
 class Object:  # an object we use to hold save information
     def __init__(self, name=None, x=None, y=None, hp=None, max_hp=None):
         self.name = name
@@ -401,7 +402,6 @@ def load_misc(misc, m, game):
     elif misc.name == 'set of stairs going down':
         m = MISC.Misc(type='down')
         return OBJECT.Object(game.con, misc.x, misc.y, '>', misc.name, libtcod.white, blocks=False, misc=m)
-
 
 
 def load_item(item, i, game=None):

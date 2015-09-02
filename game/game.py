@@ -347,7 +347,7 @@ class Game:
             self.gEngine.image_blit_2x(img, 0, 0, 0)
             r,g,b = libtcod.red
             self.gEngine.console_set_default_foreground(0, r,g,b)
-            self.gEngine.console_print(0, SCREEN_WIDTH//2, SCREEN_HEIGHT-2,'By Grishnak and SentientDeth')
+            self.gEngine.console_print(0, SCREEN_WIDTH/2-13, SCREEN_HEIGHT/2-10,'By Grishnak and SentientDeth')
             libtcod.console_credits_render(2, SCREEN_HEIGHT-2, True)
             choice = m_menu.menu()
             self.gEngine.console_flush()
@@ -594,8 +594,9 @@ class Game:
 
                 if key.c is ord(self.keys.key_inventory):
                     #show the inventory; if an item is selected, use it
-                    msg = 'Press the key next to an item to use it, or any other to cancel.\n'
-                    chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
+                    #msg = 'Press the key next to an item to use it, or any other to cancel.\n'
+                    #chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
+                    chosen_item = inventory(self.con, self.player, self)
                     if chosen_item is not None:
                         chosen_item.item.use(self.player.fighter.inventory,self.player,self)
                         return 'turn-used'

@@ -12,7 +12,7 @@ class Spell:
         self.range=range
         self.radius=radius
         self.targets=targets
-        
+        self.type = ef_type
         self.effect_type=spells[ef_type]
         
         self.addition_effects=ad_eff
