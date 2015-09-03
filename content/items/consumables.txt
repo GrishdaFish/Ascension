@@ -122,3 +122,19 @@ object_type "currency" {
     bool is_coin=true//items that goes into money purse, gems would be false
     color col="197,136,124"
     }
+
+object_type "currency" {
+    string name = "silver coin"
+    char cell = '$'
+    int worth = 10
+    bool is_coin = true
+    color col = "203, 203, 203"
+}
+
+object_type "currency" {
+    string name = "gold coin"
+    char cell = '$'
+    int worth = 100
+    bool is_coin = true
+    color col = "229, 191, 0"
+}

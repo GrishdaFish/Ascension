@@ -5,8 +5,8 @@ sys.path.append(os.path.join(sys.path[0],'object'))
 from object import *
 from item import *
 from spells import *
-
-
+sys.path.append(os.path.join(sys.path[0], 'game'))
+import combat
 class Menus:
 ##============================================================================
     def __init__(self,game,screen_height,screen_width,width,header,options,
@@ -766,8 +766,17 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
 
 
 def inventory(con, player, game, width=80, height=43):
-    equip_height = 12
-    wield_height = 6
+    """ TODO
+        Add in highlighting for Weapons and Equipment consoles
+        Add in keyboard arrow selection support
+        Add in "drop" mode, drop items from inventory
+        Fix Weapons and Equipment keyboard handling
+        Fix duplication bug when equipping items
+        Fix take off weapon confirmation when equipping an item
+        2 handed code needs work
+    """
+    equip_height = 14
+    wield_height = 8
     compare_height = height - (equip_height - wield_height)-(wield_height*2)
 
     r, g, b = libtcod.white
@@ -799,8 +808,8 @@ def inventory(con, player, game, width=80, height=43):
              'Shoulders',
              'Back     ']
     #self.buttons.append(Button(self, self.option_labels[0], self.width//6-5, self.height/2-1, True))
-    exit_button = Button(label='Exit', game=game,x_pos=(width/2)-9, y_pos=height-6, window=inventory_window,
-                         dest_x=width/2, dest_y=0)
+    exit_button = Button(label='Exit', game=game, x_pos=(width/2)-9, y_pos=height-6,
+                         window=inventory_window, dest_x=width/2, dest_y=0)
     if len(player.fighter.inventory) == 0:
         inventory_items = ['Inventory is empty.']
     else:
@@ -855,7 +864,6 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_set_default_foreground(compare_window, r, g, b)
         game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
 
-
         # ========================================================================
         # print inventory
         # ========================================================================
@@ -864,7 +872,7 @@ def inventory(con, player, game, width=80, height=43):
         y = 1
         for i in range(len(inventory_items)):
             text = '(' + chr(letter_index) + ') ' + inventory_items[i]
-            if current_selection == y:
+            if current_selection == y - 1:
                 r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
                 game.gEngine.console_set_default_background(inventory_window, r, g, b)
             else:
@@ -873,26 +881,36 @@ def inventory(con, player, game, width=80, height=43):
             y += 1
             letter_index += 1
         game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
+        game.gEngine.console_print(inventory_window, 1, 30, 'Gold: ' + color_text(str(player.fighter.money), libtcod.gold))
         # ========================================================================
         # print equipped weapons
         # ========================================================================
         game.gEngine.console_print(wielded_window, w_header_pos, 0, w_header)
         index = ord('1')
         if player.fighter.wielded[0] is None:
-            text = '(' + chr(index) + ') ' + ' Left Hand: ' + 'Empty'
+            text = '(' + chr(index) + ') ' + ' Left Hand: ' + color_text('Empty', libtcod.darker_gray)
         else:
             t = color_text(player.fighter.wielded[0].name.capitalize(), player.fighter.wielded[0].color)
             text = '(' + chr(index) + ') ' + ' Left Hand: ' + t
         index += 1
         game.gEngine.console_print(wielded_window, 1, 2, text)
         if player.fighter.wielded[1] is None:
-            text = '(' + chr(index) + ') ' + 'Right Hand: ' + 'Empty'
+            text = '(' + chr(index) + ') ' + 'Right Hand: ' + color_text('Empty', libtcod.darker_gray)
         else:
             t = color_text(player.fighter.wielded[1].name.capitalize(), player.fighter.wielded[1].color)
             text = '(' + chr(index) + ') ' + 'Right Hand: ' + t
         index += 1
         game.gEngine.console_print(wielded_window, 1, 3, text)
 
+        item = player.fighter.wielded[0]
+        if item:
+            damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub)
+            text = 'Damage   (total): ' + color_text(damage, libtcod.green)
+            game.gEngine.console_print(wielded_window, 1, 4, text)
+            accuracy = item.item.equipment.accuracy
+            accuracy += game.player.fighter.get_skill(item.item.equipment.damage_type).get_bonus()
+            text = 'Accuracy (total): ' + color_text(str(accuracy), libtcod.green)
+            game.gEngine.console_print(wielded_window, 1, 5, text)
         # ========================================================================
         # print equipped armor
         # ========================================================================
@@ -902,23 +920,21 @@ def inventory(con, player, game, width=80, height=43):
         for item in player.fighter.equipment:
             text = '(' + chr(index) + ') ' + slots[i] + ': '
             if item is None:
-                text += 'Empty'
+                text += color_text('Empty', libtcod.darker_gray)
             else:
                 text += color_text(player.fighter.equipment[i].name.capitalize(), player.fighter.equipment[i].color)
             game.gEngine.console_print(equipment_window, 1, i+2, text)
             i += 1
             index += 1
         game.gEngine.console_print(compare_window, c_header_pos, 0, c_header)
-
         # ========================================================================
         # handle mouse input
         # ========================================================================
-
         # Inventory input
         if mouse.cx >= width/2 <= width:  # inventory screen dims
-            if (mouse.cy-2) < len(inventory_items):
-                item = player.fighter.inventory[mouse.cy-2]
-                current_selection = mouse.cy-1
+            if (mouse.cy-3) < len(inventory_items) >= 0:
+                item = player.fighter.inventory[mouse.cy-3]
+                current_selection = mouse.cy-3
                 if item.item.equipment:
                     game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
                     game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
@@ -926,6 +942,7 @@ def inventory(con, player, game, width=80, height=43):
                         damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
                         game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
                         game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
+                        game.gEngine.console_print(compare_window, 1, 7, 'Type    : ' + item.item.equipment.damage_type)
                     else:
                         game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
                         game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
@@ -964,7 +981,7 @@ def inventory(con, player, game, width=80, height=43):
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         # Wielded
-        if mouse.cx >= 0 and mouse.cx <= width/2:  # inventory screen dims
+        if mouse.cx >= 0 <= width/2:  # inventory screen dims
             if (mouse.cy-2) < len(player.fighter.wielded):
                 item = player.fighter.wielded[mouse.cy-2]
                 if item is not None:
@@ -1226,7 +1243,6 @@ def confirm_screen(con,message,screen_height,screen_width,
     else:
         game.gEngine.console_remove_console(window)
         return False
-    
     
     
     
