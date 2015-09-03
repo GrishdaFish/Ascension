@@ -51,7 +51,7 @@ FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True  #light walls or not
 TORCH_RADIUS = 10
  
-LIMIT_FPS = 30
+LIMIT_FPS = 60
  
 color_dark_wall = libtcod.darker_grey
 color_light_wall = libtcod.Color(99,99,99)

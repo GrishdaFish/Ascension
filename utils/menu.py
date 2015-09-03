@@ -771,9 +771,9 @@ def inventory(con, player, game, width=80, height=43):
         Add in keyboard arrow selection support
         Add in "drop" mode, drop items from inventory
         Fix Weapons and Equipment keyboard handling
-        Fix duplication bug when equipping items
-        Fix take off weapon confirmation when equipping an item
-        2 handed code needs work
+        Fix duplication bug when equipping items (fixed)
+        Fix take off weapon confirmation when equipping an item (fixed)
+        2 handed code needs work (?)
     """
     equip_height = 14
     wield_height = 8
@@ -942,7 +942,7 @@ def inventory(con, player, game, width=80, height=43):
                         damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
                         game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
                         game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
-                        game.gEngine.console_print(compare_window, 1, 7, 'Type    : ' + item.item.equipment.damage_type)
+                        game.gEngine.console_print(compare_window, 1, 7, 'Skill   : ' + item.item.equipment.damage_type)
                     else:
                         game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
                         game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
@@ -981,7 +981,7 @@ def inventory(con, player, game, width=80, height=43):
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         # Wielded
-        if mouse.cx >= 0 <= width/2:  # inventory screen dims
+        elif mouse.cx >= 0 <= width/2:  # inventory screen dims
             if (mouse.cy-2) < len(player.fighter.wielded):
                 item = player.fighter.wielded[mouse.cy-2]
                 if item is not None:
