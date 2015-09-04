@@ -1156,6 +1156,8 @@ def inventory(con, player, game, width=80, height=43):
                 key.vk = libtcod.KEY_ESCAPE
                 break
     # Remember to remove consoles in reverse order of creation to avoid OOB errors
+    drop_button.destroy_button()
+    exit_button.destroy_button()
     game.gEngine.console_remove_console(compare_window)
     game.gEngine.console_remove_console(wielded_window)
     game.gEngine.console_remove_console(equipment_window)
