@@ -7,6 +7,9 @@ from item import *
 from spells import *
 sys.path.append(os.path.join(sys.path[0], 'game'))
 import combat
+import logging
+
+
 class Menus:
 ##============================================================================
     def __init__(self,game,screen_height,screen_width,width,header,options,
@@ -202,7 +205,8 @@ class Menus:
         #    return current_pick
         
         return -1
-        
+
+
 class Button:
 ##============================================================================
     def __init__(self, dest_x=0, dest_y=0,parent=None, label=None, x_pos=None, y_pos=None, type=True, game=None, window=None):
@@ -287,7 +291,8 @@ class Button:
             libtcod.console_check_for_keypress() 
             return 0
         return -1
-        
+
+
 class DialogBox:
 ##============================================================================
     def __init__(self,game,width,height,x_pos,y_pos,body_text,type='dialog',
@@ -418,6 +423,54 @@ class DialogBox:
     def key_input(self):
         pass
 
+
+class CheckBox:
+    # chr(224) = open box, chr(225) = checked box
+    def __init__(self, x, y, label=None):
+        self.x = x
+        self.y = y
+        self.is_checked = False
+        self.char = chr(224)
+        self.label = label
+
+    def render(self, target=None, game=None):
+        if target and game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            game.gEngine.console_print(target, self.x, self.y, msg)
+        elif not target and game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            game.gEngine.console_print(0, self.x, self.y, msg)
+        elif not target and not game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            libtcod.console_print(0, self.x, self.y, msg)
+
+    def update(self, mouse=None, width=None):
+        if mouse:
+            if (mouse.cx - width/2) == self.x and mouse.cy == self.y:
+                if mouse.lbutton_pressed:
+                    self.is_checked = not self.is_checked
+                    self.change_button()
+                    return True
+        return False
+
+    def change_button(self):
+        if not self.is_checked:
+            self.char = chr(224)
+        else:
+            self.char = chr(225)
+
+    def get_checked(self):
+        return self.is_checked
+
+    def set_checked(self, check):
+        self.is_checked = check
+        self.change_button()
 
 ##============================================================================
 def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None,under=None):
@@ -799,6 +852,7 @@ def inventory(con, player, game, width=80, height=43):
     game.gEngine.console_set_default_foreground(compare_window, r, g, b)
     game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
 
+    check_boxes = []
     slots = ['Torso    ',
              'Head     ',
              'Hands    ',
@@ -813,8 +867,10 @@ def inventory(con, player, game, width=80, height=43):
     if len(player.fighter.inventory) == 0:
         inventory_items = ['Inventory is empty.']
     else:
-        inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
-
+        inventory_items = []
+        for x in range(len(player.fighter.inventory)):
+            check_boxes.append(CheckBox(x=1, y=x+3))
+            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
     i_header = 'Inventory'
     i_header_size = len(i_header)
     i_header_pos = (width/4)-(i_header_size/2)
@@ -834,6 +890,7 @@ def inventory(con, player, game, width=80, height=43):
     return_item = None
     key = libtcod.console_check_for_keypress(True)
     current_selection = None
+    master_check = CheckBox(1, 29, "Check/Uncheck All")
     while key.vk != libtcod.KEY_ESCAPE:
         game.gEngine.console_flush()
         # get input just after flush
@@ -871,7 +928,7 @@ def inventory(con, player, game, width=80, height=43):
         letter_index = ord('a')
         y = 1
         for i in range(len(inventory_items)):
-            text = '(' + chr(letter_index) + ') ' + inventory_items[i]
+            text = '  (' + chr(letter_index) + ') ' + inventory_items[i]
             if current_selection == y - 1:
                 r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
                 game.gEngine.console_set_default_background(inventory_window, r, g, b)
@@ -888,10 +945,10 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_print(wielded_window, w_header_pos, 0, w_header)
         index = ord('1')
         if player.fighter.wielded[0] is None:
-            text = '(' + chr(index) + ') ' + ' Left Hand: ' + color_text('Empty', libtcod.darker_gray)
+            text = '(' + chr(index) + ') ' + 'Left Hand : ' + color_text('Empty', libtcod.darker_gray)
         else:
             t = color_text(player.fighter.wielded[0].name.capitalize(), player.fighter.wielded[0].color)
-            text = '(' + chr(index) + ') ' + ' Left Hand: ' + t
+            text = '(' + chr(index) + ') ' + 'Left Hand : ' + t
         index += 1
         game.gEngine.console_print(wielded_window, 1, 2, text)
         if player.fighter.wielded[1] is None:
@@ -927,11 +984,23 @@ def inventory(con, player, game, width=80, height=43):
             i += 1
             index += 1
         game.gEngine.console_print(compare_window, c_header_pos, 0, c_header)
+
         # ========================================================================
         # handle mouse input
         # ========================================================================
+        mc = master_check.update(mouse, width)
+        master_check.render(inventory_window, game)
+        if not mc:
+            for box in check_boxes:
+                box.update(mouse, width)
+                box.render(inventory_window, game)
+        else:
+            for box in check_boxes:
+                box.set_checked(master_check.get_checked())
+                box.render(inventory_window, game)
+
         # Inventory input
-        if mouse.cx >= width/2 <= width:  # inventory screen dims
+        if mouse.cx >= width/2+3 < width-2:  # inventory screen dims
             if (mouse.cy-3) < len(inventory_items) >= 0:
                 item = player.fighter.inventory[mouse.cy-3]
                 current_selection = mouse.cy-3
@@ -976,7 +1045,11 @@ def inventory(con, player, game, width=80, height=43):
                     if confirm == 1:
                         item.item.use(game.player.fighter.inventory, game.player, game)
                         d_box.destroy_box()
-                        inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
+                        inventory_items = []
+                        check_boxes = []
+                        for x in range(len(player.fighter.inventory)):
+                            check_boxes.append(CheckBox(x=1, y=x+3))
+                            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
             else:
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
@@ -1012,7 +1085,11 @@ def inventory(con, player, game, width=80, height=43):
                 if confirm == 1:
                     item.item.equipment.un_equip(game.player, item)
                     d_box.destroy_box()
-                    inventory_items = [color_text(item.name.capitalize(), item.color) for item in player.fighter.inventory]
+                    inventory_items = []
+                    check_boxes = []
+                    for x in range(len(player.fighter.inventory)):
+                        check_boxes.append(CheckBox(x=1, y=x+3))
+                        inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
                     i = 0
                     for x in player.fighter.wielded:
                         if x == item:

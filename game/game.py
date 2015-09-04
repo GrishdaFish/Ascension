@@ -432,7 +432,7 @@ class Game:
                         object.draw(self.fov_map,self.gEngine)
                 else:
                     object.draw(self.fov_map,self.gEngine)
-        self.player.draw(self.fov_map,self.gEngine)
+        self.player.draw(self.fov_map, self.gEngine)
         for particle in self.particles:
             particle.draw(self.fov_map,self.gEngine,True)
         #blit the contents of "con" to the root console
