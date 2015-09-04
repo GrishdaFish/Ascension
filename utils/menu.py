@@ -1125,7 +1125,7 @@ def inventory(con, player, game, width=80, height=43):
             if i != -1:
                 message = 'Drop all selected items?'
                 w = len(message)+2
-                d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='option', con=inventory_window)
                 confirm = d_box.display_box()
                 if confirm == 1:
                     d_box.destroy_box()
@@ -1214,7 +1214,7 @@ def town_menu(con, header, game, width, screen_height, screen_width):
         'Quests',
         'Finished',]
     path = os.path.join(sys.path[0], 'content')
-    path = path.replace('library.zip', '')
+    path = path.replace('core.exe','')
     backgrounds=[os.path.join(path, 'img', 'bg-arm.png'),
                 os.path.join(path, 'img', 'bg-wep.png'),
                 os.path.join(path, 'img', 'bg-magic.png'),]

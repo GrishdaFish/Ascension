@@ -15,8 +15,8 @@ if __name__ == "__main__":
     content = []
     #for py2exe, cant create a path in the libray.zip file
     path = os.path.join(sys.path[0],'content')
-    path = path.replace('library.zip','')
-    
+    #path = path.replace('library.zip','')
+    path = path.replace('core.exe','')
     p = ContentParser(logger)
     monsters = p.run(os.path.join(path,'actors','monsters.txt'))
     content.append(monsters)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     p = ContentParser(logger)
     path = os.path.join(sys.path[0])
-    path = path.replace('library.zip','')
+    path = path.replace('core.exe','')
     game_options = p.run(os.path.join(path,'options.txt'))
 
     for i in xrange(1,len(game_options)):

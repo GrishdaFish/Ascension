@@ -49,11 +49,13 @@ class Object:  # an object we use to hold save information
 
 
 def save(game):
-    if os.path.isfile(os.path.join(sys.path[0], 'save.sav')):
+    path = os.path.join(sys.path[0],'content')
+    path = path.replace('core.exe','')
+    if os.path.isfile(os.path.join(path, 'save.sav')):
         pass
     else:
         pass
-    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'wb')
+    save_file = open(os.path.join(path, 'save.sav'), 'wb')
 
     completed_save = ''
     completed_save += game.version
@@ -246,7 +248,9 @@ def save_player(player):
 
 
 def load(game=None):
-    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'rb')
+    path = os.path.join(sys.path[0],'content')
+    path = path.replace('core.exe','')
+    save_file = open(os.path.join(path, 'save.sav'), 'rb')
     s = save_file.read()
     save_file.close()
     s = zlib.decompress(s)

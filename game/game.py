@@ -337,7 +337,7 @@ class Game:
     def main_menu(self):
 ##============================================================================
         path = os.path.join(sys.path[0],'content')
-        path = path.replace('library.zip','')
+        path = path.replace('core.exe','')
         img = self.gEngine.image_load(os.path.join(path,'img','menu_background_2.png'))
         m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Options (not working)', 'Quit'], self.con)
         m_menu.is_visible = True
