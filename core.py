@@ -2,10 +2,10 @@ import libtcodpy as libtcod
 import sys
 import os
 sys.path.append(os.path.join(sys.path[0],'game'))
-from game import *
+from game.game import *
 sys.path.append(os.path.join(sys.path[0],'utils'))
-from content_parser import *
-import utils
+from utils.content_parser import *
+import utils.utils as utils
 
 if __name__ == "__main__":
     logger = utils.log_manager()

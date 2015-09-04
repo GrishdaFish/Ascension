@@ -9,9 +9,9 @@ sys.path.append(os.path.join(sys.path[0], 'object'))
 MAP = None
 try:
     import libtcodpy as libtcod
-    import map as MAP
-    import object as OBJECT
-    import misc as MISC
+    import map.map as MAP
+    import object.object as OBJECT
+    import object.misc as MISC
 except ImportError:
     pass
 
@@ -250,7 +250,10 @@ def save_player(player):
 def load(game=None):
     path = os.path.join(sys.path[0],'content')
     path = path.replace('core.exe','')
-    save_file = open(os.path.join(path, 'save.sav'), 'rb')
+    if os.path.isfile(os.path.join(path, 'save.sav')):
+        save_file = open(os.path.join(path, 'save.sav'), 'rb')
+    else:
+        return
     s = save_file.read()
     save_file.close()
     s = zlib.decompress(s)

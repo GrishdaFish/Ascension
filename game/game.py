@@ -8,17 +8,17 @@ import sys,os,time
     
 os.path.join(sys.path[0],'map')
 sys.path.append(os.path.join(sys.path[0],'map'))
-import map
+import map.map as map
 
 sys.path.append(os.path.join(sys.path[0],'object'))
 from object import *
-from build_objects import *
+from object.build_objects import *
 
 sys.path.append(os.path.join(sys.path[0],'utils'))
-from menu import *
-from utils import *
-import save_system
-import console
+from utils.menu import *
+from utils.utils import *
+import utils.save_system as save_system
+import utils.console as console
 
 #actual size of the window
 SCREEN_WIDTH = 80
@@ -73,14 +73,17 @@ class Game:
                                     # On release, just a confirmation menu
                                     # Also affects the use of the python interpreter
                                     # in the console, disabled on release
-        try:
+
+        '''try:
+            self.logger.log.debug('Init gEngine...')
             import cEngine as gEngine  # Try importing the pyd
             self.logger.log.debug('gEngine pyd/so imported')
         except ImportError, err:  # if that fails, import the python prototype
             sys.path.append(os.path.join(sys.path[0], 'gEngine'))
             self.logger.log.debug('gEngine pyd/so import failed, using python prototype')
             self.logger.log.exception(err)
-            import gEngine
+            import gEngine.gEngine as gEngine'''
+        import gEngine.gEngine as gEngine
             
         try:
             self.logger.log.debug("Importing Psyco.")

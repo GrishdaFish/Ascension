@@ -1,7 +1,7 @@
 import libtcodpy as libtcod
 import sys,os
 sys.path.append(os.path.join(sys.path[0],'utils'))
-import menu
+import utils.menu as menu
 
 
 

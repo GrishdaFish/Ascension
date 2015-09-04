@@ -3,7 +3,7 @@ import object
 import sys
 import os
 sys.path.append(os.path.join(sys.path[0],'utils'))
-import spell_effects
+import utils.spell_effects as spell_effects
 
 class Spell:
     def __init__(self,min=0,max=0,range=0,radius=0,targets=0,ef_type=None,ad_eff=None,spel_eff=None,eff_col=None):

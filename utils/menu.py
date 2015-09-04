@@ -2,11 +2,11 @@ import sys,os,time
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'object'))
-from object import *
-from item import *
-from spells import *
+from object.object import *
+from object.item import *
+from object.spells import *
 sys.path.append(os.path.join(sys.path[0], 'game'))
-import combat
+import game.combat as combat
 import logging
 
 

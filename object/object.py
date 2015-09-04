@@ -6,7 +6,7 @@ import logging
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'game'))
-import combat
+import game.combat as combat
 
 ##I might rewrite this system, the bigger the game gets, the more cumbersome this
 ##system gets. :(
