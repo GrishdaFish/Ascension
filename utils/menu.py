@@ -235,7 +235,7 @@ class Button:
         self.type = type
 
 ##============================================================================
-    def display(self):
+    def display(self, mouse=None):
 ##============================================================================
         self.parent.game.gEngine.console_blit(self.window, 0, 0,self.width,
             self.height,self.dest_window,self.x_pos,self.y_pos,1.0, 1.0)
@@ -246,7 +246,7 @@ class Button:
         self.parent.game.gEngine.console_print(self.window, self.width/2, 
             self.height/2, self.label)    
         self.parent.game.gEngine.console_flush()    
-        m = self.mouse_input()
+        m = self.mouse_input(mouse)
         k = self.key_input()
         return m,k
         
@@ -256,9 +256,10 @@ class Button:
         self.parent.game.gEngine.console_remove_console(self.window)
         
 ##============================================================================
-    def mouse_input(self):
+    def mouse_input(self, mouse=None):
 ##============================================================================
-        mouse = libtcod.mouse_get_status()
+        if not mouse:
+            mouse = libtcod.mouse_get_status()
         mx = mouse.cx -(self.x_pos + self.dest_x)
         my = mouse.cy -(self.y_pos + self.dest_y)
         
@@ -328,12 +329,12 @@ class DialogBox:
         elif type == 'option':
             self.run = self.option_box
             self.option_labels = option_labels
-            if option_labels == None:
-                self.option_labels = ['Yes','No']
+            if option_labels is None:
+                self.option_labels = ['Yes', 'No']
             self.buttons.append(Button(parent=self,label=self.option_labels[0],
-                x_pos=self.width//6-5,y_pos=self.height/2-1,type=True))
+                x_pos=1 ,y_pos=self.height/2-1,type=True))
             self.buttons.append(Button(parent=self,label=self.option_labels[1],
-                x_pos=self.width//3-5,y_pos=self.height/2-1,type=False))
+                x_pos=self.width-7,y_pos=self.height/2-1,type=False))
         self.last_input=0
         libtcod.mouse_get_status()
         
@@ -373,14 +374,13 @@ class DialogBox:
 ##============================================================================
         input = [-1,-1]
         
-        self.game.gEngine.console_blit(self.window, 0, 0,self.width,
-            self.height,self.con,self.x_pos,self.y_pos,1.0, 1.0)        
+        self.game.gEngine.console_blit(self.window, 0, 0, self.width, self.height,
+                                       self.con, self.x_pos, self.y_pos, 1.0, 1.0)
             
-        self.game.gEngine.console_print_frame(self.window,0, 0, 
-            self.width, self.height, False)
+        self.game.gEngine.console_print_frame(self.window, 0, 0, self.width,
+                                              self.height, False)
         
-        self.game.gEngine.console_print(self.window, 1, 
-            1, self.body_text)
+        self.game.gEngine.console_print(self.window, 1, 1, self.body_text)
             
         
         self.game.gEngine.console_flush()
@@ -864,6 +864,8 @@ def inventory(con, player, game, width=80, height=43):
     #self.buttons.append(Button(self, self.option_labels[0], self.width//6-5, self.height/2-1, True))
     exit_button = Button(label='Exit', game=game, x_pos=(width/2)-9, y_pos=height-6,
                          window=inventory_window, dest_x=width/2, dest_y=0)
+    drop_button = Button(label='Drop', game=game, x_pos=1, y_pos=height-6,
+                         window=inventory_window, dest_x=width/2, dest_y=0)
     if len(player.fighter.inventory) == 0:
         inventory_items = ['Inventory is empty.']
     else:
@@ -890,7 +892,7 @@ def inventory(con, player, game, width=80, height=43):
     return_item = None
     key = libtcod.console_check_for_keypress(True)
     current_selection = None
-    master_check = CheckBox(1, 29, "Check/Uncheck All")
+    master_check = CheckBox(1, 30, "Check/Uncheck All")
     while key.vk != libtcod.KEY_ESCAPE:
         game.gEngine.console_flush()
         # get input just after flush
@@ -938,7 +940,7 @@ def inventory(con, player, game, width=80, height=43):
             y += 1
             letter_index += 1
         game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
-        game.gEngine.console_print(inventory_window, 1, 30, 'Gold: ' + color_text(str(player.fighter.money), libtcod.gold))
+        game.gEngine.console_print(inventory_window, 1, 31, 'Gold: ' + color_text(str(player.fighter.money), libtcod.gold))
         # ========================================================================
         # print equipped weapons
         # ========================================================================
@@ -1118,11 +1120,37 @@ def inventory(con, player, game, width=80, height=43):
         # ========================================================================
         # handle buttons
         # ========================================================================
-
+        drop_input = drop_button.display(mouse)
+        for i in drop_input:
+            if i != -1:
+                message = 'Drop all selected items?'
+                w = len(message)+2
+                d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                confirm = d_box.display_box()
+                if confirm == 1:
+                    d_box.destroy_box()
+                    master_check.set_checked(False)
+                    items_to_drop = []
+                    for box in check_boxes:
+                        if box.get_checked():
+                            items_to_drop.append(player.fighter.inventory[box.y-3])
+                    for item_to_drop in items_to_drop:
+                        if item_to_drop:
+                            item_to_drop.objects = game.objects
+                            item_to_drop.item.drop(player.fighter.inventory, player, False)
+                            item_to_drop.send_to_back()
+                    check_boxes = []
+                    inventory_items = []
+                    for x in range(len(player.fighter.inventory)):
+                        check_boxes.append(CheckBox(x=1, y=x+3))
+                        inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),
+                                                          player.fighter.inventory[x].color))
+                else:
+                    d_box.destroy_box()
         # ========================================================================
         # handle exit button
         # ========================================================================
-        exit_input = exit_button.display()
+        exit_input = exit_button.display(mouse)
         for i in exit_input:
             if i != -1:
                 key.vk = libtcod.KEY_ESCAPE

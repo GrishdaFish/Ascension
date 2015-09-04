@@ -67,9 +67,10 @@ class Object:
  
     def distance_to(self, other):
         #return the distance to another object
-        dx = other.x - self.x
-        dy = other.y - self.y
-        return math.sqrt(dx ** 2 + dy ** 2)
+        if other:
+            dx = other.x - self.x
+            dy = other.y - self.y
+            return math.sqrt(dx ** 2 + dy ** 2)
  
     def distance(self, x, y):
         #return the distance to some coordinates

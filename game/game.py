@@ -610,7 +610,6 @@ class Game:
                             #self.player.objects = self.objects
                             chosen_item.objects = self.objects
                             chosen_item.item.drop(self.player.fighter.inventory, self.player)
-                            self.logger.log.debug("item x,y %d,%d, player x,y %d,%d" % (chosen_item.x, chosen_item.y, self.player.x, self.player.y))
                             chosen_item.send_to_back()
                         return 'turn-used'
                         
