@@ -977,17 +977,27 @@ def inventory(con, player, game, width=80, height=43):
         game.gEngine.console_print(equipment_window, e_header_pos, 0, e_header)
         i = 0
         game.gEngine.console_set_alignment(equipment_window, libtcod.LEFT)
+        armor_bonus = 0
+        armor_penalty = 0
         for item in player.fighter.equipment:
             text = '(' + chr(index) + ') ' + slots[i] + ': '
             if item is None:
                 text += color_text('Empty', libtcod.darker_gray)
             else:
-                text += color_text(player.fighter.equipment[i].name.capitalize(), player.fighter.equipment[i].color)
+                text += color_text(item.name.capitalize(), item.color)
+                armor_bonus += item.item.equipment.bonus
+                armor_penalty += item.item.equipment.penalty
             game.gEngine.console_print(equipment_window, 1, i+2, text)
             i += 1
             index += 1
-        game.gEngine.console_print(compare_window, c_header_pos, 0, c_header)
+        c = color_text(str(armor_bonus), libtcod.green)
+        text = 'Total Armor Bonus  :  ' + c
+        game.gEngine.console_print(equipment_window, 1, i+2, text)
+        c = color_text(str(armor_penalty), libtcod.red)
+        text = 'Total Armor Penalty: -' + c
+        game.gEngine.console_print(equipment_window, 1, i+3, text)
 
+        game.gEngine.console_print(compare_window, c_header_pos, 0, c_header)
         # ========================================================================
         # handle mouse input
         # ========================================================================

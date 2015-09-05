@@ -176,11 +176,18 @@ class Fighter:
                 bonus += item.item.equipment.bonus
         self.armor_bonus = bonus
 
+    def get_armor_bonus(self):
+        return self.armor_bonus
+
+    def get_armor_penalty(self):
+        return self.armor_penalty
+
     def set_armor_penalty(self):
         penalty = 0
         for item in self.equipment:
             if item is not None:
                 penalty += item.item.equipment.penalty
+        penalty -= self.get_skill('Armor').get_bonus()
         self.armor_penalty = penalty
 
     def get_skill(self, name):
