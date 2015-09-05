@@ -5,7 +5,7 @@
 ##Might clean it up later
 
 import libtcodpy as libtcod
-
+import sys
 
 class Tile:
     def __init__(self,x,y,cell,blocked,block_sight,explored,spawn_node):
@@ -20,9 +20,11 @@ class Tile:
         
 class gEngine:
     def __init__(self,w,h,name,fs,fps):
-        libtcod.console_init_root(w,h,name,fs)
-        libtcod.sys_set_fps(fps)
-        
+        self.w = w
+        self.h = h
+        self.name = name
+        self.fs = fs
+        self.fps = fps
         self.mConsole=[]
         self.mMap=[]
         self.mImages=[]
@@ -33,7 +35,15 @@ class gEngine:
         self.color_light_ground = libtcod.Color(125,125,125)
         self.color_tile_wall = libtcod.Color(177,177,177)
         self.color_tile_ground = libtcod.Color(190,190,190)
-        
+
+    def init_root(self):
+        libtcod.console_init_root(self.w, self.h, self.name, self.fs)
+        libtcod.sys_set_fps(self.fps)
+
+    def console_set_custom_font(self, font_file, flags=libtcod.FONT_LAYOUT_ASCII_INCOL, h=0, v=0):
+        font_file = font_file.replace('core.exe', '')
+        libtcod.console_set_custom_font(font_file, flags, h, v)
+
     def console_new(self,width,height):
         self.mConsole.append(libtcod.console_new(width,height))
         return len(self.mConsole)

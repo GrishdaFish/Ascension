@@ -59,3 +59,4 @@ save_system_backup.py
 /build
 new object code
 *.sav
+/fonts

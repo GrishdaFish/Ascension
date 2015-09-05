@@ -98,6 +98,12 @@ class Game:
 
         #libtcod.console_set_keyboard_repeat(250,250)
         self.gEngine = gEngine.gEngine(SCREEN_WIDTH, SCREEN_HEIGHT, 'Ascension 0.0.1a', False, LIMIT_FPS)
+        try:
+            font = os.path.join(sys.path[0], 'terminal10x10_gs_tc.png')
+            self.gEngine.console_set_custom_font(font, libtcod.FONT_LAYOUT_TCOD | libtcod.FONT_TYPE_GREYSCALE)
+        except:
+            pass
+        self.gEngine.init_root()
         self.con = self.gEngine.console_new(MAP_WIDTH, MAP_HEIGHT)
         self.panel = self.gEngine.console_new(SCREEN_WIDTH, PANEL_HEIGHT)
         
@@ -115,8 +121,8 @@ class Game:
         self.depth = None
         self.game_state = None
 
-        libtcod.console_set_keyboard_repeat(50, 50)
-        libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
+        #libtcod.console_set_keyboard_repeat(50, 50)
+        libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
 
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================

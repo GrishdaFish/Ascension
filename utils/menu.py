@@ -260,8 +260,8 @@ class Button:
 ##============================================================================
         if not mouse:
             mouse = libtcod.mouse_get_status()
-        mx = mouse.cx -(self.x_pos + self.dest_x)
-        my = mouse.cy -(self.y_pos + self.dest_y)
+        mx = mouse.cx - (self.x_pos + self.dest_x)
+        my = mouse.cy - (self.y_pos + self.dest_y)
         
         if mx >= 0 and mx <= self.width and my >= 0 and my <= self.height:
             self.label = color_text(self.label_o,libtcod.red)
@@ -318,10 +318,10 @@ class DialogBox:
             self.height = self.body_height+2           
             self.window = game.gEngine.console_new(self.width,self.height)            
         
-        if type == None or type == 'dialog':
+        if type is None or type == 'dialog':
             self.run = self.dialog_box
             self.option_labels = option_labels
-            if option_labels == None:
+            if option_labels is None:
                 self.option_labels = ['Ok']
             self.buttons.append(Button(parent=self,label=self.option_labels[0],
                 x_pos=self.width//2-5,y_pos=self.height/2-1,type=True))
@@ -827,6 +827,7 @@ def inventory(con, player, game, width=80, height=43):
         Fix duplication bug when equipping items (fixed)
         Fix take off weapon confirmation when equipping an item (fixed)
         2 handed code needs work (?)
+        keyboard input is sluggish. Might have to update libtcod to fix
     """
     equip_height = 14
     wield_height = 8
@@ -890,8 +891,8 @@ def inventory(con, player, game, width=80, height=43):
     c_header_pos = (width/8) - (c_header_size/2)
 
     return_item = None
-    key = libtcod.console_check_for_keypress(True)
-    current_selection = None
+    key = libtcod.console_check_for_keypress()
+    current_selection = 0
     master_check = CheckBox(1, 30, "Check/Uncheck All")
     while key.vk != libtcod.KEY_ESCAPE:
         game.gEngine.console_flush()
@@ -1002,8 +1003,8 @@ def inventory(con, player, game, width=80, height=43):
                 box.render(inventory_window, game)
 
         # Inventory input
-        if mouse.cx >= width/2+3 < width-2:  # inventory screen dims
-            if (mouse.cy-3) < len(inventory_items) >= 0:
+        if mouse.cx >= width/2+3 and mouse.cx < width-2:  # inventory screen dims
+            if (mouse.cy-3) < len(inventory_items) and mouse.cy-3 >= 0:
                 item = player.fighter.inventory[mouse.cy-3]
                 current_selection = mouse.cy-3
                 if item.item.equipment:
@@ -1056,7 +1057,7 @@ def inventory(con, player, game, width=80, height=43):
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         # Wielded
-        elif mouse.cx >= 0 <= width/2:  # inventory screen dims
+        elif mouse.cx >= 0 and mouse.cx <= ((width/2)-2):  # inventory screen dims
             if (mouse.cy-2) < len(player.fighter.wielded):
                 item = player.fighter.wielded[mouse.cy-2]
                 if item is not None:
@@ -1105,18 +1106,31 @@ def inventory(con, player, game, width=80, height=43):
 
         # keyboard input
         # keeps similar feel to old inventory if using the keys
+        # keyboard input is sluggish as balls for some reason, need to look into it more
         index = key.c - ord('a')
         if key:
-            if index >= 0 < len(inventory_items):
+            if index >= 0 and index < len(inventory_items):
                 return_item = player.fighter.inventory[index]
                 break
             index = key.c - ord('1')
-            '''if index >= 0 <= 1:
+            if index >= 0 and index <= 1:
                 return_item = player.fighter.wielded[index]
                 break
-            elif index >= 2 <= 10:
+            elif index >= 2 and index <= 10:
                 return_item = player.fighter.equipment[index-2]
-                break'''
+                break
+            if key.vk == libtcod.KEY_DOWN:
+                if current_selection is None:
+                    current_selection = 0
+                current_selection += 1
+                if current_selection > len(inventory_items):
+                    current_selection = 0
+            if key.vk == libtcod.KEY_UP:
+                if current_selection is None:
+                    current_selection = 0
+                current_selection -= 1
+                if current_selection < 0:
+                    current_selection = len(inventory_items)
         # ========================================================================
         # handle buttons
         # ========================================================================
