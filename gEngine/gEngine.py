@@ -40,6 +40,13 @@ class gEngine:
         libtcod.console_init_root(self.w, self.h, self.name, self.fs)
         libtcod.sys_set_fps(self.fps)
 
+    def console_set_key_color(self, con, r, g, b):
+        col = libtcod.Color(r, g, b)
+        if con == 0:
+            libtcod.console_set_key_color(con, col)
+        else:
+            libtcod.console_set_key_color(self.mConsole[con-1], col)
+
     def console_set_custom_font(self, font_file, flags=libtcod.FONT_LAYOUT_ASCII_INCOL, h=0, v=0):
         font_file = font_file.replace('core.exe', '')
         libtcod.console_set_custom_font(font_file, flags, h, v)
@@ -125,7 +132,7 @@ class gEngine:
             libtcod.console_print_ex(con, x, y, flag, alignment, fmt)
         else:
             libtcod.console_print_ex(self.mConsole[con-1], x, y, flag, alignment, fmt)
-            libtcod.console_print_ex
+
     def console_flush(self):
         libtcod.console_flush()
         
@@ -164,12 +171,18 @@ class gEngine:
     def image_put_pixel(self,i,x,y,r,g,b):
         col = libtcod.Color(r,g,b)
         libtcod.image_put_pixel(self.mImages[i-1],x,y,col)
-        
-    def image_blit_2x(self,i,c,x,y):
+
+    def image_get_size(self, i):
+        return libtcod.image_get_size(self.mImages[i-1])
+
+    def image_get_pixel(self, i, x, y):
+        return libtcod.image_get_pixel(self.mImages[i-1], x, y)
+
+    def image_blit_2x(self,i,c,x,y, sx=0, sy=0, w=-1, h=-1):
         if c == 0:
-            libtcod.image_blit_2x(self.mImages[i-1],0,x,y)
+            libtcod.image_blit_2x(self.mImages[i-1],0,x,y, sx, sy, w, h)
         else:
-            libtcod.image_blit_2x(self.mImages[i-1],self.mConsole[c-1],x,y)
+            libtcod.image_blit_2x(self.mImages[i-1],self.mConsole[c-1],x,y, sx, sy, w, h)
         
     def map_init_level(self,sizeX,sizeY):
         self.FOV = libtcod.map_new(sizeX,sizeY)

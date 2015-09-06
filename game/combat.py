@@ -83,7 +83,6 @@ def get_stat_bonus(stat):
 
 
 def get_armor_penalty(creature):
-
     return creature.fighter.get_armor_penalty()
 
 

@@ -4,7 +4,6 @@ import textwrap
 import shelve
 import sys,os,time
 
-
     
 os.path.join(sys.path[0],'map')
 sys.path.append(os.path.join(sys.path[0],'map'))
@@ -19,6 +18,7 @@ from utils.menu import *
 from utils.utils import *
 import utils.save_system as save_system
 import utils.console as console
+from utils.menus.inventory import *
 
 #actual size of the window
 SCREEN_WIDTH = 80
@@ -423,7 +423,7 @@ class Game:
             #recompute FOV if needed (the player moved or something)
             fov_recompute = False
             libtcod.map_compute_fov(self.fov_map, self.player.x, self.player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
-            self.gEngine.map_draw(self.con,self.player.x,self.player.y)
+            self.gEngine.map_draw(self.con, self.player.x,self.player.y)
             
      
         #draw all objects in the list, except the player. we want it to
