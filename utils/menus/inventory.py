@@ -1,13 +1,14 @@
 __author__ = 'Grishnak'
 from button import *
-from check_box import  *
+from check_box import *
 from color_text import *
 from dialog_box import *
 import libtcodpy as libtcod
 
 
 def inventory(con, player, game, width=80, height=43):
-    """ TODO
+    """
+    TODO:
         Add in highlighting for Weapons and Equipment consoles
         Add in keyboard arrow selection support
         Add in "drop" mode, drop items from inventory
@@ -16,6 +17,13 @@ def inventory(con, player, game, width=80, height=43):
         Fix take off weapon confirmation when equipping an item (fixed)
         2 handed code needs work (?)
         keyboard input is sluggish. Might have to update libtcod to fix
+
+    :param con: Destination console (not used atm)
+    :param player: The main player object
+    :param game: The main game object
+    :param width: width of the inventory screen
+    :param height: height of the inventory screen
+    :return: An item that has been used (potion, scroll, etc..)
     """
     equip_height = 14
     wield_height = 8

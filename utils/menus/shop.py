@@ -6,10 +6,12 @@ from dialog_box import *
 import libtcodpy as libtcod
 
 
-def shop(con, player, game, container=None, bg=None, header=None, width=80, height=50):
+def shop(con, player, game, container=None, bg=None, header=None, width=80, height=50, splash=False):
     """
     TODO:
-    Make sure you cannot buy items if it were to put you over inventory limit
+        Make sure you cannot buy items if it were to put you over inventory limit - Done
+        Attach this to a shopkeeper to control splash and inventory.
+        Add a buyback screen to buy back things sold by accident
 
     :param con: Destination Console (not used atm)
     :param player: The Player Object
@@ -19,22 +21,23 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
     :param header: The title of the store
     :param width: width of the shop
     :param height: height of the shop
+    :param splash: Whether or not to display the splash screen
     :return: Nothing
     """
     if bg:
         dark_bg = game.gEngine.image_load(bg)
         bg = game.gEngine.image_load(bg)
+        w, h = game.gEngine.image_get_size(dark_bg)
+        for y in range(w):
+            for x in range(h):
+                col = game.gEngine.image_get_pixel(dark_bg, y, x)
+                col = libtcod.color_lerp(col, libtcod.black, 0.9)
+                #col = libtcod.color_lerp(col, libtcod.light_azure, 0.2)
+                r, g, b = col
+                game.gEngine.image_put_pixel(dark_bg, y, x, r, g, b)
+
     shop_height = 28
     compare_height = height - shop_height
-    w, h = game.gEngine.image_get_size(dark_bg)
-    for y in range(w):
-        for x in range(h):
-            col = game.gEngine.image_get_pixel(dark_bg, y, x)
-            col = libtcod.color_lerp(col, libtcod.black, 0.9)
-            #col = libtcod.color_lerp(col, libtcod.light_azure, 0.2)
-            r, g, b = col
-            game.gEngine.image_put_pixel(dark_bg, y, x, r, g, b)
-
     s_options = []
     s_gold = []
     s_size = 0
@@ -63,9 +66,6 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
     game.gEngine.console_set_default_foreground(compare_window, r, g, b)
     game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
 
-
-    #game.gEngine.console_print_frame(splash_screen, 0, 0, width, height, True)
-
     i_check_boxes = []
     s_check_boxes = []
 
@@ -77,7 +77,6 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
 
     buy_button = Button(label='Buy', game=game, x_pos=1, y_pos=compare_height-6,
                         window=compare_window, dest_x=0, dest_y=compare_y)
-
 
     if len(player.fighter.inventory) == 0:
         inventory_items = ['Inventory is empty.']
@@ -111,7 +110,8 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
     i_master_check = CheckBox(1, 30, "Check/Uncheck All")
     s_master_check = CheckBox(1, 26, "Check/Uncheck All")
     fade = 1
-    splash_screen = game.gEngine.console_new(width, height)
+    if splash:
+        splash_screen = game.gEngine.console_new(width, height)
     while key.vk != libtcod.KEY_ESCAPE:
         game.gEngine.console_flush()
         # get input just after flush
@@ -124,13 +124,14 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
         game.gEngine.console_blit(inventory_window, 0, 0, width/2, height, 0, (width/2), 0, 1.0, 1.0)
         game.gEngine.console_blit(shop_window, 0, 0, width/2, shop_height, 0, 0, 0, 1.0, 1.0)
         game.gEngine.console_blit(compare_window, 0, 0, width/2, compare_height, 0, 0, compare_y, 1.0, 1.0)
-        if bg:
-            if fade > 0:
-                game.gEngine.console_blit(splash_screen, 0, 0, width, height, 0, 0, 0, fade, fade)
-                game.gEngine.image_blit_2x(bg, splash_screen, 0, 0, 0, 0)
-                fade -= 0.045
-            else:
-                fade = 0
+        if splash:
+            if bg:
+                if fade > 0:
+                    game.gEngine.console_blit(splash_screen, 0, 0, width, height, 0, 0, 0, fade, fade)
+                    game.gEngine.image_blit_2x(bg, splash_screen, 0, 0, 0, 0)
+                    fade -= 0.045
+                else:
+                    fade = 0
         game.gEngine.console_clear(inventory_window)
         game.gEngine.console_clear(shop_window)
         game.gEngine.console_clear(compare_window)
@@ -299,6 +300,7 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                         game.gEngine.console_print_ex(compare_window, 1, 5, libtcod.BKGND_SET, libtcod.LEFT, 'Penalty : ' + str(item.item.equipment.penalty))
                         game.gEngine.console_print_ex(compare_window, 1, 7, libtcod.BKGND_SET, libtcod.LEFT, 'Location: ' + item.item.equipment.location.capitalize())
                     game.gEngine.console_print_ex(compare_window, 1, 6, libtcod.BKGND_SET, libtcod.LEFT, 'Value   : ' + str(item.item.value))
+
                 if item.item.spell:
                     game.gEngine.console_print_ex(compare_window, 1, 2, libtcod.BKGND_SET, libtcod.LEFT, 'Name  : ' + color_text(item.name.capitalize(), item.color))
                     game.gEngine.console_print_ex(compare_window, 1, 3, libtcod.BKGND_SET, libtcod.LEFT, 'Type  : ' + item.item.spell.type.capitalize())
@@ -306,8 +308,14 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                     game.gEngine.console_print_ex(compare_window, 1, 5, libtcod.BKGND_SET, libtcod.LEFT, 'Range : ' + str(item.item.spell.range))
                     game.gEngine.console_print_ex(compare_window, 1, 6, libtcod.BKGND_SET, libtcod.LEFT, 'Radius: ' + str(item.item.spell.radius))
                     game.gEngine.console_print_ex(compare_window, 1, 7, libtcod.BKGND_SET, libtcod.LEFT, 'Value : ' + str(item.item.value))
-                if mouse.lbutton_pressed:  # and item.item.spell:
-                    if item.item.value > player.fighter.money:
+                    
+                if mouse.lbutton_pressed and mouse.cx >= 3:
+                    if len(player.fighter.inventory) >= 26:
+                        message = 'Not enough inventory space!'
+                        w = len(message)+2
+                        d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
+                        d_box.display_box()
+                    elif item.item.value > player.fighter.money:
                         message = 'Not enough money!'
                         w = len(message)+2
                         d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
@@ -399,7 +407,16 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
         # ========================================================================
         for i in buy_input:
             if i != -1:
-                if buy_value > player.fighter.money:
+                n = 0
+                for box in s_check_boxes:
+                    if box.get_checked():
+                        n += 1
+                if len(player.fighter.inventory)+n > 26:
+                        message = 'Not enough inventory space!'
+                        w = len(message)+2
+                        d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
+                        d_box.display_box()
+                elif buy_value > player.fighter.money:
                     message = 'Not enough money!'
                     w = len(message)+2
                     d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
@@ -458,8 +475,8 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                 key.vk = libtcod.KEY_ESCAPE
                 break
     # Remember to remove consoles in reverse order of creation to avoid OOB errors
-
-    game.gEngine.console_remove_console(splash_screen)
+    if splash:
+        game.gEngine.console_remove_console(splash_screen)
     buy_button.destroy_button()
     sell_button.destroy_button()
     exit_button.destroy_button()

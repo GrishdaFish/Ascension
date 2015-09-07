@@ -236,6 +236,8 @@ def save_player(player):
     for item in player.fighter.wielded:
         if item is not None:
             player_save += save_item(item)
+            if item.item.equipment.handed == 2:
+                break
     player_save += END_WIELDED
 
     for item in player.fighter.skills:
