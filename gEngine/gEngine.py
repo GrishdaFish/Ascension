@@ -149,7 +149,15 @@ class gEngine:
         else:
             col = libtcod.console_get_char_background(self.mConsole[con-1],x,y)
             return libtcod.color_get_hsv(col)
-            
+
+    def console_get_char_foreground(self,con,x,y):
+        if con == 0:
+            col = libtcod.console_get_char_foreground(0,x,y)
+            return col
+        else:
+            col = libtcod.console_get_char_foreground(self.mConsole[con-1],x,y)
+            return col
+
     def image_new(self,x,y):
         img = libtcod.image_new(x,y)
         self.mImages.append(img)

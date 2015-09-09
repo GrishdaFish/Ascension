@@ -221,6 +221,9 @@ def save_player(player):
     player_save += str(player.fighter.current_xp)
     player_save += PADDING
 
+    player_save += str(player.fighter.xp_to_next_level)
+    player_save += PADDING
+
     player_save += str(player.fighter.unused_skill_points)
     player_save += END_PLAYER
 
@@ -322,9 +325,10 @@ def load_player(player, p, game=None):
     player.fighter.hp = int(p[3])
     player.fighter.max_hp = int(p[4])
     player.fighter.money = int(p[5])
-    # level
-    # current xp
-    # unused skill points
+    player.fighter.level = int(p[6])
+    player.fighter.current_xp = int(p[7])
+    player.fighter.xp_to_next_level = int(p[8])
+    player.fighter.unused_skill_points = int(p[9])
 
 
 def load_level(level, game=None):

@@ -36,18 +36,22 @@ def inventory(con, player, game, width=80, height=43):
     inventory_window = game.gEngine.console_new(width/2, height)
     game.gEngine.console_set_default_foreground(inventory_window, r, g, b)
     game.gEngine.console_print_frame(inventory_window, 0, 0, width/2, height, True)
+    game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
 
     equipment_window = game.gEngine.console_new(width/2, equip_height)
     game.gEngine.console_set_default_foreground(equipment_window, r, g, b)
     game.gEngine.console_print_frame(equipment_window, 0, 0, width/2, equip_height, True)
+    game.gEngine.console_set_default_background(equipment_window, 0, 0, 0)
 
     wielded_window = game.gEngine.console_new(width/2, wield_height)
     game.gEngine.console_set_default_foreground(wielded_window, r, g, b)
     game.gEngine.console_print_frame(wielded_window, 0, 0, width/2, wield_height, True)
+    game.gEngine.console_set_default_background(wielded_window, 0, 0, 0)
 
     compare_window = game.gEngine.console_new(width/2, compare_height)
     game.gEngine.console_set_default_foreground(compare_window, r, g, b)
     game.gEngine.console_print_frame(compare_window, 0, 0, width/2, compare_height, True)
+    game.gEngine.console_set_default_background(compare_window, 0, 0, 0)
 
     check_boxes = []
     slots = ['Torso    ',
@@ -99,7 +103,7 @@ def inventory(con, player, game, width=80, height=43):
         drop_input = drop_button.display(mouse)
 
         game.gEngine.console_blit(inventory_window, 0, 0, width/2, height, 0, (width/2), 0, 1.0, 1.0)
-        game.gEngine.console_blit(wielded_window, 0, 0, width/2, height, 0, 0, 0, 1.0, 1.2)
+        game.gEngine.console_blit(wielded_window, 0, 0, width/2, height, 0, 0, 0, 1.0, 1.0)
         game.gEngine.console_blit(equipment_window, 0, 0, width/2, height, 0, 0, equip_y, 1.0, 1.0)
         game.gEngine.console_blit(compare_window, 0, 0, width/2, height, 0, 0, compare_y, 1.0, 1.0)
 
@@ -127,17 +131,18 @@ def inventory(con, player, game, width=80, height=43):
         # ========================================================================
         game.gEngine.console_print(inventory_window, i_header_pos, 0, i_header)
         letter_index = ord('a')
-        y = 1
-        for i in range(len(inventory_items)):
-            text = '  (' + chr(letter_index) + ') ' + inventory_items[i]
-            if current_selection == y - 1:
-                r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
-                game.gEngine.console_set_default_background(inventory_window, r, g, b)
-            else:
-                game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
-            game.gEngine.console_print_ex(inventory_window, 1, y+2, libtcod.BKGND_SET, libtcod.LEFT, text)
-            y += 1
-            letter_index += 1
+        if len(player.fighter.inventory) > 0:
+            y = 1
+            for i in range(len(inventory_items)):
+                text = '  (' + chr(letter_index) + ') ' + inventory_items[i]
+                if current_selection == y - 1:
+                    r, g, b = libtcod.color_lerp(player.fighter.inventory[i].color, libtcod.blue, 0.5)
+                    game.gEngine.console_set_default_background(inventory_window, r, g, b)
+                else:
+                    game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
+                game.gEngine.console_print_ex(inventory_window, 1, y+2, libtcod.BKGND_SET, libtcod.LEFT, text)
+                y += 1
+                letter_index += 1
         game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
         game.gEngine.console_print(inventory_window, 1, 31, 'Gold: ' + color_text(str(player.fighter.money), libtcod.gold))
 

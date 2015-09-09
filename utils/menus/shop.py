@@ -240,7 +240,7 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
 
         # Inventory input
         if mouse.cx >= width/2+3 and mouse.cx < width-2:  # inventory screen dims
-            if (mouse.cy-1) < len(inventory_items) and mouse.cy-1 >= 0:
+            if (mouse.cy-1) < len(player.fighter.inventory) and mouse.cy-1 >= 0:
                 item = player.fighter.inventory[mouse.cy-1]
                 current_selection = mouse.cy-1
                 game.gEngine.console_set_default_background(compare_window, 0, 0, 0)

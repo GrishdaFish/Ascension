@@ -19,7 +19,7 @@ from utils.utils import *
 import utils.save_system as save_system
 import utils.console as console
 from utils.menus.inventory import *
-
+from utils.menus.character import *
 #actual size of the window
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
@@ -596,7 +596,8 @@ class Game:
                     return 'turn-used'
 
                 if key.c is ord(self.keys.key_char):
-                    index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    #index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    index = character_info(0, SCREEN_WIDTH, SCREEN_HEIGHT, self)
                     if index is not None:
                         index.increase_level(5)
                         return 'turn-used'

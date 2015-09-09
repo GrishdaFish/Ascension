@@ -135,7 +135,7 @@ class Fighter:
         self.owner = None
         self.ticker = ticker
         self.stats = [Str, Dex, Int, Con]
-        self.unused_skill_points = 0
+        self.unused_skill_points = 2
         self.defense = 0
 
         self.max_hp = combat.hp_bonus(Con)
@@ -166,8 +166,10 @@ class Fighter:
         hp = self.max_hp
         self.hp = hp
 
-    def apply_skill_points(self):
-        pass
+    def apply_skill_points(self, skill):
+        if isinstance(skill, basestring):
+            skill = self.get_skill(skill)
+        self.unused_skill_points = skill.increase_level(self.unused_skill_points)
 
     def set_armor_bonus(self):
         bonus = 0
