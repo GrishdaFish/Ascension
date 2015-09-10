@@ -45,6 +45,10 @@ class HotBar():
         :param key: key input
         :return: Activated? (t/f)
         """
+        self.gEngine.console_clear(self.window)
+        r, g, b = libtcod.white
+        self.gEngine.console_set_default_foreground(self.window, r, g, b)
+        self.gEngine.console_print_frame(self.window, 0, 0, 32, 5, True)
         for slot in self.slots:
             slot.update(mouse, keyboard, game)
         self.render()
@@ -71,10 +75,7 @@ class HotBar():
 
         :return:
         """
-        self.gEngine.console_clear(self.window)
-        r, g, b = libtcod.white
-        self.gEngine.console_set_default_foreground(self.window, r, g, b)
-        self.gEngine.console_print_frame(self.window, 0, 0, 32, 5, True)
+
         for slot in self.slots:
             slot.render()
             self.gEngine.console_blit(slot.window, 0, 0, 3, 3, self.window, slot.position, 1, 1.0, 1.0)
@@ -97,7 +98,7 @@ class HotBarSlot():
         self.con = con
         self.cx = cx
         self.cy = cy
-        self.name = ''
+        self.name = 'Empty'
         self.label = label
         self.gEngine = gEngine
         self.window = gEngine.console_new(3, 3)
@@ -124,13 +125,14 @@ class HotBarSlot():
     def use(self, game):
         if self.obj:
             if self.obj.item.spell:
-                #if obj.qty <= 0
-                for slot in self.owner.slots:  # make sure any of the other slots that use this item are also removed
-                    if slot.obj == self.obj and slot != self:
-                        slot.remove_object()
-                self.obj.item.use(game.player.fighter.inventory, game.player, game)
-
-                self.remove_object()
+                if self.obj.item.qty <= 1:
+                    for slot in self.owner.slots:  # make sure any of the other slots that use this item are also removed
+                        if slot.obj == self.obj and slot != self:
+                            slot.remove_object()
+                    self.obj.item.use(game.player.fighter.inventory, game.player, game)
+                    self.remove_object()
+                else:
+                    self.obj.item.use(game.player.fighter.inventory, game.player, game)
             elif self.obj.equipment:
                 pass
             return 'turn-used'
@@ -152,6 +154,17 @@ class HotBarSlot():
         if mouse.cx >= self.cx and mouse.cx <= self.cx + 2:
             if mouse.cy >= self.cy and mouse.cy <= self.cy + 2:
                 r, g, b = libtcod.green
+                t = self.name.capitalize()
+                t = chr(libtcod.CHAR_TEEW) + t
+                if self.obj:
+                    if self.obj.item:
+                        t += ' (%d)' % self.obj.item.qty + chr(libtcod.CHAR_TEEE)
+                    else:
+                        t += chr(libtcod.CHAR_TEEE)
+                else:
+                    t += chr(libtcod.CHAR_TEEE)
+                t, p = get_centered_text(t, 16)
+                self.gEngine.console_print(self.owner.window, p, 0, t)
                 if mouse.lbutton:
                     r, g, b = libtcod.red
                 if mouse.lbutton_pressed:

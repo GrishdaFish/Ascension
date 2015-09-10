@@ -73,7 +73,10 @@ def inventory(con, player, game, width=80, height=43):
         inventory_items = []
         for x in range(len(player.fighter.inventory)):
             check_boxes.append(CheckBox(x=1, y=x+3))
-            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
+            i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+            if player.fighter.inventory[x].item.check_stackable:
+                i += ' (%d)' % player.fighter.inventory[x].item.qty
+            inventory_items.append(i)
     i_header = 'Inventory'
     i_header_size = len(i_header)
     i_header_pos = (width/4)-(i_header_size/2)
@@ -269,7 +272,10 @@ def inventory(con, player, game, width=80, height=43):
                             check_boxes = []
                             for x in range(len(player.fighter.inventory)):
                                 check_boxes.append(CheckBox(x=1, y=x+3))
-                                inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
+                                i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+                                if player.fighter.inventory[x].item.check_stackable:
+                                    i += ' (%d)' % player.fighter.inventory[x].item.qty
+                                inventory_items.append(i)
             else:
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)
@@ -309,7 +315,10 @@ def inventory(con, player, game, width=80, height=43):
                     check_boxes = []
                     for x in range(len(player.fighter.inventory)):
                         check_boxes.append(CheckBox(x=1, y=x+3))
-                        inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
+                        i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+                        if player.fighter.inventory[x].item.check_stackable:
+                            i += ' (%d)' % player.fighter.inventory[x].item.qty
+                        inventory_items.append(i)
                     i = 0
                     for x in player.fighter.wielded:
                         if x == item:

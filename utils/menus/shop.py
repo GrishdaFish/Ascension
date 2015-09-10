@@ -84,7 +84,10 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
         inventory_items = []
         for x in range(len(player.fighter.inventory)):
             i_check_boxes.append(CheckBox(x=1, y=x+1))
-            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
+            i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+            if player.fighter.inventory[x].item.check_stackable:
+                i += ' (%d)' % player.fighter.inventory[x].item.qty
+            inventory_items.append(i)
     for x in range(len(container)):
         s_check_boxes.append(CheckBox(x=1, y=x+1))
 
@@ -278,8 +281,10 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                         i_check_boxes = []
                         for x in range(len(player.fighter.inventory)):
                             i_check_boxes.append(CheckBox(x=1, y=x+1))
-                            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(), player.fighter.inventory[x].color))
-
+                            i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+                            if player.fighter.inventory[x].item.check_stackable:
+                                i += ' (%d)' % player.fighter.inventory[x].item.qty
+                            inventory_items.append(i)
 
         # shop input
         if mouse.cx >= 0 and mouse.cx < width/2-2:  # shop screen dims
@@ -335,13 +340,17 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                         confirm = d_box.display_box()
                         if confirm == 1:
                             player.fighter.money -= item.item.value
-                            player.fighter.inventory.append(item)
+                            #player.fighter.inventory.append(item)
+                            item.item.pick_up(player.fighter.inventory)
                             container.remove(item)
                             inventory_items = []
                             i_check_boxes = []
                             for x in range(len(player.fighter.inventory)):
                                 i_check_boxes.append(CheckBox(x=1, y=x+1))
-                                inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(), player.fighter.inventory[x].color))
+                                i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+                                if player.fighter.inventory[x].item.check_stackable:
+                                    i += ' (%d)' % player.fighter.inventory[x].item.qty
+                                inventory_items.append(i)
                             s_check_boxes = []
                             s_options = []
                             if container:
@@ -443,7 +452,8 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                             if item_to_buy:
                                 container.remove(item_to_buy)
                                 player.fighter.money -= item_to_buy.item.value
-                                player.fighter.inventory.append(item_to_buy)
+                                #player.fighter.inventory.append(item_to_buy)
+                                item_to_buy.item.pick_up(player.fighter.inventory)
 
                         s_check_boxes = []
                         s_options = []
@@ -464,8 +474,10 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                         inventory_items = []
                         for x in range(len(player.fighter.inventory)):
                             i_check_boxes.append(CheckBox(x=1, y=x+1))
-                            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),
-                                                              player.fighter.inventory[x].color))
+                            i = color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color)
+                            if player.fighter.inventory[x].item.check_stackable:
+                                i += ' (%d)' % player.fighter.inventory[x].item.qty
+                            inventory_items.append(i)
             #else:
                     d_box.destroy_box()
 

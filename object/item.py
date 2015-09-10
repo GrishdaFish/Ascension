@@ -15,6 +15,7 @@ class Item:
         self.qty = 1
         if self.spell:
             self.use_function = self.spell.cast
+            self.stackable = True
         self.equipment = equipment
         if self.equipment:
             self.use_function = self.equipment.equip
@@ -26,27 +27,32 @@ class Item:
         if not self.owner.misc:
             for item in inventory:
                 if item.item:
-                    if item.item.check_stackable() and item.item.spell == self.spell:
+                    if item.item.check_stackable() and item.name == self.owner.name:
                         item.item.stack(self.qty)
-                        self.owner.objects.remove(self.owner)
-                        msg = menu.color_text('You picked up a ',libtcod.yellow)
-                        msg+= menu.color_text(self.owner.name,self.owner.color)
-                        msg+= menu.color_text('!',libtcod.yellow)
-                        self.owner.message.message(msg,0)
+                        if self.owner.objects:
+                            self.owner.objects.remove(self.owner)
+                        if self.owner.message:
+                            msg = menu.color_text('You picked up a ', libtcod.yellow)
+                            msg+= menu.color_text(self.owner.name, self.owner.color)
+                            msg+= menu.color_text('!', libtcod.yellow)
+                            self.owner.message.message(msg, 0)
                         return
 
             if len(inventory) >= 26:
-                msg = menu.color_text('Your inventory is full, cannot pick up ',libtcod.yellow)
-                msg+= menu.color_text(self.owner.name,self.owner.color)
-                msg+= menu.color_text('.',libtcod.yellow)
-                self.owner.message.message(msg,0)
+                if self.owner.message:
+                    msg = menu.color_text('Your inventory is full, cannot pick up ',libtcod.yellow)
+                    msg+= menu.color_text(self.owner.name,self.owner.color)
+                    msg+= menu.color_text('.',libtcod.yellow)
+                    self.owner.message.message(msg,0)
             else:
                 inventory.append(self.owner)
-                self.owner.objects.remove(self.owner)
-                msg = menu.color_text('You picked up a ',libtcod.yellow)
-                msg+= menu.color_text(self.owner.name,self.owner.color)
-                msg+= menu.color_text('!',libtcod.yellow)
-                self.owner.message.message(msg,0)
+                if self.owner.objects:
+                    self.owner.objects.remove(self.owner)
+                if self.owner.message:
+                    msg = menu.color_text('You picked up a ',libtcod.yellow)
+                    msg+= menu.color_text(self.owner.name,self.owner.color)
+                    msg+= menu.color_text('!',libtcod.yellow)
+                    self.owner.message.message(msg,0)
 
     def check_stackable(self):
         return self.stackable
@@ -76,7 +82,13 @@ class Item:
             else:
                 if not self.equipment:
                     if self.use_function(creature,game.player,game=game) != 'cancelled':
-                        inventory.remove(self.owner)  #destroy after use, unless it was cancelled for some reason
+                        if self.check_stackable():
+                            if self.qty > 1:
+                                self.qty -= 1
+                            else:
+                                inventory.remove(self.owner)  #destroy after use, unless it was cancelled for some reason
+                        else:
+                            inventory.remove(self.owner)
                 else:##equip
                     self.use_function(creature,game=game,owner=self.owner)
         else:##so mobs can use items
