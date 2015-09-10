@@ -137,7 +137,7 @@ class HotBarSlot():
                 pass
             return 'turn-used'
         else:
-            chosen_item = inventory(self.con, game.player, self)
+            chosen_item = inventory(self.con, game.player, game)
             if chosen_item:
                 self.attach_object(chosen_item)
 

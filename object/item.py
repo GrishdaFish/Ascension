@@ -30,7 +30,8 @@ class Item:
                     if item.item.check_stackable() and item.name == self.owner.name:
                         item.item.stack(self.qty)
                         if self.owner.objects:
-                            self.owner.objects.remove(self.owner)
+                            if self.owner in self.owner.objects:
+                                self.owner.objects.remove(self.owner)
                         if self.owner.message:
                             msg = menu.color_text('You picked up a ', libtcod.yellow)
                             msg+= menu.color_text(self.owner.name, self.owner.color)
@@ -47,7 +48,8 @@ class Item:
             else:
                 inventory.append(self.owner)
                 if self.owner.objects:
-                    self.owner.objects.remove(self.owner)
+                    if self.owner in self.owner.objects:
+                        self.owner.objects.remove(self.owner)
                 if self.owner.message:
                     msg = menu.color_text('You picked up a ',libtcod.yellow)
                     msg+= menu.color_text(self.owner.name,self.owner.color)
