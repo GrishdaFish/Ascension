@@ -20,9 +20,10 @@ import utils.save_system as save_system
 import utils.console as console
 from utils.menus.inventory import *
 from utils.menus.character import *
+from utils.menus.hot_bar import *
 #actual size of the window
 SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
+SCREEN_HEIGHT = 55
 
 PANEL_HEIGHT = 7
 #size of the map
@@ -106,14 +107,29 @@ class Game:
         self.gEngine.init_root()
         self.con = self.gEngine.console_new(MAP_WIDTH, MAP_HEIGHT)
         self.panel = self.gEngine.console_new(SCREEN_WIDTH, PANEL_HEIGHT)
-        
+
+        self.toolbar = self.gEngine.console_new(SCREEN_WIDTH, 5)
+
+        x = 32/2
+        x = SCREEN_WIDTH/2 - x
+        self.hotbar = HotBar(x, 0, self.gEngine, self.toolbar)
+        z=1
+        index = ord('1')
+        for i in range(10):
+            if index == ord(':'):
+                index = ord('0')
+            s = HotBarSlot(None, z+x, PANEL_Y-4, z, chr(index), self.gEngine)
+            self.hotbar.add_slot(s)
+            z += 3
+            index += 1
         self.message = Message(self.panel, MSG_HEIGHT, MSG_WIDTH, MSG_X, self.logger, self.debug_level)
         self.build_objects = GameObjects(content)        
         self.ticker = Ticker()
         
         self.Map = map.Map(MAP_HEIGHT, MAP_WIDTH, ROOM_MIN_SIZE, ROOM_MAX_SIZE,
             MAX_ROOMS, MAX_ROOM_MONSTERS, MAX_ROOM_ITEMS, self.logger)
-            
+
+
         self.keys = key_set
         self.setup_keys()
         self.current_dungeon = []  # an array that holds all off the dungeon levels
@@ -291,7 +307,9 @@ class Game:
                 self.render_all()
                 self.player_moved=False
                 self.gEngine.console_flush()
-         
+                key = libtcod.console_check_for_keypress()
+                mouse = libtcod.mouse_get_status()
+
                 #erase all objects at their old locations, before they move
                 for object in self.objects:
                     object.clear(self.gEngine)
@@ -300,9 +318,9 @@ class Game:
                 
                 #Monsters faster than the player, take turns first
                 is_player_turn = self.ticker.next_turn(self)
-                
+                self.hotbar.update(mouse, key, self)
                 if is_player_turn:                    
-                    player_action = self.handle_keys()
+                    player_action = self.handle_keys(key)
                     
                     ##Make sure the player takes his turn before continuing
                     ##Need to have certain actions take certain speeds
@@ -310,7 +328,7 @@ class Game:
                     ##inventory actions depend on what was done
                     while player_action == 'didnt-take-turn':
                         
-                        player_action = self.handle_keys()
+                        player_action = self.handle_keys(key)
                         
                         if player_action == 'player-moved':
                             self.player_moved = True
@@ -320,7 +338,10 @@ class Game:
                             
                         self.render_all()                        
                         self.gEngine.console_flush()
-                        
+
+                        key = libtcod.console_check_for_keypress()
+                        mouse = libtcod.mouse_get_status()
+                        self.hotbar.update(mouse, key, self)
                         self.player_moved=False
                         
                         for object in self.objects:
@@ -468,10 +489,14 @@ class Game:
 
         self.gEngine.console_print(self.panel, 1, 5, "(%dfps)" % (libtcod.sys_get_fps()))
         self.gEngine.console_print(self.panel, 1, 0, self.get_names_under_mouse())
-        
+
+        self.hotbar.render()
+        self.gEngine.console_blit(self.toolbar, 0, 0, SCREEN_WIDTH, 5, 0, 0, PANEL_Y-5, 1.0, 1.0)
         #print a message with the names of objects under the player
         self.get_names_under_player()
         #blit the contents of "panel" to the root console
+        r, g, b = libtcod.black
+        self.gEngine.console_set_default_background(0, r, g, b)
         self.gEngine.console_blit(self.panel, 0, 0, SCREEN_WIDTH, PANEL_HEIGHT, 0, 0, PANEL_Y,1.0,1.0)
      
      
@@ -511,9 +536,9 @@ class Game:
         self.player.color = libtcod.dark_red
 
 ##============================================================================
-    def handle_keys(self):
+    def handle_keys(self, key):
 ##============================================================================
-        key = libtcod.console_check_for_keypress(libtcod.KEY_PRESSED)
+
         #libtcod.sys_check_for_event()
         move_keys = {self.keys.key_north :(0,-1),
                     self.keys.key_south  :(0,1) ,

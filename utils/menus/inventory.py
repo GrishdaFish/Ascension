@@ -219,56 +219,57 @@ def inventory(con, player, game, width=80, height=43):
 
         # Inventory input
         if mouse.cx >= width/2+3 and mouse.cx < width-2:  # inventory screen dims
-            if (mouse.cy-3) < len(inventory_items) and mouse.cy-3 >= 0:
-                item = player.fighter.inventory[mouse.cy-3]
-                current_selection = mouse.cy-3
-                if item.item.equipment:
-                    game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
-                    game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
-                    if item.item.equipment.type == 'melee':
-                        damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
-                        game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
-                        game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
-                        game.gEngine.console_print(compare_window, 1, 7, 'Skill   : ' + item.item.equipment.damage_type)
-                    else:
-                        game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
-                        game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
-                        game.gEngine.console_print(compare_window, 1, 7, 'Location: ' + item.item.equipment.location.capitalize())
-                    game.gEngine.console_print(compare_window, 1, 6, 'Value   : ' + str(item.item.value))
-                if item.item.spell:
-                    game.gEngine.console_print(compare_window, 1, 2, 'Name  : ' + color_text(item.name.capitalize(), item.color))
-                    game.gEngine.console_print(compare_window, 1, 3, 'Type  : ' + item.item.spell.type.capitalize())
-                    game.gEngine.console_print(compare_window, 1, 4, 'Power : ' + str(item.item.spell.min) + '-' + str(item.item.spell.max))
-                    game.gEngine.console_print(compare_window, 1, 5, 'Range : ' + str(item.item.spell.range))
-                    game.gEngine.console_print(compare_window, 1, 6, 'Radius: ' + str(item.item.spell.radius))
-                    game.gEngine.console_print(compare_window, 1, 7, 'Value : ' + str(item.item.value))
-                if mouse.lbutton_pressed and item.item.spell:
-                    i_n = color_text(item.name.capitalize(), item.color)
-                    message = 'Do you want to use %s?' % i_n
-                    w = len(message)+2
-                    d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
-                    confirm = d_box.display_box()
-                    if confirm == 1:  # make sure if the player uses a scroll or potion, we exit inventory
-                        d_box.destroy_box()
-                        # Remember to remove consoles in reverse order of creation to avoid OOB errors
-                        return_item = item
-                        break
-                    else:
-                        d_box.destroy_box()
-                if mouse.lbutton_pressed and item.item.equipment:
-                    i_n = color_text(item.name.capitalize(), item.color)
-                    message = 'Do you want to put %s on?' % i_n
-                    w = len(message)+2
-                    d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
-                    confirm = d_box.display_box()
-                    if confirm == 1:
-                        item.item.use(game.player.fighter.inventory, game.player, game)
-                        d_box.destroy_box()
-                        inventory_items = []
-                        check_boxes = []
-                        for x in range(len(player.fighter.inventory)):
-                            check_boxes.append(CheckBox(x=1, y=x+3))
-                            inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
+            if (mouse.cy-3) < len(player.fighter.inventory) and mouse.cy-3 >= 0:
+                #if mouse.cy-3 <= len(player.fighter.inventory):
+                    item = player.fighter.inventory[mouse.cy-3]
+                    current_selection = mouse.cy-3
+                    if item.item.equipment:
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name    : ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type    : ' + item.item.equipment.type.capitalize())
+                        if item.item.equipment.type == 'melee':
+                            damage = '%dd%d+%d' % (item.item.equipment.damage.nb_dices, item.item.equipment.damage.nb_faces, item.item.equipment.damage.addsub )
+                            game.gEngine.console_print(compare_window, 1, 4, 'Damage  : ' + damage)
+                            game.gEngine.console_print(compare_window, 1, 5, 'Accuracy: ' + str(item.item.equipment.accuracy))
+                            game.gEngine.console_print(compare_window, 1, 7, 'Skill   : ' + item.item.equipment.damage_type)
+                        else:
+                            game.gEngine.console_print(compare_window, 1, 4, 'Armor   : ' + str(item.item.equipment.bonus))
+                            game.gEngine.console_print(compare_window, 1, 5, 'Penalty : ' + str(item.item.equipment.penalty))
+                            game.gEngine.console_print(compare_window, 1, 7, 'Location: ' + item.item.equipment.location.capitalize())
+                        game.gEngine.console_print(compare_window, 1, 6, 'Value   : ' + str(item.item.value))
+                    if item.item.spell:
+                        game.gEngine.console_print(compare_window, 1, 2, 'Name  : ' + color_text(item.name.capitalize(), item.color))
+                        game.gEngine.console_print(compare_window, 1, 3, 'Type  : ' + item.item.spell.type.capitalize())
+                        game.gEngine.console_print(compare_window, 1, 4, 'Power : ' + str(item.item.spell.min) + '-' + str(item.item.spell.max))
+                        game.gEngine.console_print(compare_window, 1, 5, 'Range : ' + str(item.item.spell.range))
+                        game.gEngine.console_print(compare_window, 1, 6, 'Radius: ' + str(item.item.spell.radius))
+                        game.gEngine.console_print(compare_window, 1, 7, 'Value : ' + str(item.item.value))
+                    if mouse.lbutton_pressed and item.item.spell:
+                        i_n = color_text(item.name.capitalize(), item.color)
+                        message = 'Do you want to use %s?' % i_n
+                        w = len(message)+2
+                        d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                        confirm = d_box.display_box()
+                        if confirm == 1:  # make sure if the player uses a scroll or potion, we exit inventory
+                            d_box.destroy_box()
+                            # Remember to remove consoles in reverse order of creation to avoid OOB errors
+                            return_item = item
+                            break
+                        else:
+                            d_box.destroy_box()
+                    if mouse.lbutton_pressed and item.item.equipment:
+                        i_n = color_text(item.name.capitalize(), item.color)
+                        message = 'Do you want to put %s on?' % i_n
+                        w = len(message)+2
+                        d_box = DialogBox(game, w, 10, width/4, height/2, message, type='option', con=inventory_window)
+                        confirm = d_box.display_box()
+                        if confirm == 1:
+                            item.item.use(game.player.fighter.inventory, game.player, game)
+                            d_box.destroy_box()
+                            inventory_items = []
+                            check_boxes = []
+                            for x in range(len(player.fighter.inventory)):
+                                check_boxes.append(CheckBox(x=1, y=x+3))
+                                inventory_items.append(color_text(player.fighter.inventory[x].name.capitalize(),player.fighter.inventory[x].color))
             else:
                 current_selection = None
         # game.gEngine.console_set_default_background(inventory_window, 0, 0, 0)

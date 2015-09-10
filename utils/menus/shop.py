@@ -311,10 +311,13 @@ def shop(con, player, game, container=None, bg=None, header=None, width=80, heig
                     
                 if mouse.lbutton_pressed and mouse.cx >= 3:
                     if len(player.fighter.inventory) >= 26:
-                        message = 'Not enough inventory space!'
-                        w = len(message)+2
-                        d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
-                        d_box.display_box()
+                        if not item.item.check_stackable():
+                            message = 'Not enough inventory space!'
+                            w = len(message)+2
+                            d_box = DialogBox(game, w, 10, width/2-w/2, height/2-5, message, type='dialog', con=inventory_window)
+                            d_box.display_box()
+                        else:
+                            pass
                     elif item.item.value > player.fighter.money:
                         message = 'Not enough money!'
                         w = len(message)+2

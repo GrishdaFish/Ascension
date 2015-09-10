@@ -38,6 +38,7 @@ class PhysicsComponent(Component):
 
 '''
 Physical Component (event)
+    #add priority attribute to dictate order of components called
     process incoming event
     if event is of type ()
         process event

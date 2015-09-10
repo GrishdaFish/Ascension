@@ -11,6 +11,8 @@ class Item:
         self.owner = None
         self.value=0
         self.spell = spell
+        self.stackable = False
+        self.qty = 1
         if self.spell:
             self.use_function = self.spell.cast
         self.equipment = equipment
@@ -22,6 +24,17 @@ class Item:
         self.owner.x = None
         self.owner.y = None
         if not self.owner.misc:
+            for item in inventory:
+                if item.item:
+                    if item.item.check_stackable() and item.item.spell == self.spell:
+                        item.item.stack(self.qty)
+                        self.owner.objects.remove(self.owner)
+                        msg = menu.color_text('You picked up a ',libtcod.yellow)
+                        msg+= menu.color_text(self.owner.name,self.owner.color)
+                        msg+= menu.color_text('!',libtcod.yellow)
+                        self.owner.message.message(msg,0)
+                        return
+
             if len(inventory) >= 26:
                 msg = menu.color_text('Your inventory is full, cannot pick up ',libtcod.yellow)
                 msg+= menu.color_text(self.owner.name,self.owner.color)
@@ -34,6 +47,12 @@ class Item:
                 msg+= menu.color_text(self.owner.name,self.owner.color)
                 msg+= menu.color_text('!',libtcod.yellow)
                 self.owner.message.message(msg,0)
+
+    def check_stackable(self):
+        return self.stackable
+
+    def stack(self, qty):
+        self.qty += qty
 
     def drop(self,inventory, owner, mes=True):
         #add to the map and remove from the owners inventory. 
