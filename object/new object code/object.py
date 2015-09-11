@@ -49,6 +49,4 @@ Physical Component (event)
                     maybe only pop event if its one we can modify
                 then continue looping through to the next component
     send final event(s) to do w/e
-
-
 '''

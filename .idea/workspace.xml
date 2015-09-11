@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7ef8a05c-f239-4fe1-9a91-4e3c338f7cab" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/menus/hot_bar.py" afterPath="$PROJECT_DIR$/utils/menus/hot_bar.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/object/item.py" afterPath="$PROJECT_DIR$/object/item.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/object/new object code/object.py" afterPath="$PROJECT_DIR$/object/new object code/object.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils/save_system.py" afterPath="$PROJECT_DIR$/utils/save_system.py" />
     </list>
     <ignored path="src.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -21,7 +21,7 @@
     <SUITE FILE_PATH="coverage/src$binary_testing.coverage" NAME="binary_testing Coverage Results" MODIFIED="1440314924267" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Necrodouche/spare crap" />
     <SUITE FILE_PATH="coverage/src$CaveGen.coverage" NAME="CaveGen Coverage Results" MODIFIED="1440303916525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../LH-Arena/src" />
     <SUITE FILE_PATH="coverage/src$save_system.coverage" NAME="save_system Coverage Results" MODIFIED="1440371379593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441910583978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/src$core.coverage" NAME="core Coverage Results" MODIFIED="1441935312532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -37,8 +37,8 @@
             <file leaf-file-name="debug.txt" pinned="false" current="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/debug/debug.txt">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.84661657" vertical-offset="100" max-vertical-offset="765">
-                    <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+                  <state vertical-scroll-proportion="0.38345864" vertical-offset="0" max-vertical-offset="665">
+                    <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
                     <folding />
                   </state>
                 </provider>
@@ -100,12 +100,17 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="save_system.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="save_system.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/utils/save_system.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="5610" max-vertical-offset="8041">
-                  <caret line="330" column="48" selection-start-line="330" selection-start-column="48" selection-end-line="330" selection-end-column="48" />
-                  <folding />
+                <state vertical-scroll-proportion="-1.4332298" vertical-offset="3762" max-vertical-offset="6358">
+                  <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#4102#4254#0" expanded="false" />
+                    <element signature="e#4284#4411#0" expanded="false" />
+                    <element signature="e#4443#5858#0" expanded="false" />
+                    <element signature="e#5886#6862#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -150,10 +155,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="item.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="item.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/object/item.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.8416149" vertical-offset="308" max-vertical-offset="3893">
+                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3893">
                   <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
                   <folding />
                 </state>
@@ -204,11 +209,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="hot_bar.py" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="hot_bar.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/utils/menus/hot_bar.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.55124223" vertical-offset="1923" max-vertical-offset="3281">
-                  <caret line="139" column="63" selection-start-line="139" selection-start-column="63" selection-end-line="139" selection-end-column="63" />
+                <state vertical-scroll-proportion="0.0" vertical-offset="1923" max-vertical-offset="3281">
+                  <caret line="140" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="192" selection-end-column="12" />
                   <folding />
                 </state>
               </provider>
@@ -241,11 +246,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="object.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="object.py" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/object/new object code/object.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="1003">
-                  <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.98325723" vertical-offset="0" max-vertical-offset="969">
+                  <caret line="38" column="3" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
                   <folding />
                 </state>
               </provider>
@@ -311,12 +316,10 @@
         <option value="$PROJECT_DIR$/scrap.py" />
         <option value="$PROJECT_DIR$/utils/menus/character_info.py" />
         <option value="$PROJECT_DIR$/gEngine/gEngine.py" />
-        <option value="$PROJECT_DIR$/utils/save_system.py" />
         <option value="$PROJECT_DIR$/utils/menus/character.py" />
         <option value="$PROJECT_DIR$/object/object.py" />
         <option value="$PROJECT_DIR$/game/combat.py" />
         <option value="$PROJECT_DIR$/utils/console.py" />
-        <option value="$PROJECT_DIR$/object/new object code/object.py" />
         <option value="$PROJECT_DIR$/utils/menus/character_creation.py" />
         <option value="$PROJECT_DIR$/utils/hot_bar.py" />
         <option value="$PROJECT_DIR$/game/game.py" />
@@ -326,6 +329,8 @@
         <option value="$PROJECT_DIR$/utils/menus/shop.py" />
         <option value="$PROJECT_DIR$/utils/menus/hot_bar.py" />
         <option value="$PROJECT_DIR$/object/item.py" />
+        <option value="$PROJECT_DIR$/object/new object code/object.py" />
+        <option value="$PROJECT_DIR$/utils/save_system.py" />
       </list>
     </option>
   </component>
@@ -1119,14 +1124,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/save_system.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5610" max-vertical-offset="8041">
-          <caret line="330" column="48" selection-start-line="330" selection-start-column="48" selection-end-line="330" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utils/menu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="170" max-vertical-offset="17340">
@@ -1139,14 +1136,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="1071">
           <caret line="27" column="39" selection-start-line="27" selection-start-column="39" selection-end-line="27" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/object/new object code/object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1003">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1237,8 +1226,8 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.84661657" vertical-offset="100" max-vertical-offset="765">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.38345864" vertical-offset="0" max-vertical-offset="665">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1261,17 +1250,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/menus/hot_bar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55124223" vertical-offset="1923" max-vertical-offset="3281">
-          <caret line="139" column="63" selection-start-line="139" selection-start-column="63" selection-end-line="139" selection-end-column="63" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1923" max-vertical-offset="3281">
+          <caret line="140" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="192" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/object/item.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8416149" vertical-offset="308" max-vertical-offset="3893">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3893">
           <caret line="51" column="24" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/object/new object code/object.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.98325723" vertical-offset="0" max-vertical-offset="969">
+          <caret line="38" column="3" selection-start-line="38" selection-start-column="3" selection-end-line="38" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/save_system.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.4332298" vertical-offset="3762" max-vertical-offset="6358">
+          <caret line="171" column="0" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
+          <folding>
+            <element signature="e#4102#4254#0" expanded="false" />
+            <element signature="e#4284#4411#0" expanded="false" />
+            <element signature="e#4443#5858#0" expanded="false" />
+            <element signature="e#5886#6862#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

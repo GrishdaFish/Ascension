@@ -163,6 +163,9 @@ def save_item(item):
     ret += PADDING
 
     ret += str(item.y)
+    ret += PADDING
+
+    ret += str(item.item.qty)
     ret += END_ITEM
 
     return ret
@@ -428,18 +431,21 @@ def load_item(item, i, game=None):
         item.x = None
     else:
         item.y = int(i[2])
-
     #add a case for each type of item
     if 'potion of ' in item.name:
         item.name = string.split(item.name, 'potion of ')
         item.name = item.name[1]
         if game:
-            return game.build_objects.build_potion(game, item.x, item.y, item.name)
+            it = game.build_objects.build_potion(game, item.x, item.y, item.name)
+            it.item.qty = int(i[3])
+            return it
     elif 'scroll of ' in item.name:
         item.name = string.split(item.name, 'scroll of ')
         item.name = item.name[1]
         if game:
-            return game.build_objects.build_scroll(game, item.x, item.y, item.name)
+            it = game.build_objects.build_scroll(game, item.x, item.y, item.name)
+            it.item.qty = int(i[3])
+            return it
     elif ' gold' in item.name:
         pass
     else:
