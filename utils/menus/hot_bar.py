@@ -68,7 +68,7 @@ class HotBar():
         :param object: The object to be added
         :return: Nothing
         """
-        pass
+        self.slots[slot].attach_object(object)
 
     def render(self):
         """
@@ -169,7 +169,8 @@ class HotBarSlot():
                     r, g, b = libtcod.red
                 if mouse.lbutton_pressed:
                     self.use(game)
-
+                if mouse.rbutton_pressed:
+                    self.remove_object()
 
 
         self.gEngine.console_set_default_foreground(self.window, r, g, b)

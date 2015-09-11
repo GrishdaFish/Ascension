@@ -32,11 +32,13 @@ END_MONSTER = '%---'
 
 END_SKILL = '(---'
 
+END_HOTBAR = ')---'
 END_PLAYER = '@---'
 END_INVENTORY = '@###'
 END_EQUIPMENT = '@$$$$'
 END_WIELDED = '@%%%'
 END_SKILLS = '@^^^'
+END_HOTBARS = '@&&@'
 
 
 class Object:  # an object we use to hold save information
@@ -67,7 +69,7 @@ def save(game):
     completed_save += str(game.depth)
     completed_save += END_OF_OBJECT
 
-    completed_save += save_player(game.player)
+    completed_save += save_player(game.player, game)
 
     for level in game.current_dungeon:
         completed_save += save_level(game, level)
@@ -198,7 +200,7 @@ def save_skill(skill):
     return ret
 
 
-def save_player(player):
+def save_player(player, game):
     player_save = ''
     player_save += player.name
     player_save += PADDING
@@ -228,6 +230,9 @@ def save_player(player):
     player_save += PADDING
 
     player_save += str(player.fighter.unused_skill_points)
+    player_save += PADDING
+
+
     player_save += END_PLAYER
 
     for item in player.fighter.inventory:
@@ -250,6 +255,15 @@ def save_player(player):
         if item is not None:
             player_save += save_skill(item)
     player_save += END_SKILLS
+
+    i = 0
+    for slot in game.hotbar.slots:
+        player_save += slot.name
+        player_save += PADDING
+        player_save += str(i)
+        player_save += END_HOTBAR
+        i += 1
+    player_save += END_HOTBARS
 
     player_save += END_OF_OBJECT
     return player_save
@@ -285,13 +299,22 @@ def load(game=None):
 
 
 def load_player(player, p, game=None):
-    p = string.split(p, END_PLAYER)
-    i = p[1]
-    items = string.split(i, END_INVENTORY)
-    equipment = string.split(items[1], END_EQUIPMENT)
-    items = string.split(items[0], END_ITEM)
-    wielded = string.split(equipment[1], END_WIELDED)
-    skills = string.split(wielded[1], END_SKILL)
+    p = string.split(p, END_PLAYER) # split player object by end player string
+    i = p[1] # get items from the second half of the first split
+    # first half of items are in the inventory, second half is the rest of hte player save
+    items = string.split(i, END_INVENTORY)  # [0] inventory [1] (Equipment, Wielded, Skills, Hotbar)
+    # Then we split out equipment from the rest of the save, including wielded items
+    equipment = string.split(items[1], END_EQUIPMENT)  # [0] equipment [1] Wielded, Skills, Hotbar
+    # next we separate wielded items out of the second half of equipment
+    wielded = string.split(equipment[1], END_WIELDED)  # [0] wielded items, [1] (Skills, Hotbar)
+    # then we pull out skills out of the second half of wielded
+    skills = string.split(wielded[1], END_SKILLS)  # [0] skills [1] (Hotbar)
+    # Pull out hotbar from skills
+    hotbar = string.split(skills[1], END_HOTBARS)  # [0] Hotbar [1] (Blank)
+
+    items = string.split(items[0], END_ITEM)  # Split items apart into a list
+    hotbar = string.split(hotbar[0], END_HOTBAR)
+    skills = string.split(skills[0], END_SKILL)
     equipment = string.split(equipment[0], END_ITEM)
     wielded = string.split(wielded[0], END_ITEM)
 
@@ -319,6 +342,13 @@ def load_player(player, p, game=None):
             s = player.fighter.get_skill(skill[0])
             s.set_bonus(int(skill[1]))
 
+    if len(hotbar) >1:
+        hotbar.pop()
+        for slot in hotbar:
+            slot = string.split(slot, PADDING)
+            for item in player.fighter.inventory:
+                if slot[0] == item.name:
+                    game.hotbar.add_slot_object(int(slot[1]), item)
 
 
     p = string.split(p[0], PADDING)
