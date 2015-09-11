@@ -64,7 +64,8 @@ class log_manager:
         self.log.setLevel(logging.DEBUG)
         #for py2exe, cant create a path in the libray.zip file
         path = os.path.join(sys.path[0],'debug')
-        path = path.replace('library.zip','')
+        #path = path.replace('library.zip','')
+        path = path.replace('core.exe','')
         if not os.path.exists(path):            
             os.makedirs(path)
             open(os.path.join(path,'debug.txt'),'w').close()
@@ -142,8 +143,12 @@ class Message:
         
 ##===============================================================================
     def flush_messages(self,gEngine):
-##===============================================================================
+##===============================================================================18/20
         gEngine.console_set_alignment(self.message_console,libtcod.LEFT)
+        gEngine.console_print_frame(self.message_console, 0, 0, 80, self.MESSAGE_SCREEN_HEIGHT+1, False)
+        gEngine.console_print_frame(self.message_console, self.MSG_X-1, 0, self.MESSAGE_SCREEN_WIDTH+1, self.MESSAGE_SCREEN_HEIGHT+1, False)
+        gEngine.console_print(self.message_console, self.MSG_X-1, 0, chr(libtcod.CHAR_TEES))
+        gEngine.console_print(self.message_console, self.MSG_X-1, self.MESSAGE_SCREEN_HEIGHT, chr(libtcod.CHAR_TEEN))
         for i in range (len(self.message_list)):
             gEngine.console_print(self.message_console, self.MSG_X, 1+i,self.message_list[i])
             

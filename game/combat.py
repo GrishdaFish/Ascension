@@ -12,15 +12,18 @@ class Skill:
         self.description = description
 
     def increase_level(self, skill_points):
-        if skill_points >= self.level:
+        if skill_points >= self.level+1:
             if self.level == 5:
                 return skill_points
             else:
+                skill_points -= self.level +1
                 self.level += 1
-                skill_points -= self.level
                 return skill_points
         else:
             return skill_points
+
+    def set_bonus(self, level):
+            self.level = level
 
     def get_bonus(self):
         return self.level
@@ -28,8 +31,11 @@ class Skill:
     def get_name(self):
         return self.name
 
-    def set_bonus(self, level):
-        self.level = level
+    def get_category(self):
+        return self.category
+
+    def get_description(self):
+        return self.description
 
 skill_list = [
     Skill('Discipline', 'One-Handed', 'Mastery of one handed weapons.'),
@@ -83,11 +89,11 @@ def get_stat_bonus(stat):
 
 
 def get_armor_penalty(creature):
-    return creature.fighter.armor_penalty
+    return creature.fighter.get_armor_penalty()
 
 
 def get_armor_class(creature):
-    return creature.fighter.armor_bonus
+    return creature.fighter.get_armor_bonus()
 
 
 def get_blocking_class(creature):

@@ -47,6 +47,7 @@ Temporary Items
 *.sav
 *.rar
 *.zip
+/dist
 *.pnproj
 *.pnps
 formula_discussion.txt
@@ -55,5 +56,7 @@ debug.txt
 scrap.py
 setup.py
 save_system_backup.py
+/build
 new object code
 *.sav
+/fonts

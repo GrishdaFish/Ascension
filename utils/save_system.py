@@ -9,9 +9,9 @@ sys.path.append(os.path.join(sys.path[0], 'object'))
 MAP = None
 try:
     import libtcodpy as libtcod
-    import map as MAP
-    import object as OBJECT
-    import misc as MISC
+    import map.map as MAP
+    import object.object as OBJECT
+    import object.misc as MISC
 except ImportError:
     pass
 
@@ -32,11 +32,14 @@ END_MONSTER = '%---'
 
 END_SKILL = '(---'
 
+END_HOTBAR = ')---'
 END_PLAYER = '@---'
 END_INVENTORY = '@###'
 END_EQUIPMENT = '@$$$$'
 END_WIELDED = '@%%%'
 END_SKILLS = '@^^^'
+END_HOTBARS = '@&&@'
+
 
 class Object:  # an object we use to hold save information
     def __init__(self, name=None, x=None, y=None, hp=None, max_hp=None):
@@ -48,11 +51,13 @@ class Object:  # an object we use to hold save information
 
 
 def save(game):
-    if os.path.isfile(os.path.join(sys.path[0], 'save.sav')):
+    path = os.path.join(sys.path[0],'content')
+    path = path.replace('core.exe','')
+    if os.path.isfile(os.path.join(path, 'save.sav')):
         pass
     else:
         pass
-    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'wb')
+    save_file = open(os.path.join(path, 'save.sav'), 'wb')
 
     completed_save = ''
     completed_save += game.version
@@ -64,7 +69,7 @@ def save(game):
     completed_save += str(game.depth)
     completed_save += END_OF_OBJECT
 
-    completed_save += save_player(game.player)
+    completed_save += save_player(game.player, game)
 
     for level in game.current_dungeon:
         completed_save += save_level(game, level)
@@ -160,6 +165,9 @@ def save_item(item):
     ret += PADDING
 
     ret += str(item.y)
+    ret += PADDING
+
+    ret += str(item.item.qty)
     ret += END_ITEM
 
     return ret
@@ -192,7 +200,7 @@ def save_skill(skill):
     return ret
 
 
-def save_player(player):
+def save_player(player, game):
     player_save = ''
     player_save += player.name
     player_save += PADDING
@@ -218,7 +226,13 @@ def save_player(player):
     player_save += str(player.fighter.current_xp)
     player_save += PADDING
 
+    player_save += str(player.fighter.xp_to_next_level)
+    player_save += PADDING
+
     player_save += str(player.fighter.unused_skill_points)
+    player_save += PADDING
+
+
     player_save += END_PLAYER
 
     for item in player.fighter.inventory:
@@ -233,6 +247,8 @@ def save_player(player):
     for item in player.fighter.wielded:
         if item is not None:
             player_save += save_item(item)
+            if item.item.equipment.handed == 2:
+                break
     player_save += END_WIELDED
 
     for item in player.fighter.skills:
@@ -240,12 +256,26 @@ def save_player(player):
             player_save += save_skill(item)
     player_save += END_SKILLS
 
+    i = 0
+    for slot in game.hotbar.slots:
+        player_save += slot.name
+        player_save += PADDING
+        player_save += str(i)
+        player_save += END_HOTBAR
+        i += 1
+    player_save += END_HOTBARS
+
     player_save += END_OF_OBJECT
     return player_save
 
 
 def load(game=None):
-    save_file = open(os.path.join(sys.path[0], 'save.sav'), 'rb')
+    path = os.path.join(sys.path[0],'content')
+    path = path.replace('core.exe','')
+    if os.path.isfile(os.path.join(path, 'save.sav')):
+        save_file = open(os.path.join(path, 'save.sav'), 'rb')
+    else:
+        return
     s = save_file.read()
     save_file.close()
     s = zlib.decompress(s)
@@ -269,13 +299,22 @@ def load(game=None):
 
 
 def load_player(player, p, game=None):
-    p = string.split(p, END_PLAYER)
-    i = p[1]
-    items = string.split(i, END_INVENTORY)
-    equipment = string.split(items[1], END_EQUIPMENT)
-    items = string.split(items[0], END_ITEM)
-    wielded = string.split(equipment[1], END_WIELDED)
-    skills = string.split(wielded[1], END_SKILL)
+    p = string.split(p, END_PLAYER) # split player object by end player string
+    i = p[1] # get items from the second half of the first split
+    # first half of items are in the inventory, second half is the rest of hte player save
+    items = string.split(i, END_INVENTORY)  # [0] inventory [1] (Equipment, Wielded, Skills, Hotbar)
+    # Then we split out equipment from the rest of the save, including wielded items
+    equipment = string.split(items[1], END_EQUIPMENT)  # [0] equipment [1] Wielded, Skills, Hotbar
+    # next we separate wielded items out of the second half of equipment
+    wielded = string.split(equipment[1], END_WIELDED)  # [0] wielded items, [1] (Skills, Hotbar)
+    # then we pull out skills out of the second half of wielded
+    skills = string.split(wielded[1], END_SKILLS)  # [0] skills [1] (Hotbar)
+    # Pull out hotbar from skills
+    hotbar = string.split(skills[1], END_HOTBARS)  # [0] Hotbar [1] (Blank)
+
+    items = string.split(items[0], END_ITEM)  # Split items apart into a list
+    hotbar = string.split(hotbar[0], END_HOTBAR)
+    skills = string.split(skills[0], END_SKILL)
     equipment = string.split(equipment[0], END_ITEM)
     wielded = string.split(wielded[0], END_ITEM)
 
@@ -303,6 +342,13 @@ def load_player(player, p, game=None):
             s = player.fighter.get_skill(skill[0])
             s.set_bonus(int(skill[1]))
 
+    if len(hotbar) >1:
+        hotbar.pop()
+        for slot in hotbar:
+            slot = string.split(slot, PADDING)
+            for item in player.fighter.inventory:
+                if slot[0] == item.name:
+                    game.hotbar.add_slot_object(int(slot[1]), item)
 
 
     p = string.split(p[0], PADDING)
@@ -312,9 +358,10 @@ def load_player(player, p, game=None):
     player.fighter.hp = int(p[3])
     player.fighter.max_hp = int(p[4])
     player.fighter.money = int(p[5])
-    # level
-    # current xp
-    # unused skill points
+    player.fighter.level = int(p[6])
+    player.fighter.current_xp = int(p[7])
+    player.fighter.xp_to_next_level = int(p[8])
+    player.fighter.unused_skill_points = int(p[9])
 
 
 def load_level(level, game=None):
@@ -403,7 +450,6 @@ def load_misc(misc, m, game):
         return OBJECT.Object(game.con, misc.x, misc.y, '>', misc.name, libtcod.white, blocks=False, misc=m)
 
 
-
 def load_item(item, i, game=None):
     i = string.split(i, PADDING)
     item.name = i[0]
@@ -415,18 +461,21 @@ def load_item(item, i, game=None):
         item.x = None
     else:
         item.y = int(i[2])
-
     #add a case for each type of item
     if 'potion of ' in item.name:
         item.name = string.split(item.name, 'potion of ')
         item.name = item.name[1]
         if game:
-            return game.build_objects.build_potion(game, item.x, item.y, item.name)
+            it = game.build_objects.build_potion(game, item.x, item.y, item.name)
+            it.item.qty = int(i[3])
+            return it
     elif 'scroll of ' in item.name:
         item.name = string.split(item.name, 'scroll of ')
         item.name = item.name[1]
         if game:
-            return game.build_objects.build_scroll(game, item.x, item.y, item.name)
+            it = game.build_objects.build_scroll(game, item.x, item.y, item.name)
+            it.item.qty = int(i[3])
+            return it
     elif ' gold' in item.name:
         pass
     else:

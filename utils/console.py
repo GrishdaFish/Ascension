@@ -50,6 +50,7 @@ class Console:
             'teleport_down'     :self.teleport_down,
             'teleport_up'       :self.teleport_up,
             'max_skills'        :self.max_skills,
+            'level_up'          :self.level_up,
             
         }
 
@@ -161,6 +162,9 @@ class Console:
                     return
             except ex:
                 self.game.message.error_message(ex)
+
+    def level_up(self):
+        self.game.player.fighter.level_up()
 
     def max_skills(self):
         for skill in self.game.player.fighter.skills:

@@ -41,6 +41,7 @@ object_type "consumable" {
     int max_targets=0//0 for user/target, 1 for unlimited, or 2+ targets
     color col="255,114,114"//color of the item
     int value=25
+    bool stackable = true
     }
     
 object_type "consumable" {
@@ -59,6 +60,7 @@ object_type "consumable" {
     int max_targets=0//0 for user/target, 1 for unlimited, or 2+ targets
     color col="255,0,0"//color of the item
     int value=50
+    bool stackable = true
     }
     
 object_type "consumable" {
@@ -77,6 +79,7 @@ object_type "consumable" {
     int max_targets=1
     color col="255,255,0"
     int value = 150
+    bool stackable = true
     }
     
 object_type "consumable" {
@@ -95,6 +98,7 @@ object_type "consumable" {
     int max_targets=3
     color col="255,255,0"
     int value=100
+    bool stackable = true
     }
     
  object_type "consumable" {
@@ -113,6 +117,7 @@ object_type "consumable" {
     int max_targets=1
     color col="255,255,0"
     int value= 75
+    bool stackable = true
     }
     
 object_type "currency" {
@@ -121,4 +126,23 @@ object_type "currency" {
     int worth=1
     bool is_coin=true//items that goes into money purse, gems would be false
     color col="197,136,124"
+    bool stackable = true
     }
+
+object_type "currency" {
+    string name = "silver coin"
+    char cell = '$'
+    int worth = 10
+    bool is_coin = true
+    color col = "203, 203, 203"
+    bool stackable = true
+}
+
+object_type "currency" {
+    string name = "gold coin"
+    char cell = '$'
+    int worth = 100
+    bool is_coin = true
+    color col = "229, 191, 0"
+    bool stackable = true
+}

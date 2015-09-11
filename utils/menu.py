@@ -2,10 +2,13 @@ import sys,os,time
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'object'))
-from object import *
-from item import *
-from spells import *
-
+from object.object import *
+from object.item import *
+from object.spells import *
+sys.path.append(os.path.join(sys.path[0], 'game'))
+import game.combat as combat
+import logging
+from menus.shop import shop as SHOP
 
 class Menus:
 ##============================================================================
@@ -202,28 +205,40 @@ class Menus:
         #    return current_pick
         
         return -1
-        
+
+
 class Button:
 ##============================================================================
-    def __init__(self,parent,label,x_pos,y_pos,type=True):
+    def __init__(self, dest_x=0, dest_y=0,parent=None, label=None, x_pos=None, y_pos=None, type=True, game=None, window=None):
 ##============================================================================
         self.width = 4 + len(label)
         self.height = 5
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.parent = parent
-        self.window = parent.game.gEngine.console_new(self.width,self.height)
+        if parent is None:
+            self.game = game
+            self.parent = self
+            self.dest_window = window
+            self.dest_x = dest_x
+            self.dest_y = dest_y
+        else:
+            self.parent = parent
+            self.dest_window = self.parent.window
+            self.dest_x = self.parent.x_pos
+            self.dest_y = self.parent.y_pos
+        self.window = self.parent.game.gEngine.console_new(self.width, self.height)
         self.label = label
         self.label_o = label
         r,g,b = libtcod.white
         self.parent.game.gEngine.console_set_default_foreground(self.window, r,g,b)
         self.parent.game.gEngine.console_set_alignment(self.window,2)
         self.type = type
+
 ##============================================================================
-    def display(self):
+    def display(self, mouse=None):
 ##============================================================================
         self.parent.game.gEngine.console_blit(self.window, 0, 0,self.width,
-            self.height,self.parent.window,self.x_pos,self.y_pos,1.0, 1.0)
+            self.height,self.dest_window,self.x_pos,self.y_pos,1.0, 1.0)
 
         self.parent.game.gEngine.console_print_frame(self.window,0, 0, 
             self.width, self.height, False)
@@ -231,7 +246,7 @@ class Button:
         self.parent.game.gEngine.console_print(self.window, self.width/2, 
             self.height/2, self.label)    
         self.parent.game.gEngine.console_flush()    
-        m = self.mouse_input()
+        m = self.mouse_input(mouse)
         k = self.key_input()
         return m,k
         
@@ -241,28 +256,29 @@ class Button:
         self.parent.game.gEngine.console_remove_console(self.window)
         
 ##============================================================================
-    def mouse_input(self):
+    def mouse_input(self, mouse=None):
 ##============================================================================
-        mouse = libtcod.mouse_get_status()
-        mx = mouse.cx -(self.x_pos + self.parent.x_pos)
-        my = mouse.cy -(self.y_pos + self.parent.y_pos)
+        if not mouse:
+            mouse = libtcod.mouse_get_status()
+        mx = mouse.cx - (self.x_pos + self.dest_x)
+        my = mouse.cy - (self.y_pos + self.dest_y)
         
         if mx >= 0 and mx <= self.width and my >= 0 and my <= self.height:
             self.label = color_text(self.label_o,libtcod.red)
             if mouse.lbutton:
                 self.label = color_text(self.label_o,libtcod.green)
                 if mouse.lbutton_pressed:
-                    if self.type == True:
+                    if self.type is True:
                         return 1
                     else:
                         return 0
             if mouse.lbutton_pressed:
-                if self.type == True:
+                if self.type is True:
                     return 1
                 else:
                     return 0
         else:
-            self.label = color_text(self.label_o,libtcod.white)
+            self.label = color_text(self.label_o, libtcod.white)
             
         return -1
     
@@ -276,7 +292,8 @@ class Button:
             libtcod.console_check_for_keypress() 
             return 0
         return -1
-        
+
+
 class DialogBox:
 ##============================================================================
     def __init__(self,game,width,height,x_pos,y_pos,body_text,type='dialog',
@@ -301,23 +318,23 @@ class DialogBox:
             self.height = self.body_height+2           
             self.window = game.gEngine.console_new(self.width,self.height)            
         
-        if type == None or type == 'dialog':
+        if type is None or type == 'dialog':
             self.run = self.dialog_box
             self.option_labels = option_labels
-            if option_labels == None:
+            if option_labels is None:
                 self.option_labels = ['Ok']
-            self.buttons.append(Button(self,self.option_labels[0],
-                self.width//2-5,self.height/2-1,True))
+            self.buttons.append(Button(parent=self,label=self.option_labels[0],
+                x_pos=self.width//2-5,y_pos=self.height/2-1,type=True))
             
         elif type == 'option':
             self.run = self.option_box
             self.option_labels = option_labels
-            if option_labels == None:
-                self.option_labels = ['Yes','No']
-            self.buttons.append(Button(self,self.option_labels[0],
-                self.width//6-5,self.height/2-1,True))
-            self.buttons.append(Button(self,self.option_labels[1],
-                self.width//3-5,self.height/2-1,False))
+            if option_labels is None:
+                self.option_labels = ['Yes', 'No']
+            self.buttons.append(Button(parent=self,label=self.option_labels[0],
+                x_pos=1 ,y_pos=self.height/2-1,type=True))
+            self.buttons.append(Button(parent=self,label=self.option_labels[1],
+                x_pos=self.width-7,y_pos=self.height/2-1,type=False))
         self.last_input=0
         libtcod.mouse_get_status()
         
@@ -357,14 +374,13 @@ class DialogBox:
 ##============================================================================
         input = [-1,-1]
         
-        self.game.gEngine.console_blit(self.window, 0, 0,self.width,
-            self.height,self.con,self.x_pos,self.y_pos,1.0, 1.0)        
+        self.game.gEngine.console_blit(self.window, 0, 0, self.width, self.height,
+                                       self.con, self.x_pos, self.y_pos, 1.0, 1.0)
             
-        self.game.gEngine.console_print_frame(self.window,0, 0, 
-            self.width, self.height, False)
+        self.game.gEngine.console_print_frame(self.window, 0, 0, self.width,
+                                              self.height, False)
         
-        self.game.gEngine.console_print(self.window, 1, 
-            1, self.body_text)
+        self.game.gEngine.console_print(self.window, 1, 1, self.body_text)
             
         
         self.game.gEngine.console_flush()
@@ -407,6 +423,54 @@ class DialogBox:
     def key_input(self):
         pass
 
+
+class CheckBox:
+    # chr(224) = open box, chr(225) = checked box
+    def __init__(self, x, y, label=None):
+        self.x = x
+        self.y = y
+        self.is_checked = False
+        self.char = chr(224)
+        self.label = label
+
+    def render(self, target=None, game=None):
+        if target and game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            game.gEngine.console_print(target, self.x, self.y, msg)
+        elif not target and game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            game.gEngine.console_print(0, self.x, self.y, msg)
+        elif not target and not game:
+            msg = self.char
+            if self.label:
+                msg += ' ' + self.label
+            libtcod.console_print(0, self.x, self.y, msg)
+
+    def update(self, mouse=None, width=None):
+        if mouse:
+            if (mouse.cx - width/2) == self.x and mouse.cy == self.y:
+                if mouse.lbutton_pressed:
+                    self.is_checked = not self.is_checked
+                    self.change_button()
+                    return True
+        return False
+
+    def change_button(self):
+        if not self.is_checked:
+            self.char = chr(224)
+        else:
+            self.char = chr(225)
+
+    def get_checked(self):
+        return self.is_checked
+
+    def set_checked(self, check):
+        self.is_checked = check
+        self.change_button()
 
 ##============================================================================
 def menu(con,header, options, width,SCREEN_HEIGHT,SCREEN_WIDTH,bg=None,game=None,under=None):
@@ -741,7 +805,7 @@ def inventory_menu(con,header,inventory,INVENTORY_WIDTH,SCREEN_HEIGHT,
     if len(inventory) == 0:
         options = ['Inventory is empty.']
     elif not is_name:
-        options = [color_text(item.name,item.color) for item in inventory]
+        options = [color_text(item.name, item.color) for item in inventory]
     else:
         options = inventory
     index = menu(con, header, options, INVENTORY_WIDTH,SCREEN_HEIGHT,SCREEN_WIDTH,game=game)
@@ -801,11 +865,11 @@ def town_menu(con, header, game, width, screen_height, screen_width):
         "Fizzilip's Magiteria",
         'Quests',
         'Finished',]
-    path = os.path.join(sys.path[0],'content')
-    path = path.replace('library.zip','')
-    backgrounds=[os.path.join(path,'img','bg-arm.png'),
-                os.path.join(path,'img','bg-wep.png'),
-                os.path.join(path,'img','bg-magic.png'),]
+    path = os.path.join(sys.path[0], 'content')
+    path = path.replace('core.exe','')
+    backgrounds=[os.path.join(path, 'img', 'bg-arm.png'),
+                os.path.join(path, 'img', 'bg-wep.png'),
+                os.path.join(path, 'img', 'bg-magic.png'),]
     container=[]
     menus = []
     weapon,armor,consum,quest=[],[],[],[]
@@ -841,11 +905,13 @@ def town_menu(con, header, game, width, screen_height, screen_width):
             game.gEngine.console_clear(0)
             t_menu.is_visible = False
             if index < (len(backgrounds)):
-                item=shop(con,options[index],game,width,
-                    screen_height,screen_width,container[index],backgrounds[index]) 
+                item = SHOP(0, game.player, game, container=container[index], bg=backgrounds[index], header=options[index])
+                #item=shop(con,options[index],game,width,
+                #    screen_height,screen_width,container[index],backgrounds[index])
             else:
-                item=shop(con,options[index],game,width,
-                    screen_height,screen_width,container[index]) 
+                item = SHOP(0, game.player, game, container=container[index], header=options[index])
+                #item=shop(con,options[index],game,width,
+                #    screen_height,screen_width,container[index])
             if item is not None:
                 container[index].pop(item)
             t_menu.last_input = 0
@@ -858,7 +924,7 @@ def shop(con, header, game, width, screen_height, screen_width, container, bg=No
     cl_options = []
     if bg:
         img = libtcod.image_load(bg)
-        libtcod.image_blit_2x(img, 0, 0, 0)
+        #libtcod.image_blit_2x(img, 0, 0, 0)
         
     for obj in container:
         obj_text = obj.name
@@ -938,7 +1004,6 @@ def confirm_screen(con,message,screen_height,screen_width,
     else:
         game.gEngine.console_remove_console(window)
         return False
-    
     
     
     

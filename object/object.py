@@ -6,7 +6,7 @@ import logging
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'game'))
-import combat
+import game.combat as combat
 
 ##I might rewrite this system, the bigger the game gets, the more cumbersome this
 ##system gets. :(
@@ -67,9 +67,10 @@ class Object:
  
     def distance_to(self, other):
         #return the distance to another object
-        dx = other.x - self.x
-        dy = other.y - self.y
-        return math.sqrt(dx ** 2 + dy ** 2)
+        if other:
+            dx = other.x - self.x
+            dy = other.y - self.y
+            return math.sqrt(dx ** 2 + dy ** 2)
  
     def distance(self, x, y):
         #return the distance to some coordinates
@@ -134,7 +135,7 @@ class Fighter:
         self.owner = None
         self.ticker = ticker
         self.stats = [Str, Dex, Int, Con]
-        self.unused_skill_points = 0
+        self.unused_skill_points = 2
         self.defense = 0
 
         self.max_hp = combat.hp_bonus(Con)
@@ -165,8 +166,10 @@ class Fighter:
         hp = self.max_hp
         self.hp = hp
 
-    def apply_skill_points(self):
-        pass
+    def apply_skill_points(self, skill):
+        if isinstance(skill, basestring):
+            skill = self.get_skill(skill)
+        self.unused_skill_points = skill.increase_level(self.unused_skill_points)
 
     def set_armor_bonus(self):
         bonus = 0
@@ -175,11 +178,18 @@ class Fighter:
                 bonus += item.item.equipment.bonus
         self.armor_bonus = bonus
 
+    def get_armor_bonus(self):
+        return self.armor_bonus
+
+    def get_armor_penalty(self):
+        return self.armor_penalty
+
     def set_armor_penalty(self):
         penalty = 0
         for item in self.equipment:
             if item is not None:
                 penalty += item.item.equipment.penalty
+        penalty -= self.get_skill('Armor').get_bonus()
         self.armor_penalty = penalty
 
     def get_skill(self, name):

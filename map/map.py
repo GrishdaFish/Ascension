@@ -5,10 +5,10 @@ import math
 sys.path.append(sys.path[0])
 import libtcodpy as libtcod
 sys.path.append(os.path.join(sys.path[0],'object'))
-from object import *
-from spells import *
-from item import *
-from misc import *
+from object.object import *
+from object.spells import *
+from object.item import *
+from object.misc import *
 
 MAX_DEPTH = 25
 #Variables for tile bitmasking

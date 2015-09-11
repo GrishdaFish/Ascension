@@ -4,25 +4,26 @@ import textwrap
 import shelve
 import sys,os,time
 
-
     
 os.path.join(sys.path[0],'map')
 sys.path.append(os.path.join(sys.path[0],'map'))
-import map
+import map.map as map
 
 sys.path.append(os.path.join(sys.path[0],'object'))
 from object import *
-from build_objects import *
+from object.build_objects import *
 
 sys.path.append(os.path.join(sys.path[0],'utils'))
-from menu import *
-from utils import *
-import save_system
-import console
-
+from utils.menu import *
+from utils.utils import *
+import utils.save_system as save_system
+import utils.console as console
+from utils.menus.inventory import *
+from utils.menus.character import *
+from utils.menus.hot_bar import *
 #actual size of the window
 SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
+SCREEN_HEIGHT = 55
 
 PANEL_HEIGHT = 7
 #size of the map
@@ -51,7 +52,7 @@ FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True  #light walls or not
 TORCH_RADIUS = 10
  
-LIMIT_FPS = 30
+LIMIT_FPS = 60
  
 color_dark_wall = libtcod.darker_grey
 color_light_wall = libtcod.Color(99,99,99)
@@ -73,14 +74,17 @@ class Game:
                                     # On release, just a confirmation menu
                                     # Also affects the use of the python interpreter
                                     # in the console, disabled on release
-        try:
+
+        '''try:
+            self.logger.log.debug('Init gEngine...')
             import cEngine as gEngine  # Try importing the pyd
             self.logger.log.debug('gEngine pyd/so imported')
         except ImportError, err:  # if that fails, import the python prototype
             sys.path.append(os.path.join(sys.path[0], 'gEngine'))
             self.logger.log.debug('gEngine pyd/so import failed, using python prototype')
             self.logger.log.exception(err)
-            import gEngine
+            import gEngine.gEngine as gEngine'''
+        import gEngine.gEngine as gEngine
             
         try:
             self.logger.log.debug("Importing Psyco.")
@@ -95,16 +99,37 @@ class Game:
 
         #libtcod.console_set_keyboard_repeat(250,250)
         self.gEngine = gEngine.gEngine(SCREEN_WIDTH, SCREEN_HEIGHT, 'Ascension 0.0.1a', False, LIMIT_FPS)
+        try:
+            font = os.path.join(sys.path[0], 'terminal10x10_gs_tc.png')
+            self.gEngine.console_set_custom_font(font, libtcod.FONT_LAYOUT_TCOD | libtcod.FONT_TYPE_GREYSCALE)
+        except:
+            pass
+        self.gEngine.init_root()
         self.con = self.gEngine.console_new(MAP_WIDTH, MAP_HEIGHT)
         self.panel = self.gEngine.console_new(SCREEN_WIDTH, PANEL_HEIGHT)
-        
+
+        self.toolbar = self.gEngine.console_new(SCREEN_WIDTH, 5)
+
+        x = 32/2
+        x = SCREEN_WIDTH/2 - x
+        self.hotbar = HotBar(x, 0, self.gEngine, self.toolbar)
+        z=1
+        index = ord('1')
+        for i in range(10):
+            if index == ord(':'):
+                index = ord('0')
+            s = HotBarSlot(None, z+x, PANEL_Y-4, z, chr(index), self.gEngine)
+            self.hotbar.add_slot(s)
+            z += 3
+            index += 1
         self.message = Message(self.panel, MSG_HEIGHT, MSG_WIDTH, MSG_X, self.logger, self.debug_level)
         self.build_objects = GameObjects(content)        
         self.ticker = Ticker()
         
         self.Map = map.Map(MAP_HEIGHT, MAP_WIDTH, ROOM_MIN_SIZE, ROOM_MAX_SIZE,
             MAX_ROOMS, MAX_ROOM_MONSTERS, MAX_ROOM_ITEMS, self.logger)
-            
+
+
         self.keys = key_set
         self.setup_keys()
         self.current_dungeon = []  # an array that holds all off the dungeon levels
@@ -112,8 +137,8 @@ class Game:
         self.depth = None
         self.game_state = None
 
-        libtcod.console_set_keyboard_repeat(50, 50)
-        libtcod.sys_set_renderer(libtcod.RENDERER_SDL)
+        #libtcod.console_set_keyboard_repeat(50, 50)
+        libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
 
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================
@@ -282,7 +307,9 @@ class Game:
                 self.render_all()
                 self.player_moved=False
                 self.gEngine.console_flush()
-         
+                key = libtcod.console_check_for_keypress()
+                mouse = libtcod.mouse_get_status()
+
                 #erase all objects at their old locations, before they move
                 for object in self.objects:
                     object.clear(self.gEngine)
@@ -291,9 +318,9 @@ class Game:
                 
                 #Monsters faster than the player, take turns first
                 is_player_turn = self.ticker.next_turn(self)
-                
+                self.hotbar.update(mouse, key, self)
                 if is_player_turn:                    
-                    player_action = self.handle_keys()
+                    player_action = self.handle_keys(key)
                     
                     ##Make sure the player takes his turn before continuing
                     ##Need to have certain actions take certain speeds
@@ -301,7 +328,7 @@ class Game:
                     ##inventory actions depend on what was done
                     while player_action == 'didnt-take-turn':
                         
-                        player_action = self.handle_keys()
+                        player_action = self.handle_keys(key)
                         
                         if player_action == 'player-moved':
                             self.player_moved = True
@@ -311,7 +338,10 @@ class Game:
                             
                         self.render_all()                        
                         self.gEngine.console_flush()
-                        
+
+                        key = libtcod.console_check_for_keypress()
+                        mouse = libtcod.mouse_get_status()
+                        self.hotbar.update(mouse, key, self)
                         self.player_moved=False
                         
                         for object in self.objects:
@@ -337,7 +367,7 @@ class Game:
     def main_menu(self):
 ##============================================================================
         path = os.path.join(sys.path[0],'content')
-        path = path.replace('library.zip','')
+        path = path.replace('core.exe','')
         img = self.gEngine.image_load(os.path.join(path,'img','menu_background_2.png'))
         m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Options (not working)', 'Quit'], self.con)
         m_menu.is_visible = True
@@ -347,7 +377,7 @@ class Game:
             self.gEngine.image_blit_2x(img, 0, 0, 0)
             r,g,b = libtcod.red
             self.gEngine.console_set_default_foreground(0, r,g,b)
-            self.gEngine.console_print(0, SCREEN_WIDTH//2, SCREEN_HEIGHT-2,'By Grishnak and SentientDeth')
+            self.gEngine.console_print(0, SCREEN_WIDTH/2-13, SCREEN_HEIGHT/2-10,'By Grishnak and SentientDeth')
             libtcod.console_credits_render(2, SCREEN_HEIGHT-2, True)
             choice = m_menu.menu()
             self.gEngine.console_flush()
@@ -414,7 +444,7 @@ class Game:
             #recompute FOV if needed (the player moved or something)
             fov_recompute = False
             libtcod.map_compute_fov(self.fov_map, self.player.x, self.player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
-            self.gEngine.map_draw(self.con,self.player.x,self.player.y)
+            self.gEngine.map_draw(self.con, self.player.x,self.player.y)
             
      
         #draw all objects in the list, except the player. we want it to
@@ -432,7 +462,7 @@ class Game:
                         object.draw(self.fov_map,self.gEngine)
                 else:
                     object.draw(self.fov_map,self.gEngine)
-        self.player.draw(self.fov_map,self.gEngine)
+        self.player.draw(self.fov_map, self.gEngine)
         for particle in self.particles:
             particle.draw(self.fov_map,self.gEngine,True)
         #blit the contents of "con" to the root console
@@ -459,10 +489,14 @@ class Game:
 
         self.gEngine.console_print(self.panel, 1, 5, "(%dfps)" % (libtcod.sys_get_fps()))
         self.gEngine.console_print(self.panel, 1, 0, self.get_names_under_mouse())
-        
+
+        self.hotbar.render()
+        self.gEngine.console_blit(self.toolbar, 0, 0, SCREEN_WIDTH, 5, 0, 0, PANEL_Y-5, 1.0, 1.0)
         #print a message with the names of objects under the player
         self.get_names_under_player()
         #blit the contents of "panel" to the root console
+        r, g, b = libtcod.black
+        self.gEngine.console_set_default_background(0, r, g, b)
         self.gEngine.console_blit(self.panel, 0, 0, SCREEN_WIDTH, PANEL_HEIGHT, 0, 0, PANEL_Y,1.0,1.0)
      
      
@@ -502,9 +536,9 @@ class Game:
         self.player.color = libtcod.dark_red
 
 ##============================================================================
-    def handle_keys(self):
+    def handle_keys(self, key):
 ##============================================================================
-        key = libtcod.console_check_for_keypress(libtcod.KEY_PRESSED)
+
         #libtcod.sys_check_for_event()
         move_keys = {self.keys.key_north :(0,-1),
                     self.keys.key_south  :(0,1) ,
@@ -587,15 +621,17 @@ class Game:
                     return 'turn-used'
 
                 if key.c is ord(self.keys.key_char):
-                    index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    #index = character_menu(0, 'Skills', self.player.fighter.skills, SCREEN_HEIGHT, SCREEN_WIDTH, self)
+                    index = character_info(0, SCREEN_WIDTH, SCREEN_HEIGHT, self)
                     if index is not None:
                         index.increase_level(5)
                         return 'turn-used'
 
                 if key.c is ord(self.keys.key_inventory):
                     #show the inventory; if an item is selected, use it
-                    msg = 'Press the key next to an item to use it, or any other to cancel.\n'
-                    chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
+                    #msg = 'Press the key next to an item to use it, or any other to cancel.\n'
+                    #chosen_item = inventory_menu(0, msg, self.player.fighter.inventory,INVENTORY_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH,game=self)
+                    chosen_item = inventory(self.con, self.player, self)
                     if chosen_item is not None:
                         chosen_item.item.use(self.player.fighter.inventory,self.player,self)
                         return 'turn-used'
@@ -609,7 +645,6 @@ class Game:
                             #self.player.objects = self.objects
                             chosen_item.objects = self.objects
                             chosen_item.item.drop(self.player.fighter.inventory, self.player)
-                            self.logger.log.debug("item x,y %d,%d, player x,y %d,%d" % (chosen_item.x, chosen_item.y, self.player.x, self.player.y))
                             chosen_item.send_to_back()
                         return 'turn-used'
                         

@@ -5,7 +5,7 @@
 ##Might clean it up later
 
 import libtcodpy as libtcod
-
+import sys
 
 class Tile:
     def __init__(self,x,y,cell,blocked,block_sight,explored,spawn_node):
@@ -20,9 +20,11 @@ class Tile:
         
 class gEngine:
     def __init__(self,w,h,name,fs,fps):
-        libtcod.console_init_root(w,h,name,fs)
-        libtcod.sys_set_fps(fps)
-        
+        self.w = w
+        self.h = h
+        self.name = name
+        self.fs = fs
+        self.fps = fps
         self.mConsole=[]
         self.mMap=[]
         self.mImages=[]
@@ -33,7 +35,22 @@ class gEngine:
         self.color_light_ground = libtcod.Color(125,125,125)
         self.color_tile_wall = libtcod.Color(177,177,177)
         self.color_tile_ground = libtcod.Color(190,190,190)
-        
+
+    def init_root(self):
+        libtcod.console_init_root(self.w, self.h, self.name, self.fs)
+        libtcod.sys_set_fps(self.fps)
+
+    def console_set_key_color(self, con, r, g, b):
+        col = libtcod.Color(r, g, b)
+        if con == 0:
+            libtcod.console_set_key_color(con, col)
+        else:
+            libtcod.console_set_key_color(self.mConsole[con-1], col)
+
+    def console_set_custom_font(self, font_file, flags=libtcod.FONT_LAYOUT_ASCII_INCOL, h=0, v=0):
+        font_file = font_file.replace('core.exe', '')
+        libtcod.console_set_custom_font(font_file, flags, h, v)
+
     def console_new(self,width,height):
         self.mConsole.append(libtcod.console_new(width,height))
         return len(self.mConsole)
@@ -109,7 +126,13 @@ class gEngine:
             libtcod.console_print(con,x,y,fmt)
         else:
             libtcod.console_print(self.mConsole[con-1],x,y,fmt)
-        
+
+    def console_print_ex(self,con,x,y, flag, alignment, fmt):
+        if con == 0:
+            libtcod.console_print_ex(con, x, y, flag, alignment, fmt)
+        else:
+            libtcod.console_print_ex(self.mConsole[con-1], x, y, flag, alignment, fmt)
+
     def console_flush(self):
         libtcod.console_flush()
         
@@ -126,7 +149,15 @@ class gEngine:
         else:
             col = libtcod.console_get_char_background(self.mConsole[con-1],x,y)
             return libtcod.color_get_hsv(col)
-            
+
+    def console_get_char_foreground(self,con,x,y):
+        if con == 0:
+            col = libtcod.console_get_char_foreground(0,x,y)
+            return col
+        else:
+            col = libtcod.console_get_char_foreground(self.mConsole[con-1],x,y)
+            return col
+
     def image_new(self,x,y):
         img = libtcod.image_new(x,y)
         self.mImages.append(img)
@@ -148,12 +179,18 @@ class gEngine:
     def image_put_pixel(self,i,x,y,r,g,b):
         col = libtcod.Color(r,g,b)
         libtcod.image_put_pixel(self.mImages[i-1],x,y,col)
-        
-    def image_blit_2x(self,i,c,x,y):
+
+    def image_get_size(self, i):
+        return libtcod.image_get_size(self.mImages[i-1])
+
+    def image_get_pixel(self, i, x, y):
+        return libtcod.image_get_pixel(self.mImages[i-1], x, y)
+
+    def image_blit_2x(self,i,c,x,y, sx=0, sy=0, w=-1, h=-1):
         if c == 0:
-            libtcod.image_blit_2x(self.mImages[i-1],0,x,y)
+            libtcod.image_blit_2x(self.mImages[i-1],0,x,y, sx, sy, w, h)
         else:
-            libtcod.image_blit_2x(self.mImages[i-1],self.mConsole[c-1],x,y)
+            libtcod.image_blit_2x(self.mImages[i-1],self.mConsole[c-1],x,y, sx, sy, w, h)
         
     def map_init_level(self,sizeX,sizeY):
         self.FOV = libtcod.map_new(sizeX,sizeY)
@@ -201,12 +238,12 @@ class gEngine:
                         else:
                             libtcod.console_put_char_ex(con,tile.x,tile.y,' ',self.color_tile_ground,self.color_dark_ground)
 
-    def map_draw_scrolling(self, con):
+    def map_draw_scrolling(self, con, game, map_width, map_height):
         if con == 0:
             pass
         else:
-            pass
-
+            cx, cy = game.player.x, game.player.y
+            minx, miny = map_width, map_height
     def map_is_explored(self,x,y):
         for tile in self.mMap:
             if tile.x == x and tile.y == y:
