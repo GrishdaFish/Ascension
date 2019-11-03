@@ -1,45 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7ef8a05c-f239-4fe1-9a91-4e3c338f7cab" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/content/actors/types.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gEngine/draw.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gEngine/light_mask.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gEngine/particle.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/map/prefab_generator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_components/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_components/undead templates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_components/undead.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_traits/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_traits/mod_traits/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/actor_traits/size_traits/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/actor/entity.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/component.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/object/event.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/dev_mode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/xp_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/src.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MapGen.py" beforeDir="false" afterPath="$PROJECT_DIR$/MapGen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TODO.txt" beforeDir="false" afterPath="$PROJECT_DIR$/TODO.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/content/items/consumables.txt" beforeDir="false" afterPath="$PROJECT_DIR$/content/items/consumables.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/core.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gEngine/gEngine.py" beforeDir="false" afterPath="$PROJECT_DIR$/gEngine/gEngine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/combat.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/combat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map/map.py" beforeDir="false" afterPath="$PROJECT_DIR$/map/map.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object/build_objects.py" beforeDir="false" afterPath="$PROJECT_DIR$/object/build_objects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object/new object code/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object/new object code/object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object/object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object/spells.py" beforeDir="false" afterPath="$PROJECT_DIR$/object/spells.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/options.txt" beforeDir="false" afterPath="$PROJECT_DIR$/options.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/menus/dialog_box.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/menus/dialog_box.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/menus/shop.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/menus/shop.py" afterDir="false" />
-    </list>
+    <list default="true" id="7ef8a05c-f239-4fe1-9a91-4e3c338f7cab" name="Default" comment="Huge Commit after long hiatus" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -429,6 +391,14 @@
       <option name="presentableId" value="Default" />
       <updated>1439862422464</updated>
     </task>
+    <task id="LOCAL-00001" summary="Huge Commit after long hiatus">
+      <created>1572812148739</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1572812148740</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -471,6 +441,10 @@
     <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
       <collection />
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Huge Commit after long hiatus" />
+    <option name="LAST_COMMIT_MESSAGE" value="Huge Commit after long hiatus" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
