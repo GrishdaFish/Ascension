@@ -74,7 +74,7 @@ object_type "consumable" {
     string additional_effects="burn"
     string spell_effect="explosion"
     color effect_color="0,0,0"
-    int range=8
+    int range=80
     int radius=3
     int max_targets=1
     color col="255,255,0"

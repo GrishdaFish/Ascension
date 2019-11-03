@@ -22,11 +22,14 @@ class Object:
         self.char = char
         self.name = name
         self.color = color
+        self.base_color = color
+        self.flash_color = None
         self.blocks = blocks
         self.objects = None
         self.message = None
         self.type = None
-        
+        self.flashing = False
+        self.flash_duration = 0
         self.fighter = fighter
         if self.fighter:
             self.fighter.owner = self
@@ -34,7 +37,7 @@ class Object:
         self.ai = ai
         if self.ai:
             self.ai.owner = self
- 
+            self.ai.node = None
         self.item = item
         if self.item:
             self.item.owner = self
@@ -85,7 +88,7 @@ class Object:
             objects.remove(self)
             objects.insert(0, self)
  
-    def draw(self, fov_map, gEngine, force_display=False):
+    def draw(self, fov_map, gEngine, is_player=False, force_display=False):
         #only show if it's visible to the player
         if force_display:
             h,s,v = gEngine.console_get_char_background(self.con,self.x,self.y)
@@ -100,9 +103,25 @@ class Object:
             h,s,v = gEngine.console_get_char_background(self.con,self.x,self.y)
             col = libtcod.Color(0,0,0)
             libtcod.color_set_hsv(col,h,s,v)
-            fr,fg,fb = self.color
+            fr,fg,fb = 0,0,0
+            if self.flashing:
+                if self.flash_duration == 1:
+                    c2 = libtcod.Color(0,0,0)
+                    libtcod.color_set_hsv(c2,0,0,255)
+                    fr,rg,rb = c2
+                    self.flash_duration = 0
+                    self.flashing = False
+            else:
+                fr,fg,fb = self.color
+                brightness = gEngine.light_mask.mask[self.x + self.y * gEngine.w]
+                fr *= brightness[0]
+                fg *= brightness[1]
+                fb *= brightness[2]
             br,bg,bb = col
-            gEngine.console_put_char_ex(self.con,self.x,self.y,self.char,fr,fg,fb,br,bg,bb)#self.char,self.color,col)
+            if is_player:
+                gEngine.console_put_char_ex(self.con,gEngine.w/2,gEngine.h/2-6,self.char,int(fr),int(fg),int(fb),br,bg,bb)
+            else:
+                gEngine.console_put_char_ex(self.con,self.x,self.y,self.char,int(fr),int(fg),int(fb),br,bg,bb)#self.char,self.color,col)
  
     def clear(self,gEngine):
         #erase the character that represents this object
@@ -120,6 +139,14 @@ class Object:
      
         return False
 
+    def short_flash(self):
+        pass
+
+    def long_flash(self):
+        pass
+
+    def blink(self):
+        pass
 
 class Fighter:
     #combat-related properties and methods (monster, player, NPC).
@@ -137,6 +164,9 @@ class Fighter:
         self.stats = [Str, Dex, Int, Con]
         self.unused_skill_points = 2
         self.defense = 0
+
+        self.depth = 0
+        self.threat = 0.0
 
         self.max_hp = combat.hp_bonus(Con)
         hp = self.max_hp
@@ -165,6 +195,7 @@ class Fighter:
         self.max_hp += combat.hp_bonus(self.stats[3])
         hp = self.max_hp
         self.hp = hp
+        self.current_xp = 0
 
     def apply_skill_points(self, skill):
         if isinstance(skill, basestring):
@@ -198,7 +229,7 @@ class Fighter:
                 return skill
         return None
 
-    def attack(self, target, player=False):
+    def attack(self, target, player=False, direction=None,game=None):
         if not player:
             col = 2
         else:
@@ -211,8 +242,8 @@ class Fighter:
         deflection_roll = combat.get_deflection_class(target)
         blocking_roll = combat.get_blocking_class(target)
 
-        msg = "A: %d, E:%d" % (attack_roll, evasion_roll)
-        self.owner.message.message(msg)
+        #msg = "A: %d, E:%d" % (attack_roll, evasion_roll)
+        #self.owner.message.message(msg)
         msg = ''
         if evasion_roll > attack_roll:
             msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but the attack was evaded!'
@@ -249,18 +280,41 @@ class Fighter:
                     msg = self.owner.name.capitalize() + ' attacks ' + target.name + ' but it has no effect!'
 
         self.owner.message.message(msg, col)
+        #expand on this for different attack patterns, right now its a 1x3 area in front of the player
+        if direction and player:
+            t=None
+            if direction == "north" or direction == 'south':
+                t = game.check_for_target(target.x+1, target.y)
+                if t:
+                    game.player.fighter.attack(t,player=True)
+                    t=None
+                t = game.check_for_target(target.x-1, target.y)
+                if t:
+                    game.player.fighter.attack(t,player=True)
+            elif direction == "east" or direction == 'west':
+                t = game.check_for_target(target.x, target.y+1)
+                if t:
+                    game.player.fighter.attack(t,player=True)
+                    t=None
+                t = game.check_for_target(target.x-1, target.y-1)
+                if t:
+                    game.player.fighter.attack(t,player=True)
+
 
     def take_damage(self, damage, attacker):
         #apply damage if possible
         if damage > 0:
             self.hp -= damage
+            self.owner.flashing = True
+            self.owner.flash_duration =1
             #check for death. if there's a death function, call it
             if self.hp <= 0:
                 attacker.fighter.current_xp += self.current_xp
                 function = self.death_function
                 if function is not None:
                     function(self.owner)
- 
+            else:
+                pass #flash
     def heal(self, amount):
         #heal by the given amount, without going over the maximum
         self.hp += amount
@@ -282,9 +336,18 @@ def get_next_to_player(mob, player, map):
                 dx, dy = player.x+px,player.y+py
                 d = mob.owner.distance(player.x+px, player.y+py)
     return dx, dy
+class AI_Base:
+    def __init__(self):
+        self.node = None
+        self.owner = None
 
+    def remove_from_node(self):
+        self.node.remove_from_group(self.owner)
 
-class BasicMonster:
+    def add_node(self,node):
+        self.node = node
+
+class BasicMonster(AI_Base):
     #AI for a basic monster.
     def take_turn(self,game):
         #a basic monster takes its turn. if you can see it, it can see you
@@ -307,14 +370,15 @@ class BasicMonster:
             self.owner.ai.owner = self.owner
 
 
-class WanderingMonster:
+class WanderingMonster(AI_Base):
     #Ai for a monster to randomly wander around when not in the view of the player
     def __init__(self,radius=3,x=0,y=0):
         self.radius = radius
         self.dest = False        
         self.home_x = x
         self.home_y = y
-        
+        AI_Base.__init__(self)
+
     def take_turn(self,game):
         self.owner.fighter.ticker.schedule_turn(self.owner.fighter.speed,self.owner)
         
@@ -343,16 +407,20 @@ class WanderingMonster:
             self.owner.move_towards(self.dest_x,self.dest_y,game.Map.map,game.objects)
             
         if libtcod.map_is_in_fov(game.fov_map, self.owner.x, self.owner.y):
+            node = self.owner.ai.node
             self.owner.ai = BasicMonster()
             self.owner.ai.owner = self.owner
+            self.owner.ai.node = node
 
 
-class ConfusedMonster:
+class ConfusedMonster(AI_Base):
     #AI for a temporarily confused monster (reverts to previous AI after a while).
     def __init__(self, old_ai, num_turns=3):
         self.old_ai = old_ai
         self.num_turns = num_turns
- 
+        self.node = old_ai.node
+        AI_Base.__init__(self)
+
     def take_turn(self,game):
         self.owner.fighter.ticker.schedule_turn(self.owner.fighter.speed,self.owner)
         if self.num_turns > 0:  #still confused...
@@ -365,7 +433,7 @@ class ConfusedMonster:
             self.owner.message.message('The ' + self.owner.name + ' is no longer confused!', 2)
 
 
-class RangedMonster:
+class RangedMonster(AI_Base):
       #AI for a ranged type monster 
       def take_turn(self,game):
           #a mage takes its turn; if you can see it, it can see you. 
@@ -394,6 +462,8 @@ class RangedMonster:
 
 
 def monster_death(monster):
+    if monster.ai.node:
+        monster.ai.remove_from_node()
     #drop all of equipped gear from monsters
     for item in monster.fighter.wielded:
         if item:
@@ -405,7 +475,8 @@ def monster_death(monster):
     for item in monster.fighter.inventory:
         item.item.drop(monster.fighter.inventory, monster, False)
         item.send_to_back()
-        
+    #Add loot drops
+    #Add gore
     monster.fighter.ticker.remove_object(monster)
     monster.message.message(monster.name.capitalize() + ' is dead!', 5)
     monster.char = '%'

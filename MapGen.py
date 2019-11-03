@@ -13,8 +13,8 @@ try:
 except ImportError:
     pass
 
-Game_Screen_Width = 100#100#128
-Game_Screen_Height = 100#75#96
+Game_Screen_Width = 100
+Game_Screen_Height = 100
 
 Message_Screen_Width = Game_Screen_Width - 2
 Message_Screen_Height = Game_Screen_Height / 4

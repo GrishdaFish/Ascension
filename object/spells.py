@@ -34,7 +34,8 @@ def heal(min,max,range,radius,targets,target,player,game):
         game.message.message('Your wounds start to feel better!', libtcod.light_violet)
     HEAL_AMOUNT = libtcod.random_get_int(0,min,max)
     target.fighter.heal(HEAL_AMOUNT)
-    
+
+
 def fireball(min,max,range,radius,targets,target,player,game):
     #ask the player for a target tile to throw a fireball at
     game.message.message('Left-click a target tile for the fireball, or right-click to cancel.', libtcod.light_cyan)
@@ -43,12 +44,14 @@ def fireball(min,max,range,radius,targets,target,player,game):
         game.message.message('You cancelled the spell!', libtcod.orange)
         return 'cancelled'
     game.message.message('The fireball explodes, burning everything within ' + str(radius) + ' tiles!', libtcod.orange)
+    game.gEngine.particle_explosion(15, x, y, b=True, color=libtcod.red)
     FIREBALL_DAMAGE = libtcod.random_get_int(0,min,max)
     for obj in game.objects:  #damage every fighter in range, including the player
         if obj.distance(x, y) <= radius and obj.fighter:
             game.message.message('The ' + obj.name + ' gets burned for ' + str(FIREBALL_DAMAGE) + ' hit points.', libtcod.orange)
             obj.fighter.take_damage(FIREBALL_DAMAGE,player)
-            
+
+
 def lightning(min,max,range,radius,targets,target,player,game):
     #find closest enemy (inside a maximum range) and damage it
     monster = closest_monster(game,range)

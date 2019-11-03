@@ -867,9 +867,9 @@ def town_menu(con, header, game, width, screen_height, screen_width):
         'Finished',]
     path = os.path.join(sys.path[0], 'content')
     path = path.replace('core.exe','')
-    backgrounds=[os.path.join(path, 'img', 'bg-arm.png'),
-                os.path.join(path, 'img', 'bg-wep.png'),
-                os.path.join(path, 'img', 'bg-magic.png'),]
+    backgrounds = [os.path.join(path, 'img', 'bg-arm.png'),
+                   os.path.join(path, 'img', 'bg-wep.png'),
+                   os.path.join(path, 'img', 'bg-magic.png'), ]
     container=[]
     menus = []
     weapon,armor,consum,quest=[],[],[],[]

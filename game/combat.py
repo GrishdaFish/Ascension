@@ -42,6 +42,7 @@ skill_list = [
     Skill('Discipline', 'Two-Handed', 'Mastery of two handed weapon, or one handed weapon wielded in two hands.'),
     Skill('Discipline', 'Dual-Wield', 'Mastery of wielding two weapons at once.'),
     Skill('Discipline', 'Ranged',     'Mastery of ranged weapons.'),
+
     Skill('Discipline', 'Dodge',      'Ability to dodge incoming attacks.'),
     Skill('Discipline', 'Armor',      'Skill in reducing the penalties of wearing armor.'),
     Skill('Discipline', 'Shield',     'Proficiency at using shields.'),
@@ -110,12 +111,10 @@ def get_blocking_class(creature):
 def get_deflection_class(creature):
     hands = creature.fighter.wielded
     roll = 0
-    log = logging.getLogger('main')
     if hands[1] is not None:
         if hands[1].item.equipment.type != 'melee':
             return roll
     if hands[0] is not None:
-        log.debug(hands[0].item.equipment.type)
         if hands[0].item.equipment.type == 'melee':
             if hands[0] != hands[1]:  # make sure its not a 2-h weap
                 roll = libtcod.random_get_int(0, 1, 20)

@@ -60,3 +60,4 @@ save_system_backup.py
 new object code
 *.sav
 /fonts
+/cprotos.py

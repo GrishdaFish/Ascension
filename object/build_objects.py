@@ -1,9 +1,13 @@
 import libtcodpy as libtcod
-from item import *
+from .item import *
 from object import *
-from misc import *
-from spells import *
+from .misc import *
+from .spells import *
 import logging
+import actor
+import sys
+sys.path.append('..')
+import game.combat as combat
 
 class GameObjects:
 ##============================================================================
@@ -67,6 +71,10 @@ class GameObjects:
         self.threat_list.append(lvl2)
         self.threat_list.append(lvl3)
         self.threat_list.append(lvl4)
+
+    def get_random_monster_name(self):
+        r = libtcod.random_get_int(0,0,(len(self.monsters)-1))
+        return self.monsters[r].name
 
 ##============================================================================
     def build_potion(self,game,x,y,name=None):
@@ -276,31 +284,40 @@ class GameObjects:
         
                 
         fighter_component = Fighter(hp=mob.hp, defense=mob.defense, power=mob.power, 
-            death_function=monster_death,ticker=game.ticker,speed=mob.speed,
-            Str=mob.strength,Dex=mob.dexterity,Int=mob.intelligence,xp_value=mob.xp_value)
-        ai_component = WanderingMonster(x=x,y=y)#BasicMonster()
+                                    death_function=monster_death, ticker=game.ticker,
+                                    speed=mob.speed, Str=mob.strength, Dex=mob.dexterity,
+                                    Int=mob.intelligence, xp_value=mob.xp_value)
+        ai_component = WanderingMonster(x=x, y=y)#BasicMonster()
         
-        monster = Object(game.con,x, y, mob.cell, mob.name, mob.color,
-            blocks=True, fighter=fighter_component, ai=ai_component)
+        monster = Object(game.con, x, y, mob.cell, mob.name, mob.color,
+                         blocks=True, fighter=fighter_component, ai=ai_component)
 
         monster.fighter.ticker.schedule_turn(monster.fighter.speed, monster)
 
-        monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="monster_melee")
+        monster.fighter.wielded[0] = self.build_equipment(game, x, y, type="monster_melee")
         if mob.can_equip_gear:
-            r = libtcod.random_get_int(0,0,100)
+            r = libtcod.random_get_int(0, 0, 100)
             if r > 85:  # 15 % chance the mob will have a weapon
-                monster.fighter.wielded[0] = self.build_equipment(game,x,y,type="melee")
+                monster.fighter.wielded[0] = self.build_equipment(game, x, y, type="melee")
         for skill in monster.fighter.skills:
             skill.set_bonus(mob.defense_bonus)
         monster.fighter.max_hp = mob.hp
         monster.fighter.hp = mob.hp
+
+        e = actor.entity.Entity(hp=mob.hp, x=monster.x, y=monster.y, name=monster.name, char=monster.char,
+                                color=monster.color, s=mob.strength, i=mob.intelligence, d=mob.dexterity,
+                                xp=mob.xp_value)
+        e = actor.get_component('zombie', e)
+        e.hp += combat.get_stat_bonus(e.constitution)
+        monster = e.convert(monster)
         return monster    
 
 ##============================================================================
-    def get_threat_from_mob(self,mob_name):
+    def get_threat_from_mob(self, mob_name):
 ##============================================================================
         ##returns the threat level of a mob based on its name
         for obj in self.monsters:
+            #logging.getLogger('main').debug(obj.threat_level)
             if obj.name == mob_name:
                 return obj.threat_level
         return False

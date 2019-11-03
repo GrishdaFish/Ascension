@@ -47,3 +47,60 @@ Random world events (meteorites, hurricanes, tornadoes, earthquakes, volcanoes, 
 Raidboss style fights
 Biomes and more random dungeon elements
 Item pictures for inventory
+
+
+Technical Goals
+Separate game logic from engine logic
+Basic engine initialization should give a screen with either a menu or create a basic "hello world" style module
+    basic module would be room with "@" walking around
+    Engine Logic:
+        Game logic as modules
+
+        Light mask
+            Subcell Resolution Support # Done, but extremely  slow. Fix with numpy?
+            Variable falloff for lights
+
+        Particles
+            give option to use "char" or light map effects (or both?)
+            Implement light map particles
+            Subcell resolution support # Done
+            integrate with timing systems (ticker)
+
+        Map Generation
+            Separate files for each type of generator
+            base file to dynamically load new generators and interface with gEngine
+
+        Drawing
+            Subcell support # Done
+            Scrolling support
+            subcell scrolling support
+
+        Libtcod integration
+            wrap everything from libtcod into gEngine
+                avoid ANY calls to libtcod from game logic, in case of API breaks
+
+        Timing system
+            multiple timing system support (can switch between systems)
+            Ticker
+            Igo,Ugo
+
+        Saving and Loading
+
+        Input Handling (keyboard and mouse)
+
+        Images
+
+        Logging
+
+        Menus
+            Dialogs
+
+        Utilities
+
+        All External Data handling
+            Config files
+            Data files
+
+        (sound)
+        (music)
+        (animation)

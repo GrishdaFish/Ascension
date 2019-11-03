@@ -13,7 +13,7 @@ self.key_drop=None
 */
 
 option_struct "game_options" {
-    string key_set="Arrows"
+    string key_set="Wasd"
     
 }
 

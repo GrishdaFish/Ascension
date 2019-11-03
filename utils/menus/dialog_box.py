@@ -1,4 +1,6 @@
+
 __author__ = 'Grishnak'
+
 import libtcodpy as libtcod
 import button
 

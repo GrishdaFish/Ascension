@@ -3,7 +3,6 @@ import math
 import textwrap
 import shelve
 import sys,os,time
-
     
 os.path.join(sys.path[0],'map')
 sys.path.append(os.path.join(sys.path[0],'map'))
@@ -14,6 +13,8 @@ from object import *
 from object.build_objects import *
 
 sys.path.append(os.path.join(sys.path[0],'utils'))
+
+from utils import dev_mode
 from utils.menu import *
 from utils.utils import *
 import utils.save_system as save_system
@@ -50,9 +51,9 @@ MAX_ROOM_ITEMS = 2
  
 FOV_ALGO = 0  #default FOV algorithm
 FOV_LIGHT_WALLS = True  #light walls or not
-TORCH_RADIUS = 10
+TORCH_RADIUS = 0
  
-LIMIT_FPS = 60
+LIMIT_FPS = 0
  
 color_dark_wall = libtcod.darker_grey
 color_light_wall = libtcod.Color(99,99,99)
@@ -129,16 +130,16 @@ class Game:
         self.Map = map.Map(MAP_HEIGHT, MAP_WIDTH, ROOM_MIN_SIZE, ROOM_MAX_SIZE,
             MAX_ROOMS, MAX_ROOM_MONSTERS, MAX_ROOM_ITEMS, self.logger)
 
-
         self.keys = key_set
         self.setup_keys()
         self.current_dungeon = []  # an array that holds all off the dungeon levels
-        self.console = console.Console(self, SCREEN_WIDTH-2, SCREEN_HEIGHT/2, self.debug_level)
+        #self.console = console.Console(self, SCREEN_WIDTH-2, SCREEN_HEIGHT/2, self.debug_level)
         self.depth = None
         self.game_state = None
+        self.dev_mode = dev_mode.DevMode(self.gEngine, self.Map)
 
         #libtcod.console_set_keyboard_repeat(50, 50)
-        libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
+        libtcod.sys_set_renderer(libtcod.RENDERER_GLSL)
 
     #need to make this more efficient, going to set up keys in an array
 ##============================================================================
@@ -165,11 +166,11 @@ class Game:
         for level in self.current_dungeon:
             if level.depth == self.depth:
                 level.update_level(self.Map.map, self.objects, self.gEngine.get_fov_map(), self.gEngine.get_map())
-        try:
-            self.logger.log.info('Saving game.')
-            save_system.save(self)
-        except Exception, ex:
-            self.message.error_message(ex, self)
+        #try:
+        self.logger.log.info('Saving game.')
+        save_system.save(self)
+        #except Exception, ex:
+        #    self.message.error_message(ex, self)
 
 ##============================================================================
     def load_game(self):
@@ -219,7 +220,6 @@ class Game:
      
         self.game_state = 'playing'
         self.inventory = []
-
         self.depth = 1
         self.load_level(self.depth, 'down')
         self.message.message('Welcome to Ascension!', 1)
@@ -242,7 +242,7 @@ class Game:
         self.Map.map = level_to_load.map
         self.gEngine.set_fov_map(level_to_load.fov_map)
         #self.gEngine.set_map(level_to_load.draw_map)
-        self.Map.set_draw_map(level_to_load.map, self)
+        self.Map.set_draw_map(level_to_load.map, self.gEngine)
         for node in level_to_load.spawn_nodes:
             self.ticker.schedule_turn(0, node)
 
@@ -260,6 +260,8 @@ class Game:
         #level_to_load = self.current_dungeon[level-1]
         self.gEngine.console_clear(0)
         self.gEngine.console_clear(self.con)
+
+        self.gEngine.add_light_source(self.player.x, self.player.y, libtcod.darker_yellow, 5, 0.5, 'player')
         self.initialize_fov()
 
         self.ticker.get_next_tick()
@@ -281,7 +283,6 @@ class Game:
         self.ticker.get_next_tick()
         self.game_state = 'playing'
 
-
         self.message.message('Next Level', 1)
     
 ##============================================================================
@@ -300,7 +301,7 @@ class Game:
 ##============================================================================
     def play_game(self):
 ##============================================================================
-        try:
+        #try:
             player_action = None
             self.player_moved=True
             while not libtcod.console_is_window_closed():
@@ -309,59 +310,62 @@ class Game:
                 self.gEngine.console_flush()
                 key = libtcod.console_check_for_keypress()
                 mouse = libtcod.mouse_get_status()
+                self.gEngine.light_mask.reset()
+                #self.gEngine.light_mask.add_light(self.player.x, self.player.y, 1.0)
 
                 #erase all objects at their old locations, before they move
                 for object in self.objects:
                     object.clear(self.gEngine)
                 for particle in self.particles:
                     particle.clear(self.gEngine)
-                
+
                 #Monsters faster than the player, take turns first
                 is_player_turn = self.ticker.next_turn(self)
                 self.hotbar.update(mouse, key, self)
-                if is_player_turn:                    
+                if is_player_turn:
                     player_action = self.handle_keys(key)
-                    
+
                     ##Make sure the player takes his turn before continuing
                     ##Need to have certain actions take certain speeds
                     ##moving takes up the full speed, attacking dependant on weapon
                     ##inventory actions depend on what was done
                     while player_action == 'didnt-take-turn':
-                        
                         player_action = self.handle_keys(key)
-                        
+
+
                         if player_action == 'player-moved':
                             self.player_moved = True
-                            
+
+
                         if libtcod.console_is_window_closed():
                             player_action = 'exit'
-                            
-                        self.render_all()                        
+
+                        self.render_all()
                         self.gEngine.console_flush()
 
                         key = libtcod.console_check_for_keypress()
                         mouse = libtcod.mouse_get_status()
                         self.hotbar.update(mouse, key, self)
                         self.player_moved=False
-                        
+
                         for object in self.objects:
                             object.clear(self.gEngine)
-                            
+
                     if player_action == 'turn-used' or player_action == 'player-moved':
                         self.ticker.schedule_turn(self.player.fighter.speed,self.player)
-                        
+
                 if player_action == 'exit' or libtcod.console_is_window_closed():
                     self.logger.log.info('Exiting and saving game..')
                     self.save_game()
                     break
-                    
+
                 #fast forward until the next object gets its turn
                 self.ticker.get_next_tick()
                 if self.player.fighter.current_xp >= self.player.fighter.xp_to_next_level:
                     self.player.fighter.level_up()
-            #check for game state = dead        
-        except Exception,err:
-            self.message.error_message(err,self)
+            #check for game state = dead
+        #except Exception,err:
+        #    self.message.error_message(err,self)
 
 ##============================================================================
     def main_menu(self):
@@ -369,19 +373,22 @@ class Game:
         path = os.path.join(sys.path[0],'content')
         path = path.replace('core.exe','')
         img = self.gEngine.image_load(os.path.join(path,'img','menu_background_2.png'))
-        m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Options (not working)', 'Quit'], self.con)
+        m_menu = Menus(self,SCREEN_HEIGHT/2+22,SCREEN_WIDTH,24,'',['Play a new game', 'Continue last game', 'Options (not working)', 'Quit', 'dev'], self.con)
         m_menu.is_visible = True
         #m_menu.can_drag = False
         
         while not libtcod.console_is_window_closed():
             self.gEngine.image_blit_2x(img, 0, 0, 0)
+
             r,g,b = libtcod.red
             self.gEngine.console_set_default_foreground(0, r,g,b)
             self.gEngine.console_print(0, SCREEN_WIDTH/2-13, SCREEN_HEIGHT/2-10,'By Grishnak and SentientDeth')
+
             libtcod.console_credits_render(2, SCREEN_HEIGHT-2, True)
+            self.gEngine.console_set_default_background(0,0,0,0)
             choice = m_menu.menu()
             self.gEngine.console_flush()
-            
+            self.gEngine.console_clear(0)
             if choice == 0:
                 m_menu.destroy_menu()
                 self.new_game()
@@ -399,6 +406,9 @@ class Game:
             if choice == 3 or choice == None:  #quit
                 self.logger.log.info('Quitting game')
                 break
+            if choice == 4:
+                self.dev_mode.run()
+                self.main_menu()
 ##============================================================================
     def get_names_under_mouse(self):
 ##============================================================================
@@ -439,31 +449,46 @@ class Game:
 ##============================================================================
     def render_all(self):
 ##============================================================================
-     
+        #self.gEngine.console_clear(self.con)
         if self.fov_recompute:
             #recompute FOV if needed (the player moved or something)
             fov_recompute = False
             libtcod.map_compute_fov(self.fov_map, self.player.x, self.player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
-            self.gEngine.map_draw(self.con, self.player.x,self.player.y)
+            #self.gEngine.map_draw_scrolling(self.con, self, self.player.x,self.player.y)
+            self.gEngine.light_mask.add_light(self.player.x, self.player.y, 1.0)
+            #self.gEngine.light_mask.compute_mask(self.Map.map)
+            #self.gEngine.map_draw(self.con, self.player.x, self.player.y, self.gEngine.light_mask)
             
      
         #draw all objects in the list, except the player. we want it to
         #always appear over all other objects! so it's drawn later.
-        
-            
+        for object in self.objects:
+            if object.fighter:
+                self.gEngine.lightmask_add_light(object.x, object.y, 0.5)
+
+
+        self.gEngine.particle_update(self.Map.map)
+
+        self.gEngine.light_mask.compute_mask(self.Map.map)
+
         for object in self.objects:
             if object is not self.player:
                 if object.misc:
                     if object.misc.type is 'up' or object.misc.type is 'down':
                         #Draw stairs if they are already found
                         if self.gEngine.map_is_explored(object.x,object.y):
-                            object.draw(self.fov_map,self.gEngine,True)
+                            object.draw(self.fov_map,self.gEngine,force_display=True)
                     else:
                         object.draw(self.fov_map,self.gEngine)
                 else:
                     object.draw(self.fov_map,self.gEngine)
+
+
+
+        self.gEngine.map_draw(self.con, self.player.x, self.player.y, self.gEngine.light_mask)
+        self.gEngine.blit_map(self.con)
         self.player.draw(self.fov_map, self.gEngine)
-        for particle in self.particles:
+        for particle in self.particles:#770 559 8132
             particle.draw(self.fov_map,self.gEngine,True)
         #blit the contents of "con" to the root console
         self.gEngine.console_print(self.con, 1, 1, "Depth: %i" % self.depth)
@@ -500,9 +525,13 @@ class Game:
         self.gEngine.console_blit(self.panel, 0, 0, SCREEN_WIDTH, PANEL_HEIGHT, 0, 0, PANEL_Y,1.0,1.0)
      
      
+    def check_for_target(self,x,y):
+        for object in self.objects:
+            if object.fighter and object.x == x and object.y == y:
+                return object
 
 ##============================================================================
-    def player_move_or_attack(self,dx, dy):
+    def player_move_or_attack(self,dx, dy, direction=None):
 ##============================================================================
         #the coordinates the player is moving to/attacking
         x = self.player.x + dx
@@ -517,7 +546,7 @@ class Game:
             
         #attack if target found, move otherwise
         if target is not None:
-            self.player.fighter.attack(target,True)
+            self.player.fighter.attack(target,player=True,direction=direction,game=self)
             return 'turn-used'
         else:
             self.player.move(dx, dy,self.Map.map,self.objects)
@@ -534,6 +563,24 @@ class Game:
         #for added effect, transform the player into a corpse!
         self.player.char = '%'
         self.player.color = libtcod.dark_red
+
+    def get_move_direction(self, key):
+        move_keys = {self.keys.key_north :(0,-1),
+                    self.keys.key_south  :(0,1) ,
+                    self.keys.key_east   :(1,0),
+                    self.keys.key_west   :(-1,0),
+                    }
+        px,py = move_keys[key]
+        direction = ""
+        if key == self.keys.key_north:
+            direction = "north"
+        if key == self.keys.key_south:
+            direction = "south"
+        if key == self.keys.key_east:
+            direction = "east"
+        if key == self.keys.key_west:
+            direction = "west"
+        return px,py,direction
 
 ##============================================================================
     def handle_keys(self, key):
@@ -570,13 +617,13 @@ class Game:
             #movement keys
             #For arrow keys, keypad keys, etc..
             if key.vk in move_keys:
-                px,py=move_keys[key.vk]
-                return self.player_move_or_attack(px,py)
+                px,py,d = self.get_move_direction(key.vk)
+                return self.player_move_or_attack(px,py,d)
                 
             #for char based keys, 'w','a','s','d', etc..
             elif chr(key.c) in move_keys:
-                px,py=move_keys[chr(key.c)]
-                return self.player_move_or_attack(px,py)
+                px,py,d = self.get_move_direction(chr(key.c))
+                return self.player_move_or_attack(px,py,d)
                 
             else:
                 #test for other keys

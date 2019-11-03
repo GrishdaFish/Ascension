@@ -12,9 +12,15 @@ class Entity:
 
 
 class Event:
-    def __init__(self, name, event):
-        self.id = None
-        self.event = {name: event}
+    def __init__(self, id, event):
+        self.id = id
+        self.events = [event]
+
+    def get_id(self):
+        return self.id
+
+    def return_events(self):
+        return self.events
 
 
 class Component:
@@ -33,8 +39,11 @@ class Component:
 
 class PhysicsComponent(Component):
     def __init__(self, owner):
-        Component.__init__(self)
+        Component.__init__(self, owner)
         self.components = []
+
+    def process_events(self):
+        pass
 
 '''
 Physical Component (event)
